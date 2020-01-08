@@ -1,16 +1,31 @@
 package frc.robot.subsystems;
 
-import static frc.robot.RobotMap.*;
+import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_A;
+import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_B;
+import static frc.robot.constants.RobotMap.DRIVE_LEFT_MOTOR_MASTER_ADDRESS;
+import static frc.robot.constants.RobotMap.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS;
+import static frc.robot.constants.RobotMap.DRIVE_RIGHT_ENCODER_A;
+import static frc.robot.constants.RobotMap.DRIVE_RIGHT_ENCODER_B;
+import static frc.robot.constants.RobotMap.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS;
+import static frc.robot.constants.RobotMap.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS;
+
+import com.ctre.phoenix.sensors.PigeonIMU;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.RobotMap;
+
 
 public class DriveSubsystem extends SubsystemBase {
 
     private Spark leftDrive01, leftDrive02, rightDrive01, rightDrive02;
     private Encoder leftEncoder, rightEncoder;
 
+    private AHRS navX;
+    private PigeonIMU pigeon;
 
 
     public DriveSubsystem(){
@@ -21,6 +36,9 @@ public class DriveSubsystem extends SubsystemBase {
 
         leftEncoder = new Encoder(DRIVE_LEFT_ENCODER_A, DRIVE_LEFT_ENCODER_B);
         rightEncoder = new Encoder(DRIVE_RIGHT_ENCODER_A, DRIVE_RIGHT_ENCODER_B);
+
+        navX = new AHRS(Port.kMXP);
+        pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
     }
     
     public void setLeftSpeed(double speed){
@@ -33,9 +51,14 @@ public class DriveSubsystem extends SubsystemBase {
         rightDrive02.set(speed);
     }
 
-    public void setSpeed(double speed){
+    public void setFwdSpeed(double speed){
         setLeftSpeed(speed);
         setRightSpeed(speed);
+    }
+
+    public void setSpeed(double leftSpeed, double rightSpeed){
+        setLeftSpeed(leftSpeed);
+        setRightSpeed(rightSpeed);
     }
 
     /**
@@ -62,5 +85,29 @@ public class DriveSubsystem extends SubsystemBase {
         return (rightDrive01.get() + rightDrive02.get()) / 2;
     }
 
+    /**
+     * returns the gyro heading
+     * @return double value in degrees
+     */
+    public double getNavxHeading() {
+        return (double) navX.getYaw();
+    }
+
+    /**
+     * returns the gyro heading
+     * @return double value in degrees
+     */
+    public double getPigeonHeading() {
+        double[] ypr = new double[3];
+        pigeon.getYawPitchRoll(ypr);
+        return ypr[0];
+    }
+
+    /**
+     * resets the gyro heading
+     */
+    public void resetNavxHeading() {
+        navX.reset();
+    }
 
 }
