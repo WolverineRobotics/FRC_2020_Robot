@@ -61,6 +61,26 @@ public class DriveSubsystem extends SubsystemBase {
         setRightSpeed(rightSpeed);
     }
 
+    public double getDistanceLeftEncoder(){
+        return leftEncoder.getDistance();
+    }
+
+    public double getDistanceRightEncoder(){
+        return rightEncoder.getDistance();
+    }
+
+    public double getDistance(){
+        return (getDistanceLeftEncoder() + getDistanceRightEncoder())/2;
+    }
+
+    /**
+     * resets encoder values
+    */
+    public void resetEncoders() {
+        leftEncoder.reset();
+        rightEncoder.reset();
+    }
+
     /**
      * returns the absolute raw encoder counts of the left encoder
      * @return int number of counts to deliver
