@@ -10,8 +10,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.defaultcommands.DefaultDriveCommand;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -23,14 +26,23 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
+  /* 
+  The default naming scheme uses the m_ prefix for both subsystems and commands.
+  We will be using the m_ prefix for subsystems and c_ prefix for default commands.
+  The provided example has been left unchanged.
+  */
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
-
+  private final DriveSubsystem m_drive = new DriveSubsystem();
+  private final DefaultDriveCommand c_drive = new DefaultDriveCommand(m_drive);
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+    CommandScheduler.getInstance().setDefaultCommand(m_drive, c_drive);
+
     // Configure the button bindings
     configureButtonBindings();
   }
