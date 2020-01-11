@@ -16,8 +16,9 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.RobotConst.PidConst;
 import frc.robot.constants.RobotMap;
-
+import frc.robot.pid.GyroPID;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -27,8 +28,9 @@ public class DriveSubsystem extends SubsystemBase {
     private AHRS navX;
     private PigeonIMU pigeon;
 
+    public GyroPID gyroPID;
 
-    public DriveSubsystem(){
+    public DriveSubsystem() {
         leftDrive01 = new Spark(DRIVE_LEFT_MOTOR_MASTER_ADDRESS);
         leftDrive02 = new Spark(DRIVE_LEFT_MOTOR_SLAVE_ADDRESS);
         rightDrive01 = new Spark(DRIVE_RIGHT_MOTOR_MASTER_ADDRESS);
@@ -39,43 +41,45 @@ public class DriveSubsystem extends SubsystemBase {
 
         navX = new AHRS(Port.kMXP);
         pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
+
+        gyroPID = new GyroPID(PidConst.GYRO_KP, PidConst.GYRO_KI, PidConst.GYRO_KD);
     }
-    
-    public void setLeftSpeed(double speed){
+
+    public void setLeftSpeed(double speed) {
         leftDrive01.set(speed);
         leftDrive02.set(speed);
     }
 
-    public void setRightSpeed(double speed){
+    public void setRightSpeed(double speed) {
         rightDrive01.set(speed);
         rightDrive02.set(speed);
     }
 
-    public void setFwdSpeed(double speed){
+    public void setFwdSpeed(double speed) {
         setLeftSpeed(speed);
         setRightSpeed(speed);
     }
 
-    public void setSpeed(double leftSpeed, double rightSpeed){
+    public void setSpeed(double leftSpeed, double rightSpeed) {
         setLeftSpeed(leftSpeed);
         setRightSpeed(rightSpeed);
     }
 
-    public double getDistanceLeftEncoder(){
+    public double getDistanceLeftEncoder() {
         return leftEncoder.getDistance();
     }
 
-    public double getDistanceRightEncoder(){
+    public double getDistanceRightEncoder() {
         return rightEncoder.getDistance();
     }
 
-    public double getDistance(){
-        return (getDistanceLeftEncoder() + getDistanceRightEncoder())/2;
+    public double getDistance() {
+        return (getDistanceLeftEncoder() + getDistanceRightEncoder()) / 2;
     }
 
     /**
      * resets encoder values
-    */
+     */
     public void resetEncoders() {
         leftEncoder.reset();
         rightEncoder.reset();
@@ -83,6 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * returns the absolute raw encoder counts of the left encoder
+     * 
      * @return int number of counts to deliver
      */
     public int getRawLeftEncoder() {
@@ -91,6 +96,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * returns the absolute encoder counts of the right encoder
+     * 
      * @return int number of counts to deliver
      */
     public int getRawRightEncoder() {
@@ -98,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getLeftSpeed() {
-        return (leftDrive01.get() + leftDrive02.get()) /2;
+        return (leftDrive01.get() + leftDrive02.get()) / 2;
     }
 
     public double getRightSpeed() {
@@ -107,6 +113,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * returns the gyro heading
+     * 
      * @return double value in degrees
      */
     public double getNavxHeading() {
@@ -115,6 +122,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * returns the gyro heading
+     * 
      * @return double value in degrees
      */
     public double getPigeonHeading() {

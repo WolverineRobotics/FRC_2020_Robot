@@ -168,6 +168,10 @@ public class GyroPID extends PIDController {
         return enabled;
     }
 
+    public void setEnabled(boolean enabled){
+        this.enabled = enabled;
+    }
+
     @Override
     public void reset() {
         if (!isEnabled()) {
