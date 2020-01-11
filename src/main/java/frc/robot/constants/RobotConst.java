@@ -15,5 +15,8 @@ public class RobotConst {
     public static final double DRIVE_ENCODER_COUNTS_PER_INCH = 12.92;
 
     }
-
+    
+    public class PidConst{
+        public static final double LOCATIONCALC_DEFAULT_SETPOINT_DISTANCE = 0.8;
+    }
 }
