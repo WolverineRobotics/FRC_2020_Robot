@@ -15,7 +15,10 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.constants.RobotConst.PidConst;
 import frc.robot.constants.RobotMap;
 import frc.robot.pid.GyroPID;
@@ -24,6 +27,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     private Spark leftDrive01, leftDrive02, rightDrive01, rightDrive02;
     private Encoder leftEncoder, rightEncoder;
+
+    private SpeedControllerGroup leftGroup, rightGroup;
+    private DifferentialDrive driveTrain;
 
     private AHRS navX;
     private PigeonIMU pigeon;
@@ -36,6 +42,11 @@ public class DriveSubsystem extends SubsystemBase {
         rightDrive01 = new Spark(DRIVE_RIGHT_MOTOR_MASTER_ADDRESS);
         rightDrive02 = new Spark(DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS);
 
+        leftGroup = new SpeedControllerGroup(leftDrive01, leftDrive02);
+        rightGroup = new SpeedControllerGroup(leftDrive01, leftDrive02);
+
+        driveTrain = new DifferentialDrive(leftGroup, rightGroup);
+
         leftEncoder = new Encoder(DRIVE_LEFT_ENCODER_A, DRIVE_LEFT_ENCODER_B);
         rightEncoder = new Encoder(DRIVE_RIGHT_ENCODER_A, DRIVE_RIGHT_ENCODER_B);
 
@@ -46,13 +57,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void setLeftSpeed(double speed) {
-        leftDrive01.set(speed);
-        leftDrive02.set(speed);
+        leftGroup.set(speed);
     }
 
     public void setRightSpeed(double speed) {
-        rightDrive01.set(speed);
-        rightDrive02.set(speed);
+        rightGroup.set(speed);
     }
 
     public void setFwdSpeed(double speed) {
@@ -63,6 +72,26 @@ public class DriveSubsystem extends SubsystemBase {
     public void setSpeed(double leftSpeed, double rightSpeed) {
         setLeftSpeed(leftSpeed);
         setRightSpeed(rightSpeed);
+    }
+
+    public void arcadeDrive(double xSpeed, double zRotation){
+        driveTrain.arcadeDrive(xSpeed, zRotation, DriveConst.DRIVE_SQUARE_ARCADE);
+    }
+
+    public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs){
+        driveTrain.arcadeDrive(xSpeed, zRotation, squareInputs);
+    }
+
+    public void tankDrive(double leftSpeed, double rightSpeed){
+        driveTrain.tankDrive(leftSpeed, rightSpeed, DriveConst.DRIVE_SQUARE_TANK);
+    }
+
+    public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs){
+        driveTrain.tankDrive(leftSpeed, rightSpeed, squareInputs);
+    }
+
+    public void setDeadband(double deadband){
+        driveTrain.setDeadband(deadband);
     }
 
     public double getDistanceLeftEncoder() {
