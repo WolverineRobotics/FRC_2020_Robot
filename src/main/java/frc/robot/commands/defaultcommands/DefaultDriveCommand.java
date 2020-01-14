@@ -27,19 +27,26 @@ public class DefaultDriveCommand extends CommandBase {
         double throttle = OI.getDriverThrottle();
         double turn = OI.getDriverTurn();
 
-        double leftSpeed = 0;
-        double rightSpeed = 0;
-
-        leftSpeed = throttle - turn;
-        rightSpeed = throttle + turn;
-
         if(OI.getFineControl()){
             //If fine control is active.
-            c_drive.setSpeed(leftSpeed*0.3, -rightSpeed*0.3);
+            arcadeDrive(throttle, turn, DriveConst.DRIVE_SPEED_REDUCTION_RATIO_FINE);;
         } else {
-            c_drive.setSpeed(leftSpeed*DriveConst.DRIVE_SPEED_REDUCTION_RATIO, -rightSpeed*DriveConst.DRIVE_SPEED_REDUCTION_RATIO);
+            arcadeDrive(throttle, turn, DriveConst.DRIVE_SPEED_REDUCTION_RATIO);
         }
 
+    }
+
+    private void arcadeDrive(double throttle, double turn, double speedReduction){
+        arcadeDrive(throttle, turn, speedReduction, false);
+    }
+
+    private void arcadeDrive(double throttle, double turn, double speedReduction, boolean invertTurn){
+        if (invertTurn){
+            turn = -turn;
+        }
+        throttle *= speedReduction;
+        turn *= speedReduction;
+        c_drive.arcadeDrive(throttle, turn);
     }
 
     // Called once the command ends or is interrupted.
