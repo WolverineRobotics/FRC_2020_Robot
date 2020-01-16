@@ -57,7 +57,7 @@ public class DriveDirectionCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        c_drive.setFwdSpeed(0);
+        c_drive.setForwardSpeed(0);
         gyroPID.setEnabled(false);
     }
 

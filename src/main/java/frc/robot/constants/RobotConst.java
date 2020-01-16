@@ -15,9 +15,10 @@ public class RobotConst {
 
         public static final double DRIVE_ENCODER_COUNTS_PER_INCH = 12.92;
 
+        public static final double DRIVE_MAX_VOLTAGE = 10;
 
-        public static final boolean DRIVE_SQUARE_ARCADE = true;
-        public static final boolean DRIVE_SQUARE_TANK = true;
+        public static final boolean DRIVE_SQUARE_ARCADE = false;
+        public static final boolean DRIVE_SQUARE_TANK = false;
     }
 
     public class PidConst {

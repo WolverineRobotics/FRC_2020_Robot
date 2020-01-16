@@ -39,7 +39,7 @@ public class DriveDistanceCommand extends DriveDirectionCommand {
         super.end(interupted);
         System.out.println("Finished drive distance command at " + c_drive.getDistance());
         if (brakeWhenFinished) {
-            c_drive.setFwdSpeed(0);
+            c_drive.setForwardSpeed(0);
         }
     }
 

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.constants.RobotConst.PidConst;
 import frc.robot.constants.RobotMap;
@@ -49,7 +50,6 @@ public class DriveSubsystem extends SubsystemBase {
 
         leftEncoder = new Encoder(DRIVE_LEFT_ENCODER_A, DRIVE_LEFT_ENCODER_B);
         rightEncoder = new Encoder(DRIVE_RIGHT_ENCODER_A, DRIVE_RIGHT_ENCODER_B);
-        
 
         leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
         rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
@@ -58,6 +58,8 @@ public class DriveSubsystem extends SubsystemBase {
         pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
 
         gyroPID = new GyroPID(PidConst.GYRO_KP, PidConst.GYRO_KI, PidConst.GYRO_KD);
+
+        setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
     }
 
     public void setLeftSpeed(double speed) {
@@ -68,7 +70,7 @@ public class DriveSubsystem extends SubsystemBase {
         rightGroup.set(speed);
     }
 
-    public void setFwdSpeed(double speed) {
+    public void setForwardSpeed(double speed) {
         setLeftSpeed(speed);
         setRightSpeed(speed);
     }
@@ -78,23 +80,45 @@ public class DriveSubsystem extends SubsystemBase {
         setRightSpeed(rightSpeed);
     }
 
-    public void arcadeDrive(double xSpeed, double zRotation){
+    public void setLeftVoltage(double volts) {
+        volts = MathUtil.clamp(volts, -DriveConst.DRIVE_MAX_VOLTAGE, DriveConst.DRIVE_MAX_VOLTAGE);
+        leftGroup.setVoltage(volts);
+    }
+
+    public void setRightVoltage(double volts) {
+        volts = MathUtil.clamp(volts, -DriveConst.DRIVE_MAX_VOLTAGE, DriveConst.DRIVE_MAX_VOLTAGE);
+        rightGroup.setVoltage(volts);
+    }
+
+    public void setVoltage(double leftVolts, double rightVolts) {
+        setLeftVoltage(leftVolts);
+        setRightVoltage(rightVolts);
+    }
+
+    public void arcadeDrive(double xSpeed, double zRotation) {
         driveTrain.arcadeDrive(xSpeed, zRotation, DriveConst.DRIVE_SQUARE_ARCADE);
     }
 
-    public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs){
+    public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
         driveTrain.arcadeDrive(xSpeed, zRotation, squareInputs);
     }
 
-    public void tankDrive(double leftSpeed, double rightSpeed){
+    public void tankDrive(double leftSpeed, double rightSpeed) {
         driveTrain.tankDrive(leftSpeed, rightSpeed, DriveConst.DRIVE_SQUARE_TANK);
     }
 
-    public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs){
+    public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
         driveTrain.tankDrive(leftSpeed, rightSpeed, squareInputs);
     }
 
-    public void setDeadband(double deadband){
+    /**
+     * Sets the deadband in the DifferentialDrive class. This will be used for the
+     * arcadeDrive and tankDrive methods, but not for any of the setSpeed or
+     * setVoltage methods.
+     * 
+     * @param deadband The deadband, between 0 and 1
+     **/
+    public void setDeadband(double deadband) {
         driveTrain.setDeadband(deadband);
     }
 
@@ -145,11 +169,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * returns the gyro heading
+     * Returns the gyro heading
      * 
-     * @return double value in degrees
+     * @return double value in degrees (0-360 degrees)
      */
-    public double getNavxHeading() {
+    public double getNavXHeading() {
         return (double) navX.getYaw();
     }
 
