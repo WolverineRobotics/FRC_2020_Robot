@@ -10,6 +10,15 @@ public class OI{
     private static Joystick driver = new Joystick(JoystickMap.DRIVER_PORT);
     private static Joystick operator = new Joystick(JoystickMap.OPERATOR_PORT);
 
+
+    public static Joystick getDriver(){
+        return driver;
+    }
+
+    public static Joystick getOperator(){
+        return operator;
+    }
+
     /**
      * Get driver fine control
      * Right bumper
