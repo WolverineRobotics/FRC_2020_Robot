@@ -44,7 +44,7 @@ public class DriveSubsystem extends SubsystemBase {
         rightDrive02 = new Spark(DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS);
 
         leftGroup = new SpeedControllerGroup(leftDrive01, leftDrive02);
-        rightGroup = new SpeedControllerGroup(leftDrive01, leftDrive02);
+        rightGroup = new SpeedControllerGroup(rightDrive01, rightDrive02);
 
         driveTrain = new DifferentialDrive(leftGroup, rightGroup);
 
