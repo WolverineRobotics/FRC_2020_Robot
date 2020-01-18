@@ -53,5 +53,14 @@ public class Util{
         }
         return num;
     }
+    public static double normalizeValue(double value, double min, double max, double period){
+      while (value > max){
+          value -= period;
+      }  
+      while (value < min){
+          value += period; 
+      }
+      return value; 
+    }
 
 }
