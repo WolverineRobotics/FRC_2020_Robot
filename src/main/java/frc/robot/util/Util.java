@@ -42,7 +42,7 @@ public class Util{
 
     }
 
-    // Ensures that a doulbe is between 0 and 1
+    // Ensures that a double is between 0 and 1
     // If less than 0, will be set to 0
     // If greater than 1, will be set to one
     public static double zeroToOne(double num){
@@ -52,6 +52,10 @@ public class Util{
             num = 1;
         }
         return num;
+    }
+
+    public static double feetToMeter(double feet){
+        return feet * 0.3048;
     }
 
 }

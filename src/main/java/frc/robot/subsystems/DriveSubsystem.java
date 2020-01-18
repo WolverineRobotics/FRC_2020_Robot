@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static frc.robot.constants.RobotConst.DriveConst.CharacterizationConst.K_TRACKWIDTH_METERS;
 import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_A;
 import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_B;
 import static frc.robot.constants.RobotMap.DRIVE_LEFT_MOTOR_MASTER_ADDRESS;
@@ -17,12 +18,18 @@ import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.constants.RobotConst.PidConst;
 import frc.robot.constants.RobotMap;
 import frc.robot.pid.GyroPID;
+import frc.robot.util.Util;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -31,6 +38,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     private SpeedControllerGroup leftGroup, rightGroup;
     private DifferentialDrive driveTrain;
+
+    private DifferentialDriveKinematics m_kinematics;
+    private DifferentialDriveOdometry m_odometry;
 
     private AHRS navX;
     private PigeonIMU pigeon;
@@ -58,6 +68,9 @@ public class DriveSubsystem extends SubsystemBase {
         pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
 
         gyroPID = new GyroPID(PidConst.GYRO_KP, PidConst.GYRO_KI, PidConst.GYRO_KD);
+
+        m_kinematics = new DifferentialDriveKinematics(K_TRACKWIDTH_METERS);
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()));
 
         setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
     }
@@ -193,6 +206,36 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void resetNavxHeading() {
         navX.reset();
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+        m_odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), Util.feetToMeter(getDistanceRightEncoder()),
+                Util.feetToMeter(getDistanceLeftEncoder()));
+    }
+
+    public Pose2d getPose() {
+        return m_odometry.getPoseMeters();
+    }
+
+    /**
+     * Resets the odometry to the specified pose.
+     *
+     * @param pose The pose to which to set the odometry.
+     */
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getPigeonHeading()));
+    }
+
+    /**
+     * Returns the current wheel speeds of the robot.
+     *
+     * @return The current wheel speeds.
+     */
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
     }
 
 }
