@@ -13,7 +13,7 @@ public class DriveSimpleRotateCommad extends CommandBase{
     addRequirements(subsystem);
     double pigeonAngle = m_drive.getPigeonHeading();
     finalAngle = pigeonAngle + angle;
-    finalAngle = Util.normalizeValue(finalAngle, 0d, 360d, 360d);
+    finalAngle = Util.normalizeValue(finalAngle, 0d, 360d);
     }
   
     // Called when the command is initially scheduled.

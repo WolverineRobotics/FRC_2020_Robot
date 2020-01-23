@@ -53,7 +53,7 @@ public class Util {
     }
 
     public static double normalizeValue(double value, double min, double max) {
-        return Math.IEEEremainder(value, max - min) + min;
+        return Math.IEEEremainder(value - min, max - min) + min;
     }
 
 }
