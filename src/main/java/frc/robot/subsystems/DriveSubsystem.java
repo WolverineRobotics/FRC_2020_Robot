@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
-import frc.robot.constants.RobotConst.PidConst;
+import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.constants.RobotMap;
 import frc.robot.pid.GyroPID;
 
@@ -57,7 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
         navX = new AHRS(Port.kMXP);
         pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
 
-        gyroPID = new GyroPID(PidConst.GYRO_KP, PidConst.GYRO_KI, PidConst.GYRO_KD);
+        gyroPID = new GyroPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
 
         setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
     }
