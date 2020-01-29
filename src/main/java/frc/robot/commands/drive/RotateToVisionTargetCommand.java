@@ -1,7 +1,7 @@
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.exceptions.NtEntryNullException;
+import frc.robot.exceptions.NTNullEntryException;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.CameraSubsystem.LimelightLEDMode;
 import frc.robot.subsystems.CameraSubsystem.LimelightVisionMode;
@@ -66,7 +66,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
             // Pass xMedian to gryo PID
 
-        } catch (NtEntryNullException exception) {
+        } catch (NTNullEntryException exception) {
             System.out.println(exception.getMessage());
             noValidTargetFound(false);
         }
@@ -112,7 +112,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
                 return true;
             }
             // Ends if IQR is above a certain range
-            if (xMedianFilter.getInterquartileRange() > MAX_IQR_X){
+            if (xMedianFilter.getInterquartileRange() > MAX_IQR_X) {
                 return true;
             }
         }

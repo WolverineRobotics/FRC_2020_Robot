@@ -1,6 +1,6 @@
-package frc.robot.commands.drivecommand;
+package frc.robot.commands.drive;
 
-import frc.robot.constants.RobotConst.PidConst;
+import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.pid.LocationPID;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -15,7 +15,7 @@ public class DriveDistanceLocationCommand extends DriveDistanceCommand {
             boolean brakeWhenFinished) {
         super(subsystem, power, distance, heading, brakeWhenFinished);
         this.power = power;
-        this.gyroPID = new LocationPID(PidConst.GYRO_KP, PidConst.GYRO_KI, PidConst.GYRO_KD);
+        this.gyroPID = new LocationPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
 
     }
 
@@ -45,7 +45,7 @@ public class DriveDistanceLocationCommand extends DriveDistanceCommand {
         steering = gyroPID.calculate(c_drive.getPigeonHeading(), distanceChanged);
 
         // if (speed > Math.abs(power)) {
-        //     speed = power;
+        // speed = power;
         // }
 
         speed = this.power;
