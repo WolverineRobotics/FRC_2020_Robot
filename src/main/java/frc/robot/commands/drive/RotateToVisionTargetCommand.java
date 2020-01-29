@@ -3,8 +3,8 @@ package frc.robot.commands.drive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.exceptions.NTNullEntryException;
 import frc.robot.subsystems.CameraSubsystem;
-import frc.robot.subsystems.CameraSubsystem.LimelightLEDMode;
-import frc.robot.subsystems.CameraSubsystem.LimelightVisionMode;
+import frc.robot.subsystems.CameraSubsystem.CameraMode;
+import frc.robot.subsystems.CameraSubsystem.LEDMode;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.util.MedianPercentileFilter;
 
@@ -39,8 +39,8 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        m_camera.setLedMode(LimelightLEDMode.ON);
-        m_camera.setCamMode(LimelightVisionMode.VISION);
+        m_camera.setLEDMode(LEDMode.ON);
+        m_camera.setCameraMode(CameraMode.VISION);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -64,7 +64,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
             xMedian = xMedianFilter.calculate(xDegOff);
             yMedian = yMedianFilter.calculate(yDegOff);
 
-            // Pass xMedian to gryo PID
+            // Pass xMedian to gyro PID
 
         } catch (NTNullEntryException exception) {
             System.out.println(exception.getMessage());
@@ -98,8 +98,8 @@ public class RotateToVisionTargetCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         m_drive.setForwardSpeed(0);
-        m_camera.setLedMode(LimelightLEDMode.OFF);
-        m_camera.setCamMode(LimelightVisionMode.DRIVER);
+        m_camera.setLEDMode(LEDMode.OFF);
+        m_camera.setCameraMode(CameraMode.DRIVER);
     }
 
     // Returns true when the command should end.
