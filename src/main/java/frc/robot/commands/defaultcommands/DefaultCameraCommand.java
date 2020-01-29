@@ -2,8 +2,6 @@ package frc.robot.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.CameraSubsystem;
-import frc.robot.subsystems.CameraSubsystem.LimelightLEDMode;
-import frc.robot.subsystems.CameraSubsystem.LimelightVisionMode;
 
 public class DefaultCameraCommand extends CommandBase {
 
@@ -17,8 +15,8 @@ public class DefaultCameraCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        c_camera.setLedMode(LimelightLEDMode.OFF);
-        c_camera.setCamMode(LimelightVisionMode.DRIVER);
+        c_camera.setLEDMode(CameraSubsystem.LEDMode.OFF);
+        c_camera.setCameraMode(CameraSubsystem.CameraMode.DRIVER);
         c_camera.setSnapshotMode(false);
     }
 
