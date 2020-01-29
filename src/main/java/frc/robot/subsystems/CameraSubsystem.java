@@ -6,109 +6,100 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.exceptions.NtEntryNullException;
+import frc.robot.constants.RobotConst;
+import frc.robot.exceptions.NTNullEntryException;
 
 public class CameraSubsystem extends SubsystemBase {
 
-    /**
-     * Default value when getting NetworkTableEntry of type double. Should be a
-     * value that will never appear normally, to allow for checking of this value
-     * and throwing an error if nessesary.
-     */
-    private final double ERR_DOUBLE = -99999;
-
-    private NetworkTableInstance nt;
-    private NetworkTable limelight;
-    private NetworkTableEntry validTargets, xDegOff, yDegOff, targetArea, pipelineLatency;
-
-    private NetworkTableEntry ledMode, camMode, snapshotMode;
+    private final NetworkTable nt;
+    private final NetworkTableEntry validTargets, xDegOff, yDegOff, targetArea, pipelineLatency;
+    private final NetworkTableEntry ledMode, camMode, snapshotMode;
 
     public CameraSubsystem() {
-        nt = NetworkTableInstance.getDefault();
-        limelight = nt.getTable("limelight");
+        nt = NetworkTableInstance.getDefault().getTable("limelight");
 
-        validTargets = limelight.getEntry("tv");
-        xDegOff = limelight.getEntry("tx");
-        yDegOff = limelight.getEntry("ty");
-        targetArea = limelight.getEntry("ta");
-        pipelineLatency = limelight.getEntry("tl");
+        validTargets = nt.getEntry("tv");
+        xDegOff = nt.getEntry("tx");
+        yDegOff = nt.getEntry("ty");
+        targetArea = nt.getEntry("ta");
+        pipelineLatency = nt.getEntry("tl");
 
-        ledMode = limelight.getEntry("ledMode");
-        camMode = limelight.getEntry("camMode");
-        snapshotMode = limelight.getEntry("snapshot");
+        ledMode = nt.getEntry("ledMode");
+        camMode = nt.getEntry("camMode");
+        snapshotMode = nt.getEntry("snapshot");
     }
 
     public boolean hasValidTargets() {
         return validTargets.getBoolean(false);
     }
 
-    public double getXDegOff() throws NtEntryNullException {
-        double deg = xDegOff.getDouble(ERR_DOUBLE);
-        if (deg == ERR_DOUBLE) {
-            throw new NtEntryNullException(
+    public double getXDegOff() throws NTNullEntryException {
+        final double deg = xDegOff.getDouble(RobotConst.VisionConst.ERROR);
+        if (deg == RobotConst.VisionConst.ERROR) {
+            throw new NTNullEntryException(
                     "NetworkTable: Limelight: Horizontal Offset From Crosshair To Target returned null");
         }
         return deg;
     }
 
-    public double getYDegOff() throws NtEntryNullException {
-        double deg = yDegOff.getDouble(ERR_DOUBLE);
-        if (deg == ERR_DOUBLE) {
-            throw new NtEntryNullException(
+    public double getYDegOff() throws NTNullEntryException {
+        final double deg = yDegOff.getDouble(RobotConst.VisionConst.ERROR);
+        if (deg == RobotConst.VisionConst.ERROR) {
+            throw new NTNullEntryException(
                     "NetworkTable: Limelight: Vertical Offset From Crosshair To Target returned null");
         }
         return deg;
     }
 
-    public double getTargetArea() throws NtEntryNullException {
-        double area = targetArea.getDouble(ERR_DOUBLE);
-        if (area == ERR_DOUBLE) {
-            throw new NtEntryNullException("NetworkTable: Limelight: Area of target returned null");
+    public double getTargetArea() throws NTNullEntryException {
+        double area = targetArea.getDouble(RobotConst.VisionConst.ERROR);
+        if (area == RobotConst.VisionConst.ERROR) {
+            throw new NTNullEntryException("NetworkTable: Limelight: Area of target returned null");
         }
         return area;
     }
 
-    public LimelightLEDMode getLedMode() throws NtEntryNullException {
-        double modeNum = ledMode.getDouble(ERR_DOUBLE);
-        if (modeNum == ERR_DOUBLE) {
-            throw new NtEntryNullException("NetworkTable: Limelight: LED Mode returned null");
+    public LimelightLEDMode getLedMode() throws NTNullEntryException {
+        final double modeNum = ledMode.getDouble(0);
+        if (modeNum == RobotConst.VisionConst.ERROR) {
+            throw new NTNullEntryException("NetworkTable: Limelight: LED Mode returned null");
         }
-        int mode = (int) Math.round(modeNum);
+        final int mode = (int) Math.round(modeNum);
 
         return LimelightLEDMode.reverseLookup(mode);
     }
 
-    public void setLedMode(LimelightLEDMode mode) {
-        double modeNum = mode.getModeNum();
+    public void setLedMode(final LimelightLEDMode mode) {
+        final double modeNum = mode.getModeNum();
         ledMode.setValue(modeNum);
     }
 
-    public LimelightVisionMode getCamMode() throws NtEntryNullException {
-        double mode = camMode.getDouble(ERR_DOUBLE);
-        if (mode == ERR_DOUBLE) {
-            throw new NtEntryNullException(
+    public LimelightVisionMode getCamMode() throws NTNullEntryException {
+        final double mode = camMode.getDouble(RobotConst.VisionConst.ERROR);
+        if (mode == RobotConst.VisionConst.ERROR) {
+            throw new NTNullEntryException(
                     "NetworkTable: Limelight: Camera mode (vision processing / drive) returned null");
         }
-        int modeInt = (int) Math.round(mode);
+        final int modeInt = (int) Math.round(mode);
         return LimelightVisionMode.reverseLookup(modeInt);
     }
 
-    public void setCamMode(LimelightVisionMode mode) {
+    public void setCamMode(final LimelightVisionMode mode) {
         camMode.setValue((double) mode.getModeNum());
     }
 
-    public double getLatency() throws NtEntryNullException {
-        double latency = pipelineLatency.getDouble(ERR_DOUBLE);
-        if (latency == ERR_DOUBLE) {
-            throw new NtEntryNullException("NetworkTable: Limelight: Pipeline latency returned null");
+    public double getLatency() throws NTNullEntryException {
+        final double latency = pipelineLatency.getDouble(RobotConst.VisionConst.ERROR);
+        if (latency == RobotConst.VisionConst.ERROR) {
+            throw new NTNullEntryException("NetworkTable: Limelight: Pipeline latency returned null");
         }
         return latency;
     }
 
-    public boolean isSnapshotMode() throws NtEntryNullException {
-        double modeDouble = snapshotMode.getDouble(ERR_DOUBLE);
-        if (modeDouble == ERR_DOUBLE) {
-            throw new NtEntryNullException("NetworkTable: Limelight: Snapshot mode returned null");
+    public boolean isSnapshotMode() throws NTNullEntryException {
+        final double modeDouble = snapshotMode.getDouble(RobotConst.VisionConst.ERROR);
+        if (modeDouble == RobotConst.VisionConst.ERROR) {
+            throw new NTNullEntryException("NetworkTable: Limelight: Snapshot mode returned null");
         }
         if (Math.round(modeDouble) == 1) {
             return true;
@@ -116,7 +107,7 @@ public class CameraSubsystem extends SubsystemBase {
         return false;
     }
 
-    public void setSnapshotMode(boolean enabled) {
+    public void setSnapshotMode(final boolean enabled) {
         if (enabled) {
             snapshotMode.setDouble(1);
         } else {
@@ -130,12 +121,12 @@ public class CameraSubsystem extends SubsystemBase {
         private static HashMap<Integer, LimelightVisionMode> map = new HashMap<>();
         private final int modeNum;
 
-        private LimelightVisionMode(int modeNum) {
+        private LimelightVisionMode(final int modeNum) {
             this.modeNum = modeNum;
         }
 
         static {
-            for (LimelightVisionMode ledMode : LimelightVisionMode.values()) {
+            for (final LimelightVisionMode ledMode : LimelightVisionMode.values()) {
                 map.put(ledMode.modeNum, ledMode);
             }
         }
@@ -144,7 +135,7 @@ public class CameraSubsystem extends SubsystemBase {
             return modeNum;
         }
 
-        public static LimelightVisionMode reverseLookup(int value) {
+        public static LimelightVisionMode reverseLookup(final int value) {
             return map.get(value);
         }
 
@@ -159,21 +150,21 @@ public class CameraSubsystem extends SubsystemBase {
         private static HashMap<Integer, LimelightLEDMode> map = new HashMap<>();
         private final int modeNum;
 
-        private LimelightLEDMode(int modeNum) {
-            this.modeNum = modeNum;
-        }
-
         static {
-            for (LimelightLEDMode ledMode : LimelightLEDMode.values()) {
+            for (final LimelightLEDMode ledMode : LimelightLEDMode.values()) {
                 map.put(ledMode.modeNum, ledMode);
             }
+        }
+
+        private LimelightLEDMode(final int modeNum) {
+            this.modeNum = modeNum;
         }
 
         public int getModeNum() {
             return modeNum;
         }
 
-        public static LimelightLEDMode reverseLookup(int value) {
+        public static LimelightLEDMode reverseLookup(final int value) {
             return map.get(value);
         }
     }
