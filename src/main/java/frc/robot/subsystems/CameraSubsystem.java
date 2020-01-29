@@ -11,9 +11,11 @@ import frc.robot.exceptions.NTNullEntryException;
 
 public class CameraSubsystem extends SubsystemBase {
 
-    private final NetworkTable nt;
-    private final NetworkTableEntry validTargets, xDegOff, yDegOff, targetArea, pipelineLatency;
-    private final NetworkTableEntry ledMode, camMode, snapshotMode;
+    private NetworkTable nt;
+    private NetworkTableEntry validTargets, xDegOff, yDegOff, targetArea;
+    private NetworkTableEntry targetSkew, targetShort, targetLong, targetHorizontal, targetVertical;
+    private NetworkTableEntry ledMode, camMode, snapshotMode;
+    private NetworkTableEntry pipelineLatency;
 
     public CameraSubsystem() {
         nt = NetworkTableInstance.getDefault().getTable("limelight");
@@ -22,15 +24,26 @@ public class CameraSubsystem extends SubsystemBase {
         xDegOff = nt.getEntry("tx");
         yDegOff = nt.getEntry("ty");
         targetArea = nt.getEntry("ta");
-        pipelineLatency = nt.getEntry("tl");
+
+        targetSkew = nt.getEntry("ts");
+        targetShort = nt.getEntry("tshort");
+        targetLong = nt.getEntry("tlong");
+        targetHorizontal = nt.getEntry("thor");
+        targetVertical = nt.getEntry("tvert");
 
         ledMode = nt.getEntry("ledMode");
         camMode = nt.getEntry("camMode");
         snapshotMode = nt.getEntry("snapshot");
+
+        pipelineLatency = nt.getEntry("tl");
     }
 
+    // ========================================================================
+    // GETTERS
+    // ========================================================================
+
     public boolean hasValidTargets() {
-        return validTargets.getBoolean(false);
+        return validTargets.getDouble(0) == 1;
     }
 
     public double getXDegOff() throws NTNullEntryException {
@@ -59,33 +72,24 @@ public class CameraSubsystem extends SubsystemBase {
         return area;
     }
 
-    public LimelightLEDMode getLedMode() throws NTNullEntryException {
+    public LEDMode getLedMode() throws NTNullEntryException {
         final double modeNum = ledMode.getDouble(0);
         if (modeNum == RobotConst.VisionConst.ERROR) {
             throw new NTNullEntryException("NetworkTable: Limelight: LED Mode returned null");
         }
         final int mode = (int) Math.round(modeNum);
 
-        return LimelightLEDMode.reverseLookup(mode);
+        return LEDMode.reverseLookup(mode);
     }
 
-    public void setLedMode(final LimelightLEDMode mode) {
-        final double modeNum = mode.getModeNum();
-        ledMode.setValue(modeNum);
-    }
-
-    public LimelightVisionMode getCamMode() throws NTNullEntryException {
+    public CameraMode getCamMode() throws NTNullEntryException {
         final double mode = camMode.getDouble(RobotConst.VisionConst.ERROR);
         if (mode == RobotConst.VisionConst.ERROR) {
             throw new NTNullEntryException(
                     "NetworkTable: Limelight: Camera mode (vision processing / drive) returned null");
         }
         final int modeInt = (int) Math.round(mode);
-        return LimelightVisionMode.reverseLookup(modeInt);
-    }
-
-    public void setCamMode(final LimelightVisionMode mode) {
-        camMode.setValue((double) mode.getModeNum());
+        return CameraMode.reverseLookup(modeInt);
     }
 
     public double getLatency() throws NTNullEntryException {
@@ -107,6 +111,10 @@ public class CameraSubsystem extends SubsystemBase {
         return false;
     }
 
+    // ========================================================================
+    // SETTERS
+    // ========================================================================
+
     public void setSnapshotMode(final boolean enabled) {
         if (enabled) {
             snapshotMode.setDouble(1);
@@ -115,18 +123,32 @@ public class CameraSubsystem extends SubsystemBase {
         }
     }
 
-    public enum LimelightVisionMode {
+    public void setLedMode(final LEDMode mode) {
+        final double modeNum = mode.getModeNum();
+        ledMode.setValue(modeNum);
+    }
+
+    public void setCamMode(final CameraMode mode) {
+        camMode.setValue((double) mode.getModeNum());
+    }
+
+    /**
+     * Enum for the different camera uses. VISION - used for vision
+     * processing/calculating (programmer-side) DRIVER - disables processing and
+     * opens stream (driver-side) See #setCamMode(CameraMode)
+     */
+    public enum CameraMode {
         VISION(0), DRIVER(1),;
 
-        private static HashMap<Integer, LimelightVisionMode> map = new HashMap<>();
+        private static HashMap<Integer, CameraMode> map = new HashMap<>();
         private final int modeNum;
 
-        private LimelightVisionMode(final int modeNum) {
+        private CameraMode(final int modeNum) {
             this.modeNum = modeNum;
         }
 
         static {
-            for (final LimelightVisionMode ledMode : LimelightVisionMode.values()) {
+            for (final CameraMode ledMode : CameraMode.values()) {
                 map.put(ledMode.modeNum, ledMode);
             }
         }
@@ -135,28 +157,30 @@ public class CameraSubsystem extends SubsystemBase {
             return modeNum;
         }
 
-        public static LimelightVisionMode reverseLookup(final int value) {
+        public static CameraMode reverseLookup(final int value) {
             return map.get(value);
         }
 
     }
 
     /**
-     * Enum for the mode of the LEDs of the limelight.
+     * Enum for the mode of the LEDs of the limelight. PIPELINE - uses the LED mode
+     * currently in the pipeline OFF - turns LED off BLINK - blinks ON - turns LED
+     * on see setLEDMode(LEDMode)
      */
-    public enum LimelightLEDMode {
+    public enum LEDMode {
         PIPELINE(0), OFF(1), BLINK(2), ON(3),;
 
-        private static HashMap<Integer, LimelightLEDMode> map = new HashMap<>();
+        private static HashMap<Integer, LEDMode> map = new HashMap<>();
         private final int modeNum;
 
         static {
-            for (final LimelightLEDMode ledMode : LimelightLEDMode.values()) {
+            for (final LEDMode ledMode : LEDMode.values()) {
                 map.put(ledMode.modeNum, ledMode);
             }
         }
 
-        private LimelightLEDMode(final int modeNum) {
+        private LEDMode(final int modeNum) {
             this.modeNum = modeNum;
         }
 
@@ -164,7 +188,7 @@ public class CameraSubsystem extends SubsystemBase {
             return modeNum;
         }
 
-        public static LimelightLEDMode reverseLookup(final int value) {
+        public static LEDMode reverseLookup(final int value) {
             return map.get(value);
         }
     }
