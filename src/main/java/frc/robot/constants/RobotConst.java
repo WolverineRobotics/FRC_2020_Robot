@@ -54,6 +54,14 @@ public class RobotConst {
         public static final double GYRO_KI = 0;
         public static final double GYRO_KD = 0;
 
+        public static final double MAX_INTEGRAL = 0.8;
+
+        public static final double DRIVE_PID_ERROR_TOLERANCE = 2;
+
+        public static final double DRIVE_FF_KP = 0;
+        public static final double DRIVE_FF_KI = 0;
+        public static final double DRIVE_FF_KD = 0;
+
     }
 
     public class VisionConst{
