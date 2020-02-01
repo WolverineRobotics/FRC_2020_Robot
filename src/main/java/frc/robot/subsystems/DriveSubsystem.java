@@ -23,13 +23,14 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.constants.RobotConst.PidConst;
 import frc.robot.constants.RobotMap;
+import frc.robot.pid.DriveFeedForwardPID;
 import frc.robot.pid.GyroPID;
-import frc.robot.util.Util;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -45,6 +46,9 @@ public class DriveSubsystem extends SubsystemBase {
     private AHRS navX;
     private PigeonIMU pigeon;
 
+    public DriveFeedForwardPID leftPid;
+    public DriveFeedForwardPID rightPid;
+
     public GyroPID gyroPID;
 
     public DriveSubsystem() {
@@ -55,6 +59,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         leftGroup = new SpeedControllerGroup(leftDrive01, leftDrive02);
         rightGroup = new SpeedControllerGroup(rightDrive01, rightDrive02);
+        rightGroup.setInverted(true);
 
         driveTrain = new DifferentialDrive(leftGroup, rightGroup);
 
@@ -71,6 +76,9 @@ public class DriveSubsystem extends SubsystemBase {
 
         m_kinematics = new DifferentialDriveKinematics(K_TRACKWIDTH_METERS);
         m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()));
+
+        leftPid = new DriveFeedForwardPID();
+        rightPid = new DriveFeedForwardPID();
 
         setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
     }
@@ -211,8 +219,8 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         super.periodic();
-        m_odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), Util.feetToMeter(getDistanceRightEncoder()),
-                Util.feetToMeter(getDistanceLeftEncoder()));
+        m_odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), Units.inchesToMeters(getDistanceRightEncoder()),
+                Units.inchesToMeters(getDistanceLeftEncoder()));
     }
 
     public Pose2d getPose() {
