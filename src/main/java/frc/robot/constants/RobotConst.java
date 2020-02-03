@@ -18,13 +18,20 @@ public class RobotConst {
 
     }
 
+    public class IntakeConst {
+        public static final int ENTRY_SPEED_REDUCTION_RATIO = 1;
+        public static final int CURVE_SPEED_REDUCTION_RATIO = 1;
+        public static final int VERTICAL_SPEED_REDUCTION_RATIO = 1;
+        public static final int SHOOT_SPEED_REDUCTION_RATIO = 1;
+        public static final int HOOD_SPEED_REDUCTION_RATIO = 1;
+    }
+
     public class PIDConst {
         public static final double LOCATIONCALC_DEFAULT_SETPOINT_DISTANCE = 0.8;
 
         public static final double GYRO_KP = 0;
         public static final double GYRO_KI = 0;
         public static final double GYRO_KD = 0;
-
     }
 
     public class VisionConst {
