@@ -30,7 +30,6 @@ public class DefaultDriveCommand extends CommandBase {
         if (OI.getFineControl()) {
             // If fine control is active.
             arcadeDrive(throttle, turn, DriveConst.DRIVE_SPEED_REDUCTION_RATIO_FINE);
-            ;
         } else {
             arcadeDrive(throttle, turn, DriveConst.DRIVE_SPEED_REDUCTION_RATIO);
         }
