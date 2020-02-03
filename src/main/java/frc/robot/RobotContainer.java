@@ -7,14 +7,20 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.defaultcommands.DefaultCameraCommand;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
+import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
+import frc.robot.commands.groups.AutonomousGroup;
+import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+
+import java.util.HashMap;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -26,31 +32,38 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class RobotContainer {
 
   // all subsystem instances
-  private final DriveSubsystem s_drive;
+  private DriveSubsystem s_drive;
+  private IntakeSubsystem s_intake;
+  private CameraSubsystem s_camera;
 
   // default commands
-  private final DefaultDriveCommand c_drive;
+  private DefaultDriveCommand dc_drive;
+  private DefaultIntakeCommand dc_intake;
+  private DefaultCameraCommand dc_camera;
 
   // autonomous command
+  private AutonomousGroup auto;
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
   public RobotContainer() {
-
     s_drive = new DriveSubsystem();
-    c_drive = new DefaultDriveCommand(s_drive);
-    CommandScheduler.getInstance().setDefaultCommand(s_drive, c_drive);
+    s_intake = new IntakeSubsystem();
+    s_camera = new CameraSubsystem();
+    dc_drive = new DefaultDriveCommand(s_drive);
+    dc_intake = new DefaultIntakeCommand(s_intake);
+    dc_camera = new DefaultCameraCommand(s_camera);
 
+    CommandScheduler.getInstance().setDefaultCommand(s_drive, dc_drive);
+    CommandScheduler.getInstance().setDefaultCommand(s_intake, dc_intake);
+    CommandScheduler.getInstance().setDefaultCommand(s_camera, dc_camera);
+    
   }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return auto;
   }
 }
