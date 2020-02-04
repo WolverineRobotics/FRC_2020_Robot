@@ -18,4 +18,9 @@ public class RobotMap{
         public static final int HOOD = -1;
     }
 
+    public class Controller {
+        public static final int DRIVER = 0;
+        public static final int OPERATOR = 1;
+    }
+
 }

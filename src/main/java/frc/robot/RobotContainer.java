@@ -11,6 +11,9 @@ import frc.robot.commands.defaultcommands.DefaultCameraCommand;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
 import frc.robot.commands.groups.AutonomousGroup;
+import frc.robot.constants.RobotMap;
+import frc.robot.oi.DriverController;
+import frc.robot.oi.OperatorController;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -44,6 +47,10 @@ public class RobotContainer {
   // autonomous command
   private AutonomousGroup auto;
 
+  // controllers
+  private DriverController joshua;
+  private OperatorController anthony;
+
   public RobotContainer() {
     s_drive = new DriveSubsystem();
     s_intake = new IntakeSubsystem();
@@ -51,6 +58,8 @@ public class RobotContainer {
     dc_drive = new DefaultDriveCommand(s_drive);
     dc_intake = new DefaultIntakeCommand(s_intake);
     dc_camera = new DefaultCameraCommand(s_camera);
+    joshua = new DriverController(RobotMap.Controller.DRIVER);
+    anthony = new OperatorController(RobotMap.Controller.OPERATOR);
 
     CommandScheduler.getInstance().setDefaultCommand(s_drive, dc_drive);
     CommandScheduler.getInstance().setDefaultCommand(s_intake, dc_intake);
