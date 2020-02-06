@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
-import frc.robot.constants.RobotConst.PidConst;
+import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.constants.RobotMap;
 import frc.robot.pid.DriveFeedForwardPID;
 import frc.robot.pid.GyroPID;
@@ -74,7 +74,7 @@ public class DriveSubsystem extends SubsystemBase {
         navX = new AHRS(Port.kMXP);
         pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
 
-        gyroPID = new GyroPID(PidConst.GYRO_KP, PidConst.GYRO_KI, PidConst.GYRO_KD);
+        gyroPID = new GyroPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
 
         m_kinematics = new DifferentialDriveKinematics(K_TRACKWIDTH_METERS);
         m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()));

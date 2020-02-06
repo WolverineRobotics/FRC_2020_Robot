@@ -3,10 +3,6 @@ package frc.robot.constants;
 public class RobotConst {
 
     public class DriveConst {
-
-        // **********************************************************************************
-        // Drive constants
-        // **********************************************************************************
         public static final double DRIVE_TURN_TRIGGER_VALUE = 0.10;
         public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.20;
 
@@ -43,11 +39,7 @@ public class RobotConst {
 
     }
 
-    public class PidConst {
-
-        // **********************************************************************************
-        // PID constants
-        // **********************************************************************************
+    public class PIDConst {
         public static final double LOCATIONCALC_DEFAULT_SETPOINT_DISTANCE = 0.8;
 
         public static final double GYRO_KP = 0;
@@ -64,7 +56,13 @@ public class RobotConst {
 
     }
 
-    public class VisionConst{
+    public class VisionConst {
+        /**
+         * Default value when getting NetworkTableEntry of type double. Should be a
+         * value that will never appear normally, to allow for checking of this value
+         * and throwing an error if nessesary.
+         */
+        public static final double ERROR = -99999;
         public static final double VISION_FIND_TARGETS_TIMEOUT_SECONDS = 0.5;
     }
 }
