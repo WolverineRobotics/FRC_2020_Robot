@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
@@ -81,6 +83,10 @@ public class DriveSubsystem extends SubsystemBase {
         rightPid = new DriveFeedForwardPID();
 
         setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
+
+        SendableRegistry.add(this, "DriveSubsystem");
+        SendableRegistry.add(leftPid, "[Drive] Left PID");
+        SendableRegistry.add(rightPid, "[Drive] Right PID");
     }
 
     public void setLeftSpeed(double speed) {
@@ -244,6 +250,13 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        // TODO Auto-generated method stub
+        super.initSendable(builder);
+        builder.setSmartDashboardType("DriveSubsystem");
     }
 
 }
