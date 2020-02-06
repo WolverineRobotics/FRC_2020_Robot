@@ -47,4 +47,32 @@ public class Util {
         return (speed * maxVoltage);
     }
 
+    public static double normalizeValue(double value, double min, double max) {
+        return Math.IEEEremainder(value - min, max - min) + min;
+    }
+
+    public static double addGyroValues(double value1, double value2) {
+        final double MIN_GYRO_VALUE = 0;
+        final double MAX_GYRO_VALUE = 360;
+        double val = value1 + value2;
+        return normalizeValue(val, MIN_GYRO_VALUE, MAX_GYRO_VALUE);
+    }
+
+    public static double subtractGyroValues(double value1, double value2) {
+        final double MIN_GYRO_VALUE = 0;
+        final double MAX_GYRO_VALUE = 360;
+        final double INPUT_RANGE = MAX_GYRO_VALUE - MIN_GYRO_VALUE;
+        double error = value1 - value2;
+
+        error %= INPUT_RANGE;
+        if (Math.abs(error) > INPUT_RANGE / 2) {
+            if (error > 0) {
+                return error - INPUT_RANGE;
+            } else {
+                return error + INPUT_RANGE;
+            }
+        }
+        return error;
+    }
+
 }
