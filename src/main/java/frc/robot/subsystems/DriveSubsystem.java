@@ -33,6 +33,7 @@ import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.constants.RobotMap;
 import frc.robot.pid.DriveFeedForwardPID;
 import frc.robot.pid.GyroPID;
+import frc.robot.pid.GyroToRotate;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -50,6 +51,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     public DriveFeedForwardPID leftPid;
     public DriveFeedForwardPID rightPid;
+
+    private GyroToRotate gyroToRotate;
 
     public GyroPID gyroPID;
 
@@ -81,6 +84,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         leftPid = new DriveFeedForwardPID();
         rightPid = new DriveFeedForwardPID();
+
+        gyroToRotate = new GyroToRotate(K_TRACKWIDTH_METERS);
 
         setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
 
@@ -250,6 +255,16 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
+    }
+
+    /**
+     * 
+     * @param currentGyroAngle
+     * @param goal
+     * @return Array of drive distance: [left, right]
+     */
+    public double[] gyroAngleToDriveDistances(double currentGyroAngle, double goal){
+        return gyroToRotate.calculate(currentGyroAngle, goal);
     }
 
     @Override

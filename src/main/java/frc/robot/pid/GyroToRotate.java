@@ -12,24 +12,13 @@ public class GyroToRotate {
 
     private final double trackWidthMeters;
 
-    private double m_goal;
-
-    public GyroToRotate(double trackWidthMeters, double goal) {
+    public GyroToRotate(double trackWidthMeters) {
         this.trackWidthMeters = trackWidthMeters;
-        m_goal = goal;
     }
 
-    public void setGoal(double goal) {
-        m_goal = goal;
-    }
-
-    public double getGoal() {
-        return m_goal;
-    }
-
-    public double[] calculate(double currentGyroAngle) {
-        // TODO: Normalize pigeon angle, get differance in angle
-        double angleOff = Util.subtractGyroValues(m_goal, currentGyroAngle);
+    public double[] calculate(double currentGyroAngle, double goal) {
+        // Normalize pigeon angle, get differance in angle
+        double angleOff = Util.subtractGyroValues(goal, currentGyroAngle);
 
         // Distance = 2 * pi * r * angle / 360 deg
         double driveDistances = 2 * Math.PI * trackWidthMeters * angleOff / 360;
