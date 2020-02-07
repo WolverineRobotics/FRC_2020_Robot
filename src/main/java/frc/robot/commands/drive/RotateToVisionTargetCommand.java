@@ -9,8 +9,8 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.util.MedianPercentileFilter;
 
 public class RotateToVisionTargetCommand extends CommandBase {
-    private final CameraSubsystem m_camera;
-    private final DriveSubsystem m_drive;
+    private final CameraSubsystem s_camera;
+    private final DriveSubsystem s_drive;
     private final MedianPercentileFilter xMedianFilter;
     private final MedianPercentileFilter yMedianFilter;
 
@@ -29,8 +29,8 @@ public class RotateToVisionTargetCommand extends CommandBase {
     private boolean finished = false;
 
     public RotateToVisionTargetCommand(CameraSubsystem cameraSubsystem, DriveSubsystem driveSubsystem) {
-        m_camera = cameraSubsystem;
-        m_drive = driveSubsystem;
+        s_camera = cameraSubsystem;
+        s_drive = driveSubsystem;
         addRequirements(cameraSubsystem);
         addRequirements(driveSubsystem);
         xMedianFilter = new MedianPercentileFilter(MEDIAN_FILTER_ENTRIES);
@@ -39,8 +39,8 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        m_camera.setLEDMode(LEDMode.ON);
-        m_camera.setCameraMode(CameraMode.VISION);
+        s_camera.setLEDMode(LEDMode.ON);
+        s_camera.setCameraMode(CameraMode.VISION);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -48,8 +48,8 @@ public class RotateToVisionTargetCommand extends CommandBase {
     public void execute() {
 
         try {
-            double xDegOff = m_camera.getXDegOff();
-            double yDegOff = m_camera.getYDegOff();
+            double xDegOff = s_camera.getXDegOff();
+            double yDegOff = s_camera.getYDegOff();
 
             // Test if target is within acceptable y values. If not, mark and return.
             if (yDegOff < Y_VALUE_CUTOFF) {
@@ -57,7 +57,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
                 return;
             }
 
-            double xGyroHeading = xDegOff + m_drive.getPigeonHeading();
+            double xGyroHeading = xDegOff + s_drive.getPigeonHeading();
 
             double xMedian, yMedian;
 
@@ -65,6 +65,8 @@ public class RotateToVisionTargetCommand extends CommandBase {
             yMedian = yMedianFilter.calculate(yDegOff);
 
             // Pass xMedian to gyro PID
+
+            
 
         } catch (NTNullEntryException exception) {
             System.out.println(exception.getMessage());
@@ -97,9 +99,9 @@ public class RotateToVisionTargetCommand extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        m_drive.setForwardSpeed(0);
-        m_camera.setLEDMode(LEDMode.OFF);
-        m_camera.setCameraMode(CameraMode.DRIVER);
+        s_drive.setForwardSpeed(0);
+        s_camera.setLEDMode(LEDMode.OFF);
+        s_camera.setCameraMode(CameraMode.DRIVER);
     }
 
     // Returns true when the command should end.

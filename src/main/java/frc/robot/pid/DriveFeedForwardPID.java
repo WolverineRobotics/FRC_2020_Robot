@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.constants.RobotConst.DriveConst.CharacterizationConst;
-import frc.robot.constants.RobotConst.PidConst;
+import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.util.Util;
 
 /**
@@ -16,15 +16,15 @@ import frc.robot.util.Util;
  */
 public class DriveFeedForwardPID extends ProfiledPIDController {
 
-    private static final double DEFAULT_KP = PidConst.DRIVE_FF_KP;
-    private static final double DEFAULT_KI = PidConst.DRIVE_FF_KI;
-    private static final double DEFAULT_KD = PidConst.DRIVE_FF_KD;
+    private static final double DEFAULT_KP = PIDConst.DRIVE_FF_KP;
+    private static final double DEFAULT_KI = PIDConst.DRIVE_FF_KI;
+    private static final double DEFAULT_KD = PIDConst.DRIVE_FF_KD;
 
     private static final double kS = CharacterizationConst.KS_VOLTS;
     private static final double kV = CharacterizationConst.KS_VOLT_SECONDS_PER_METER;
     private static final double kA = CharacterizationConst.KS_VOLT_SECONDS_SQUARED_PER_METER;
 
-    private static final double DEFAULT_PID_ERROR_TOLERANCE = PidConst.DRIVE_PID_ERROR_TOLERANCE;
+    private static final double DEFAULT_PID_ERROR_TOLERANCE = PIDConst.DRIVE_PID_ERROR_TOLERANCE;
 
     private static final double DEFAULT_MAX_VOLTAGE = DriveConst.DRIVE_MAX_VOLTAGE;
 
@@ -34,7 +34,7 @@ public class DriveFeedForwardPID extends ProfiledPIDController {
     private double PIDErrorTolerance;
 
     /**
-     * Uses the default PID gains in PidConst
+     * Uses the default PID gains in PIDConst
      */
     public DriveFeedForwardPID() {
         this(DEFAULT_KP, DEFAULT_KI, DEFAULT_KD);
@@ -64,7 +64,7 @@ public class DriveFeedForwardPID extends ProfiledPIDController {
 
         this.maxVoltage = maxVoltage;
         this.PIDErrorTolerance = PIDErrorTolerance;
-        setIntegratorRange(-PidConst.MAX_INTEGRAL, PidConst.MAX_INTEGRAL);
+        setIntegratorRange(-PIDConst.MAX_INTEGRAL, PIDConst.MAX_INTEGRAL);
         setTolerance(PIDErrorTolerance);
     }
 
