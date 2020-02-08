@@ -263,8 +263,27 @@ public class DriveSubsystem extends SubsystemBase {
      * @param goal
      * @return Array of drive distance: [left, right]
      */
-    public double[] gyroAngleToDriveDistances(double currentGyroAngle, double goal){
+    public double[] gyroAngleToDriveDistances(double currentGyroAngle, double goal) {
         return gyroToRotate.calculate(currentGyroAngle, goal);
+    }
+
+    public void rotateGyroAngle(double goal) {
+        rotateGyroAngle(getPigeonHeading(), goal);
+    }
+
+    public void rotateGyroAngle(double currentGyroAngle, double goal) {
+        // TODO: Cleanup and make a better way of doing this, going straight from PID to
+        // speed controller groups
+        double[] driveDistances = gyroAngleToDriveDistances(currentGyroAngle, goal);
+
+        double leftCurrentDistance = getDistanceLeftEncoder();
+        double rightCurrentDistance = getDistanceRightEncoder();
+
+        double leftVoltage = leftPid.calculate(leftCurrentDistance, leftCurrentDistance + driveDistances[0]);
+        double rightVoltage = rightPid.calculate(rightCurrentDistance, rightCurrentDistance + driveDistances[1]);
+
+        setLeftVoltage(leftVoltage);
+        setRightVoltage(rightVoltage);
     }
 
     @Override
