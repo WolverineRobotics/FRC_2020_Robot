@@ -11,13 +11,9 @@ public class SetSnapshotModeCommand extends CommandBase {
 
     }
 
-    public SetSnapshotModeCommand(CameraSubsystem s_camera, double timeoutSeconds) {
-
-    }
-
     @Override
     public void initialize() {
-
+        s_camera.setSnapshotMode(true);
     }
 
     @Override
@@ -32,7 +28,7 @@ public class SetSnapshotModeCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-
+        s_camera.setSnapshotMode(false);
     }
 
 }
