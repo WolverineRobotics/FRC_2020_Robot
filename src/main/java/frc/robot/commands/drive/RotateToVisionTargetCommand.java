@@ -83,8 +83,8 @@ public class RotateToVisionTargetCommand extends CommandBase {
     }
 
     public boolean isOnTarget() {
+        // Could alternatively use the medianFilter for this
         try {
-            // Can alternativ
             double xError = Math.abs(s_camera.getXDegOff());
             return xError < TARGET_ERROR;
         } catch (NTNullEntryException e) {
@@ -97,7 +97,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
         totalCycles++;
         if (found) {
             numFound++;
-        } 
+        }
         return numFound / totalCycles;
     }
 
@@ -112,6 +112,15 @@ public class RotateToVisionTargetCommand extends CommandBase {
      */
     private void noValidTargetFound(boolean invalidTarget) {
         updatePercentTargets(false);
+    }
+
+    /**
+     * Call when you want this command to finish. If it can find a vision target, it
+     * will continue rotating to it until this is called. If it can't find a vision
+     * target, it will finish on its own
+     */
+    public void setFinished() {
+        finished = true;
     }
 
     // Called once the command ends or is interrupted.
@@ -136,9 +145,6 @@ public class RotateToVisionTargetCommand extends CommandBase {
                 return true;
             }
         }
-
-        // TODO: Include code to end when at goal
-
         return finished;
     }
 }

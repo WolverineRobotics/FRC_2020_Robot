@@ -83,6 +83,18 @@ public class MedianPercentileFilter {
         }
     }
 
+    public double getMedian(){
+        int curSize = m_orderedValues.size();
+
+        if (curSize % 2 == 1) {
+            // If size is odd, return middle element of sorted list
+            return m_orderedValues.get(curSize / 2);
+        } else {
+            // If size is even, return average of middle elements
+            return (m_orderedValues.get(curSize / 2 - 1) + m_orderedValues.get(curSize / 2)) / 2.0;
+        }
+    }
+
     /**
      * @param percentileRank The percentile to get, between 0 and 100, with 0 being the
      *                   smallest value.
