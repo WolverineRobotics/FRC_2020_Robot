@@ -48,8 +48,8 @@ public class RobotContainer {
   private AutonomousGroup auto;
 
   // controllers
-  private DriverController joshua;
-  private OperatorController anthony;
+  private static DriverController joshuaAndrewCadavos;
+  private static OperatorController anthonyAttikian;
 
   public RobotContainer() {
     s_drive = new DriveSubsystem();
@@ -58,13 +58,12 @@ public class RobotContainer {
     dc_drive = new DefaultDriveCommand(s_drive);
     dc_intake = new DefaultIntakeCommand(s_intake);
     dc_camera = new DefaultCameraCommand(s_camera);
-    joshua = new DriverController(RobotMap.Controller.DRIVER);
-    anthony = new OperatorController(RobotMap.Controller.OPERATOR);
+    joshuaAndrewCadavos = new DriverController(RobotMap.Controller.DRIVER);
+    anthonyAttikian = new OperatorController(RobotMap.Controller.OPERATOR);
 
     CommandScheduler.getInstance().setDefaultCommand(s_drive, dc_drive);
     CommandScheduler.getInstance().setDefaultCommand(s_intake, dc_intake);
     CommandScheduler.getInstance().setDefaultCommand(s_camera, dc_camera);
-    
   }
 
   /**
@@ -74,5 +73,13 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return auto;
+  }
+
+  public static DriverController getDriverController() {
+    return joshuaAndrewCadavos;
+  }
+
+  public static OperatorController getOperatorController() {
+    return anthonyAttikian;
   }
 }
