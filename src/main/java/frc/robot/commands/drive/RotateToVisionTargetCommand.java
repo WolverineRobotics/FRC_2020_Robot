@@ -7,6 +7,7 @@ import frc.robot.subsystems.CameraSubsystem.CameraMode;
 import frc.robot.subsystems.CameraSubsystem.LEDMode;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.util.MedianPercentileFilter;
+import frc.robot.util.Util;
 
 public class RotateToVisionTargetCommand extends CommandBase {
     private final CameraSubsystem s_camera;
@@ -18,6 +19,12 @@ public class RotateToVisionTargetCommand extends CommandBase {
     private final int CYCLES_UNTIL_CHECK_FINISHED = 10;
     private final double MIN_PERCENT_TARGETS_FOUND = 0.5;
     private final double MAX_IQR_X = 20;
+
+    /**
+     * The max acceptable error, in degree. If the error is below this, it will be
+     * concidered on target (although it may still try to correct that error).
+     */
+    private final double TARGET_ERROR = 0.8;
 
     // Any targets with y-values below this value will be treated as false
     // positives.
@@ -57,16 +64,16 @@ public class RotateToVisionTargetCommand extends CommandBase {
                 return;
             }
 
-            double xGyroHeading = xDegOff + s_drive.getPigeonHeading();
+            double xGyroHeading = Util.addGyroValues(xDegOff, s_drive.getPigeonHeading());
 
             double xMedian, yMedian;
 
-            xMedian = xMedianFilter.calculate(xDegOff);
+            xMedian = xMedianFilter.calculate(xGyroHeading);
             yMedian = yMedianFilter.calculate(yDegOff);
 
             // Pass xMedian to gyro PID
 
-            
+            s_drive.rotateGyroAngle(xMedian);
 
         } catch (NTNullEntryException exception) {
             System.out.println(exception.getMessage());
@@ -75,11 +82,22 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
     }
 
+    public boolean isOnTarget() {
+        try {
+            // Can alternativ
+            double xError = Math.abs(s_camera.getXDegOff());
+            return xError < TARGET_ERROR;
+        } catch (NTNullEntryException e) {
+            return false;
+        }
+
+    }
+
     private double updatePercentTargets(boolean found) {
         totalCycles++;
         if (found) {
             numFound++;
-        }
+        } 
         return numFound / totalCycles;
     }
 
@@ -119,7 +137,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
             }
         }
 
-        // Include code to end when at goal
+        // TODO: Include code to end when at goal
 
         return finished;
     }
