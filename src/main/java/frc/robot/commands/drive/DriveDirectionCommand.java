@@ -52,7 +52,9 @@ public class DriveDirectionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return OI.getDriver().getRawButton(JoystickMap.BUTTON_SELECT);
+        // return OI.getDriver().getRawButton(JoystickMap.BUTTON_SELECT);
+        // TODO: Change to joystick button
+        return false;
     }
 
     @Override
