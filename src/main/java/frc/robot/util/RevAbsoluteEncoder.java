@@ -1,3 +1,5 @@
+package frc.robot.util;
+
 import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.DutyCycle;
 

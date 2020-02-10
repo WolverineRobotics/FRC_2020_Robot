@@ -55,7 +55,7 @@ public class DriveSubsystem extends SubsystemBase {
         rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
 
         navX = new AHRS(Port.kMXP);
-        pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
+        pigeon = new PigeonIMU(Drive.DRIVE_PIGEON_IMU_ADDRESS);
 
         gyroPID = new GyroPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
 
