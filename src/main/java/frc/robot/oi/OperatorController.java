@@ -1,7 +1,5 @@
 package frc.robot.oi;
 
-import edu.wpi.first.wpilibj.Joystick;
-
 /**
  * Controller Map:
  * 
@@ -37,11 +35,8 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class OperatorController extends Controller {
 
-    private Joystick operator;
-
     public OperatorController(int port) {
         super(port);
-        operator = super.getJoystick();
     }
 
 }

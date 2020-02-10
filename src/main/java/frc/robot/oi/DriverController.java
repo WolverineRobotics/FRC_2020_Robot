@@ -38,23 +38,21 @@ import frc.robot.constants.JoystickMap;
  */
 public class DriverController extends Controller {
 
-    private Joystick driver;
 
     public DriverController(int port) {
         super(port);
-        driver = super.getJoystick();
     }
 
     public double getThrottle() {
-        return driver.getRawAxis(JoystickMap.LEFT_STICK_Y);
+        return getAxis(JoystickMap.AxisMap.LEFT_STICK_X);
     }
 
     public double getTurn() {
-        return driver.getRawAxis(JoystickMap.RIGHT_STICK_X);
+        return getAxis(JoystickMap.AxisMap.RIGHT_STICK_X);
     }
 
     public boolean getFineControl() {
-        return driver.getRawButton(JoystickMap.BUTTON_RIGHT_BUMPER);
+        return getButton(JoystickMap.ButtonMap.BUTTON_RIGHT_BUMPER);
     }
 
 }
