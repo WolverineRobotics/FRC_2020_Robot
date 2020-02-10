@@ -1,8 +1,8 @@
 package frc.robot.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.RobotConst.DriveConst;
-import frc.robot.oi.OI;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DefaultDriveCommand extends CommandBase {
@@ -24,10 +24,10 @@ public class DefaultDriveCommand extends CommandBase {
     @Override
     public void execute() {
         // Driver Left Stick Y and Driver Right Stick X
-        double throttle = OI.getDriverThrottle();
-        double turn = OI.getDriverTurn();
+        double throttle = RobotContainer.getDriverController().getThrottle();
+        double turn = RobotContainer.getDriverController().getTurn();
 
-        if (OI.getFineControl()) {
+        if (RobotContainer.getDriverController().getFineControl()) {
             // If fine control is active.
             arcadeDrive(throttle, turn, DriveConst.DRIVE_SPEED_REDUCTION_RATIO_FINE);
         } else {
