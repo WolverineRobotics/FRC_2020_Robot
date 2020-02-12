@@ -1,6 +1,8 @@
 package frc.robot.oi;
 
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.constants.JoystickMap;
+import frc.robot.constants.RobotConst;
 
 /**
  * Controller Map:
@@ -16,13 +18,13 @@ import edu.wpi.first.wpilibj.Joystick;
  * Left Bumper:
  * Right Bumper: Drive Fine Control
  * 
- * Left Trigger:
- * Right Trigger: 
+ * Left Trigger: Intake Balls
+ * Right Trigger: Outake Balls
  * 
  * Button A:
  * Button B:
- * Button X:
- * Button Y:
+ * Button X: 
+ * Button Y: 
  * 
  * Button Select:
  * Button Start:
@@ -42,6 +44,14 @@ public class OperatorController extends Controller {
     public OperatorController(int port) {
         super(port);
         operator = super.getJoystick();
+    }
+
+    public boolean isHoldingLeftTrigger() {
+        return operator.getRawAxis(JoystickMap.LEFT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_INTAKE;
+    }
+
+    public boolean isHoldingRightTrigger() {
+        return operator.getRawAxis(JoystickMap.RIGHT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_INTAKE;
     }
 
 }

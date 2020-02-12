@@ -3,8 +3,6 @@ package frc.robot.constants;
 public class RobotConst {
 
     public class DriveConst {
-        public static final double DRIVE_TURN_TRIGGER_VALUE = 0.10;
-        public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.20;
 
         public static final double DRIVE_SPEED_REDUCTION_RATIO_FINE = 0.30;
         public static final double DRIVE_SPEED_REDUCTION_RATIO = 0.80;
@@ -41,5 +39,12 @@ public class RobotConst {
          * and throwing an error if nessesary.
          */
         public static final double ERROR = -99999;
+    }
+
+    public class ControllerConst {
+        public static final double DRIVE_TURN_TRIGGER_VALUE = 0.10;
+        public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.20;
+
+        public static final double DEADZONE_INTAKE = 0.2;
     }
 }
