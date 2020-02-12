@@ -18,4 +18,10 @@ public class RobotMap{
 
     public static final int DRIVE_PIGEON_IMU_ADDRESS                = 12;
 
+
+    public class ShooterMap{
+        public static final int SHOOTER_FLYWHEEL_MOTOR_ADDRESS = -1;
+        public static final int SHOOTER_HOOD_MOTOR_ADDRESS = -1;
+    }
+
 }
