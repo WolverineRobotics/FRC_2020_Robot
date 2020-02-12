@@ -56,4 +56,8 @@ public class Util {
         return Math.IEEEremainder(value - min, max - min) + min;
     }
 
+    public static long getSeconds(long milliseconds) {
+        return (milliseconds * 1000);
+    }
+
 }
