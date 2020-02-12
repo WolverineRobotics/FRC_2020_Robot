@@ -39,6 +39,9 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class MoveBallsOneStageCommand extends CommandBase {
 
     private IntakeSubsystem s_intake;
+    private int currentStage;
+
+    private boolean isDone;
 
     public MoveBallsOneStageCommand(final IntakeSubsystem s_intake) {
         this.s_intake = s_intake;
@@ -46,13 +49,31 @@ public class MoveBallsOneStageCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        
+        currentStage = s_intake.getAmountOfBalls();
+        isDone = false;
     }
 
     @Override
     public void execute() {
-        int currentStage = s_intake.getAmountOfBalls();
-
+        switch (currentStage) {
+            case 1:
+                s_intake.setEntrySpeed(0.3);
+                s_intake.setCurveSpeed(0.5);
+                if(s_intake.isSensorTwoActivated()) {
+                    isDone = true;
+                }
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default:
+                //never supposed to reach here
+        }
     }
 
     @Override
@@ -62,7 +83,7 @@ public class MoveBallsOneStageCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if(s_intake.getAmountOfBalls() == 0) {
+        if(s_intake.getAmountOfBalls() == 0 || isDone) {
             return true;
         }
     }
