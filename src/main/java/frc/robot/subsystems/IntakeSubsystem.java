@@ -52,4 +52,43 @@ public class IntakeSubsystem extends SubsystemBase {
         shoot.set(speed);
     }
 
+    public boolean isSensorOneActivated() {
+        return sensor1.get();
+    }
+
+    public boolean isSensorTwoActivated() {
+        return sensor2.get();
+    }
+
+    public boolean isSensorThreeActivated() {
+        return sensor3.get();
+    }
+
+    public boolean isSensorFourActivated() {
+        return sensor4.get();
+    }
+
+    public boolean isSensorFiveActivated() {
+        return sensor5.get();
+    }
+
+    /**
+     * Returns the amount of balls in the magazine, evaluated by the sensors.
+     */
+    public int getAmountOfBalls() {
+        if (isSensorFiveActivated()) {
+            return 5;
+        } else if (isSensorFourActivated()) {
+            return 4;
+        } else if (isSensorThreeActivated()) {
+            return 3;
+        } else if (isSensorTwoActivated()) {
+            return 2;
+        } else if (isSensorOneActivated()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
 }
