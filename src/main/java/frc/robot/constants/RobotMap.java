@@ -22,6 +22,7 @@ public class RobotMap{
     public class ShooterMap{
         public static final int SHOOTER_FLYWHEEL_MOTOR_ADDRESS = -1;
         public static final int SHOOTER_HOOD_MOTOR_ADDRESS = -1;
+        public static final int SHOOTER_HOOD_ENCODER_ADDRESS = -1; //DIO
     }
 
 }
