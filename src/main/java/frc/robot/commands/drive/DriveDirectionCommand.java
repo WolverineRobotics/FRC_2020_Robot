@@ -18,7 +18,7 @@ public class DriveDirectionCommand extends CommandBase {
         System.out.println("Requires Drivesubsytem " + c_drive);
         addRequirements(c_drive);
 
-        gyroPID = c_drive.gyroPID;
+        gyroPID = c_drive.getGyroPID();
 
         this.power = power;
         this.heading = heading;

@@ -12,7 +12,7 @@ public class RotateToHeadingCommand extends CommandBase {
     public RotateToHeadingCommand(DriveSubsystem subsystem, double heading) {
         m_drive = subsystem;
         addRequirements(m_drive);
-        m_Gryo = m_drive.gyroPID;
+        m_Gryo = m_drive.getGyroPID();
         this.heading = heading;
     }
 

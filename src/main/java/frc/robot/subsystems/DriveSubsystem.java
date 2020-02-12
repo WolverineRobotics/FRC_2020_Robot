@@ -54,7 +54,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private GyroToRotate gyroToRotate;
 
-    public GyroPID gyroPID;
+    private GyroPID gyroPID;
 
     public DriveSubsystem() {
         leftDrive01 = new Spark(DRIVE_LEFT_MOTOR_MASTER_ADDRESS);
@@ -201,6 +201,17 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * This is the old PID for rotating to a gyro angle. It's recommended to use the
+     * new {@link #gyroAngleToDriveDistances(double, double)} or
+     * {@link #rotateGyroAngle(double currentGyroAngle, double goal)} instead.
+     * 
+     * @return The gyroPID instance
+     */
+    public GyroPID getGyroPID() {
+        return gyroPID;
+    }
+
+    /**
      * Returns the gyro heading
      * 
      * @return double value in degrees (0-360 degrees)
@@ -259,18 +270,21 @@ public class DriveSubsystem extends SubsystemBase {
 
     /**
      * 
-     * @param currentGyroAngle
-     * @param goal
+     * @param currentGyroAngle The current gyro angle.
+     * @param goal             The gyro angle you want to rotate to.
      * @return Array of drive distance: [left, right]
      */
     public double[] gyroAngleToDriveDistances(double currentGyroAngle, double goal) {
         return gyroToRotate.calculate(currentGyroAngle, goal);
     }
 
-    public void rotateGyroAngle(double goal) {
-        rotateGyroAngle(getPigeonHeading(), goal);
-    }
-
+    /**
+     * Automatically rotates to the intended gyro angle using left and right
+     * encoders and PIDs. Needs to be called every cycle in the main control loop.
+     * 
+     * @param currentGyroAngle The current gyro angle
+     * @param goal             The gyro angle you want to rotate to.
+     */
     public void rotateGyroAngle(double currentGyroAngle, double goal) {
         // TODO: Cleanup and make a better way of doing this, going straight from PID to
         // speed controller groups
@@ -284,6 +298,16 @@ public class DriveSubsystem extends SubsystemBase {
 
         setLeftVoltage(leftVoltage);
         setRightVoltage(rightVoltage);
+    }
+
+    /**
+     * Overload for {@link #rotateGyroAngle(double currentGyroAngle, double goal)}
+     * that automatically gets the current gyro angle
+     * 
+     * @param goal
+     */
+    public void rotateGyroAngle(double goal) {
+        rotateGyroAngle(getPigeonHeading(), goal);
     }
 
     @Override
