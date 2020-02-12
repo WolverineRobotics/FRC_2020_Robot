@@ -41,4 +41,9 @@ public class RobotMap{
         public static final int OPERATOR = 1;
     }
 
+    public class Pneumatic {
+        public static final int INTAKE_FORWARD = -1;
+        public static final int INTAKE_BACKWARD = -1;
+    }
+
 }
