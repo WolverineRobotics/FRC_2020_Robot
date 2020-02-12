@@ -1,13 +1,13 @@
 package frc.robot.subsystems;
 
-import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_A;
-import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_B;
-import static frc.robot.constants.RobotMap.DRIVE_LEFT_MOTOR_MASTER_ADDRESS;
-import static frc.robot.constants.RobotMap.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS;
-import static frc.robot.constants.RobotMap.DRIVE_RIGHT_ENCODER_A;
-import static frc.robot.constants.RobotMap.DRIVE_RIGHT_ENCODER_B;
-import static frc.robot.constants.RobotMap.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS;
-import static frc.robot.constants.RobotMap.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS;
+import static frc.robot.constants.RobotMap.Drive.DRIVE_LEFT_ENCODER_A;
+import static frc.robot.constants.RobotMap.Drive.DRIVE_LEFT_ENCODER_B;
+import static frc.robot.constants.RobotMap.Drive.DRIVE_LEFT_MOTOR_MASTER_ADDRESS;
+import static frc.robot.constants.RobotMap.Drive.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS;
+import static frc.robot.constants.RobotMap.Drive.DRIVE_RIGHT_ENCODER_A;
+import static frc.robot.constants.RobotMap.Drive.DRIVE_RIGHT_ENCODER_B;
+import static frc.robot.constants.RobotMap.Drive.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS;
+import static frc.robot.constants.RobotMap.Drive.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.constants.RobotConst.PIDConst;
-import frc.robot.constants.RobotMap;
+import frc.robot.constants.RobotMap.Drive;
 import frc.robot.pid.GyroPID;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -55,7 +55,7 @@ public class DriveSubsystem extends SubsystemBase {
         rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
 
         navX = new AHRS(Port.kMXP);
-        pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
+        pigeon = new PigeonIMU(Drive.DRIVE_PIGEON_IMU_ADDRESS);
 
         gyroPID = new GyroPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
 

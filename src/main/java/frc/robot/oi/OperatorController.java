@@ -39,11 +39,8 @@ import frc.robot.constants.RobotConst;
  */
 public class OperatorController extends Controller {
 
-    private Joystick operator;
-
     public OperatorController(int port) {
         super(port);
-        operator = super.getJoystick();
     }
 
     /**
