@@ -4,16 +4,17 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
+import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.commands.groups.ShootGroup;
 import frc.robot.oi.OperatorController;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class DefaultIntakeCommand extends CommandBase {
 
-    private IntakeSubsystem s_intake;
-    private OperatorController oc;
+    private final IntakeSubsystem s_intake;
+    private final OperatorController oc;
 
-    public DefaultIntakeCommand(IntakeSubsystem s_intake) {
+    public DefaultIntakeCommand(final IntakeSubsystem s_intake) {
         this.s_intake = s_intake;
         addRequirements(s_intake);
         oc = RobotContainer.getOperatorController();
@@ -30,7 +31,7 @@ public class DefaultIntakeCommand extends CommandBase {
     @Override
     public void execute() {
         if (oc.isHoldingLeftTrigger()) { // if is intaking
-            int amountOfBalls = s_intake.getAmountOfBalls();
+            final int amountOfBalls = s_intake.getAmountOfBalls();
             if (amountOfBalls == 1) { // 1 ball in currently
                 s_intake.setEntrySpeed(0.5);
             } else if (amountOfBalls == 2) { // 2 balls in currnetly
@@ -56,14 +57,21 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setCurveSpeed(0.1);
             s_intake.setVerticalSpeed(0.1);
         } else if(oc.getAutoShootButton()) { // if operator wants to auto shoot
+            /**
+            * Operator presses one button and the robot will:
+            * 1. Rotate to vision target, will cancel command if none found
+            * 2. Spin the fly wheel for X seconds
+            * 3. Run all of the conveyors to unload magazine.
+            */
             new SequentialCommandGroup(
+                // new RotateToVisionTargetCommand(s_camera, s_drive);
                 
             );
         }
     }
 
     @Override
-    public void end(boolean interrupted) {
+    public void end(final boolean interrupted) {
 
     }
 
