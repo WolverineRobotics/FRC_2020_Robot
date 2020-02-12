@@ -19,14 +19,14 @@ public class DriveSimpleRotateCommad extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drive.gyroPID.setEnabled(true);
-    m_drive.gyroPID.setSetpoint(finalAngle);
+    m_drive.getGyroPID().setEnabled(true);
+    m_drive.getGyroPID().setSetpoint(finalAngle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double gyroCalculate = m_drive.gyroPID.calculate(m_drive.getPigeonHeading());
+    double gyroCalculate = m_drive.getGyroPID().calculate(m_drive.getPigeonHeading());
     m_drive.setLeftSpeed(gyroCalculate);
     m_drive.setRightSpeed(-gyroCalculate);
   }
@@ -34,13 +34,13 @@ public class DriveSimpleRotateCommad extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drive.gyroPID.setEnabled(false);
+    m_drive.getGyroPID().setEnabled(false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    double error = m_drive.gyroPID.getError(m_drive.getPigeonHeading());
+    double error = m_drive.getGyroPID().getError(m_drive.getPigeonHeading());
     if (error < 3) {
       return true;
     }

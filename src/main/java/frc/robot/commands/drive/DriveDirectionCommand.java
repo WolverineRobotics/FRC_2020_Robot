@@ -66,7 +66,7 @@ public class DriveDirectionCommand extends CommandBase {
     }
 
     public void setHeading(double heading) {
-        c_drive.gyroPID.setSetpoint(heading);
+        c_drive.getGyroPID().setSetpoint(heading);
         this.heading = heading;
     }
 }
