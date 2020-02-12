@@ -76,19 +76,12 @@ public class IntakeSubsystem extends SubsystemBase {
      * Returns the amount of balls in the magazine, evaluated by the sensors.
      */
     public int getAmountOfBalls() {
-        if (isSensorFiveActivated()) {
-            return 5;
-        } else if (isSensorFourActivated()) {
-            return 4;
-        } else if (isSensorThreeActivated()) {
-            return 3;
-        } else if (isSensorTwoActivated()) {
-            return 2;
-        } else if (isSensorOneActivated()) {
-            return 1;
-        } else {
-            return 0;
+        boolean[] sensors = {isSensorOneActivated(), isSensorTwoActivated(), isSensorThreeActivated(), isSensorFiveActivated(), isSensorFourActivated()};
+        int count = 0;
+        for(boolean b : sensors) {
+            if(b) count++;
         }
+        return count;
     }
 
 }
