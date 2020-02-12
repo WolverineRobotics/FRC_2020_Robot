@@ -8,21 +8,21 @@ import frc.robot.constants.RobotConst;
  * Controller Map:
  * 
  * Left Stick X:
- * Left Stick Y: Drive Throttle
+ * Left Stick Y: 
  * Left Stick Button:
  * 
- * Right Stick X: Drive Turn
- * Right Stick Y:
+ * Right Stick X: 
+ * Right Stick Y: [up] = hood down | [down] = hood up
  * Right Stick Button:
  * 
  * Left Bumper:
- * Right Bumper: Drive Fine Control
+ * Right Bumper:
  * 
  * Left Trigger: Intake Balls
  * Right Trigger: Outake Balls
  * 
  * Button A:
- * Button B:
+ * Button B: Auto-Shoot (See DefaultIntakeCommand)
  * Button X: 
  * Button Y: 
  * 
@@ -46,12 +46,32 @@ public class OperatorController extends Controller {
         operator = super.getJoystick();
     }
 
+    /**
+     * @return true if left trigger is pressed down passed at least RobotConst.ControllerConst.DEADZONE_INTAKE
+     */
     public boolean isHoldingLeftTrigger() {
         return operator.getRawAxis(JoystickMap.LEFT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_INTAKE;
     }
 
+    /**
+     * @return true if right trigger is pressed down passed at least RobotConst.ControllerConst.DEADZONE_INTAKE
+     */
     public boolean isHoldingRightTrigger() {
         return operator.getRawAxis(JoystickMap.RIGHT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_INTAKE;
+    }
+
+    /**
+     * @return double value from -1 to 1.
+     */
+    public double getRightStickY() {
+        return operator.getRawAxis(JoystickMap.RIGHT_STICK_Y);
+    }
+
+    /**
+     * @return true if B is pressed
+     */
+    public boolean getAutoShootButton() {
+        return operator.getRawButton(JoystickMap.BUTTON_B);
     }
 
 }
