@@ -5,6 +5,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.RobotMap;
 
@@ -19,8 +21,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private CANSparkMax entry; // main intake, entry point of ball
     private CANSparkMax curve; // curves ball into vertical conveyor
     private CANSparkMax vertical; // controls vertical conveyor
-    private CANSparkMax shoot; // controls final stage of vertical conveyor (flywheel)
-    private TalonSRX hood; // controls hood shooter
+
+    private DoubleSolenoid piston;
 
     public IntakeSubsystem() {
         sensor1 = new DigitalInput(RobotMap.Sensors.BALL_SENSOR_1);
@@ -32,8 +34,10 @@ public class IntakeSubsystem extends SubsystemBase {
         entry = new CANSparkMax(RobotMap.SpeedController.ENTRY, MotorType.kBrushless);
         curve = new CANSparkMax(RobotMap.SpeedController.CURVE, MotorType.kBrushless);
         vertical = new CANSparkMax(RobotMap.SpeedController.VERTICAL, MotorType.kBrushless);
-        shoot = new CANSparkMax(RobotMap.SpeedController.SHOOT, MotorType.kBrushless);
-        hood = new TalonSRX(RobotMap.SpeedController.HOOD);
+
+        piston = new DoubleSolenoid(RobotMap.Pneumatic.INTAKE_FORWARD, RobotMap.Pneumatic.INTAKE_BACKWARD);
+
+        piston.set(Value.kOff);
     }
 
     public void setEntrySpeed(double speed) {
@@ -46,10 +50,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void setVerticalSpeed(double speed) {
         vertical.set(speed);
-    }
-
-    public void setShootSpeed(double speed) {
-        shoot.set(speed);
     }
 
     public boolean isSensorOneActivated() {
@@ -82,6 +82,19 @@ public class IntakeSubsystem extends SubsystemBase {
             if(b) count++;
         }
         return count;
+    }
+
+    public boolean[] getSensors() {
+        boolean[] sensors = {isSensorOneActivated(), isSensorTwoActivated(), isSensorThreeActivated(), isSensorFourActivated(), isSensorFiveActivated()};
+        return sensors;
+    }
+
+    public boolean isIntakeOpen() {
+        return piston.get() == Value.kForward;
+    }
+
+    public void setIntakePiston(boolean toOpen) {
+        piston.set(toOpen ? Value.kForward : Value.kReverse);
     }
 
 }
