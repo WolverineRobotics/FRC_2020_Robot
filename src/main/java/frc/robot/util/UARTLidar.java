@@ -37,8 +37,11 @@ public class UARTLidar {
      */
     public void recordDistance() {
         byte[] byteArr = lidar.read(NUM_OF_BYTES);
-        // TODO: Check if first 2 bytes match frame header and handle senario where it
-        // doesn't
+        // Could possibly try and find the frame header or throw exception instead of
+        // just logging
+        if (byteArr[0] != FRAME_HEADER || byteArr[1] != FRAME_HEADER) {
+            System.err.println("Error: LIDAR frame header does not match! Distances are likely garbage!");
+        }
         int distLow8 = Byte.toUnsignedInt(byteArr[2]);
         int distHigh8 = Byte.toUnsignedInt(byteArr[3]);
 
