@@ -1,4 +1,4 @@
-package frc.robot.commands.drivecommand;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.JoystickMap;
@@ -18,7 +18,7 @@ public class DriveDirectionCommand extends CommandBase {
         System.out.println("Requires Drivesubsytem " + c_drive);
         addRequirements(c_drive);
 
-        gyroPID = c_drive.gyroPID;
+        gyroPID = c_drive.getGyroPID();
 
         this.power = power;
         this.heading = heading;
@@ -66,7 +66,7 @@ public class DriveDirectionCommand extends CommandBase {
     }
 
     public void setHeading(double heading) {
-        c_drive.gyroPID.setSetpoint(heading);
+        c_drive.getGyroPID().setSetpoint(heading);
         this.heading = heading;
     }
 }

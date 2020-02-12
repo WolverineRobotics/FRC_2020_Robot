@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static frc.robot.constants.RobotConst.DriveConst.CharacterizationConst.K_TRACKWIDTH_METERS;
 import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_A;
 import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_B;
 import static frc.robot.constants.RobotMap.DRIVE_LEFT_MOTOR_MASTER_ADDRESS;
@@ -17,12 +18,22 @@ import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
-import frc.robot.constants.RobotConst.PidConst;
+import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.constants.RobotMap;
+import frc.robot.pid.DriveFeedForwardPID;
 import frc.robot.pid.GyroPID;
+import frc.robot.pid.GyroToRotate;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -32,10 +43,18 @@ public class DriveSubsystem extends SubsystemBase {
     private SpeedControllerGroup leftGroup, rightGroup;
     private DifferentialDrive driveTrain;
 
+    private DifferentialDriveKinematics m_kinematics;
+    private DifferentialDriveOdometry m_odometry;
+
     private AHRS navX;
     private PigeonIMU pigeon;
 
-    public GyroPID gyroPID;
+    public DriveFeedForwardPID leftPid;
+    public DriveFeedForwardPID rightPid;
+
+    private GyroToRotate gyroToRotate;
+
+    private GyroPID gyroPID;
 
     public DriveSubsystem() {
         leftDrive01 = new Spark(DRIVE_LEFT_MOTOR_MASTER_ADDRESS);
@@ -45,6 +64,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         leftGroup = new SpeedControllerGroup(leftDrive01, leftDrive02);
         rightGroup = new SpeedControllerGroup(rightDrive01, rightDrive02);
+        rightGroup.setInverted(true);
 
         driveTrain = new DifferentialDrive(leftGroup, rightGroup);
 
@@ -57,9 +77,21 @@ public class DriveSubsystem extends SubsystemBase {
         navX = new AHRS(Port.kMXP);
         pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
 
-        gyroPID = new GyroPID(PidConst.GYRO_KP, PidConst.GYRO_KI, PidConst.GYRO_KD);
+        gyroPID = new GyroPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
+
+        m_kinematics = new DifferentialDriveKinematics(K_TRACKWIDTH_METERS);
+        m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()));
+
+        leftPid = new DriveFeedForwardPID();
+        rightPid = new DriveFeedForwardPID();
+
+        gyroToRotate = new GyroToRotate(K_TRACKWIDTH_METERS);
 
         setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
+
+        SendableRegistry.add(this, "DriveSubsystem");
+        SendableRegistry.add(leftPid, "[Drive] Left PID");
+        SendableRegistry.add(rightPid, "[Drive] Right PID");
     }
 
     public void setLeftSpeed(double speed) {
@@ -169,6 +201,17 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * This is the old PID for rotating to a gyro angle. It's recommended to use the
+     * new {@link #gyroAngleToDriveDistances(double, double)} or
+     * {@link #rotateGyroAngle(double currentGyroAngle, double goal)} instead.
+     * 
+     * @return The gyroPID instance
+     */
+    public GyroPID getGyroPID() {
+        return gyroPID;
+    }
+
+    /**
      * Returns the gyro heading
      * 
      * @return double value in degrees (0-360 degrees)
@@ -193,6 +236,85 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void resetNavxHeading() {
         navX.reset();
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+        m_odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), Units.inchesToMeters(getDistanceRightEncoder()),
+                Units.inchesToMeters(getDistanceLeftEncoder()));
+    }
+
+    public Pose2d getPose() {
+        return m_odometry.getPoseMeters();
+    }
+
+    /**
+     * Resets the odometry to the specified pose.
+     *
+     * @param pose The pose to which to set the odometry.
+     */
+    public void resetOdometry(Pose2d pose) {
+        resetEncoders();
+        m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getPigeonHeading()));
+    }
+
+    /**
+     * Returns the current wheel speeds of the robot.
+     *
+     * @return The current wheel speeds.
+     */
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
+    }
+
+    /**
+     * 
+     * @param currentGyroAngle The current gyro angle.
+     * @param goal             The gyro angle you want to rotate to.
+     * @return Array of drive distance: [left, right]
+     */
+    public double[] gyroAngleToDriveDistances(double currentGyroAngle, double goal) {
+        return gyroToRotate.calculate(currentGyroAngle, goal);
+    }
+
+    /**
+     * Automatically rotates to the intended gyro angle using left and right
+     * encoders and PIDs. Needs to be called every cycle in the main control loop.
+     * 
+     * @param currentGyroAngle The current gyro angle
+     * @param goal             The gyro angle you want to rotate to.
+     */
+    public void rotateGyroAngle(double currentGyroAngle, double goal) {
+        // TODO: Cleanup and make a better way of doing this, going straight from PID to
+        // speed controller groups
+        double[] driveDistances = gyroAngleToDriveDistances(currentGyroAngle, goal);
+
+        double leftCurrentDistance = getDistanceLeftEncoder();
+        double rightCurrentDistance = getDistanceRightEncoder();
+
+        double leftVoltage = leftPid.calculate(leftCurrentDistance, leftCurrentDistance + driveDistances[0]);
+        double rightVoltage = rightPid.calculate(rightCurrentDistance, rightCurrentDistance + driveDistances[1]);
+
+        setLeftVoltage(leftVoltage);
+        setRightVoltage(rightVoltage);
+    }
+
+    /**
+     * Overload for {@link #rotateGyroAngle(double currentGyroAngle, double goal)}
+     * that automatically gets the current gyro angle
+     * 
+     * @param goal
+     */
+    public void rotateGyroAngle(double goal) {
+        rotateGyroAngle(getPigeonHeading(), goal);
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        // TODO Auto-generated method stub
+        super.initSendable(builder);
+        builder.setSmartDashboardType("DriveSubsystem");
     }
 
 }
