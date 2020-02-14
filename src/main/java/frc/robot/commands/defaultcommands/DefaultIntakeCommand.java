@@ -48,7 +48,9 @@ public class DefaultIntakeCommand extends CommandBase {
                 s_intake.setCurveSpeed(0.5);
                 s_intake.setVerticalSpeed(0.5);
             } else if(sen[0] && sen[1] && sen[2] && !sen[3] && !sen[4]) {
-
+                s_intake.setEntrySpeed(0.3);
+                s_intake.setCurveSpeed(0.5);
+                s_intake.setVerticalSpeed(0.5);
             } else {
                 s_intake.setEntrySpeed(0.5);
             }
