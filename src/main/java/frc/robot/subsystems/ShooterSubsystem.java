@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -12,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.RobotConst.ShooterConst;
 import frc.robot.constants.RobotMap;
 import frc.robot.util.RevAbsoluteEncoder;
-import frc.robot.util.UARTLidar;
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -21,7 +21,6 @@ public class ShooterSubsystem extends SubsystemBase {
     // private final CANPIDController flywheelPID;
     private final TalonSRX hood;
     private final RevAbsoluteEncoder hoodEncoder;
-    private final UARTLidar lidar;
 
     // private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kMaxRPM;
 
@@ -33,13 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
         hood = new TalonSRX(RobotMap.SHOOTER_HOOD_MOTOR_ADDRESS);
         hoodEncoder = new RevAbsoluteEncoder(RobotMap.SHOOTER_HOOD_ENCODER_ADDRESS);
 
-        lidar = new UARTLidar(RobotMap.LIDAR_PORT);
         SendableRegistry.add(this, "Shooter Subsystem");
-    }
-
-    @Override
-    public void periodic() {
-        lidar.recordDistance();
     }
 
     public void setFlywheelSpeed(double speed) {
@@ -74,10 +67,6 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public double getFlywheelSpeed() {
         return getFlywheelRawSpeed() * ShooterConst.SHOOTER_FLYWHEEL_GEAR_RATIO;
-    }
-
-    public int getLidarDistanceCM() {
-        return lidar.getDistanceCM();
     }
 
     @Override
