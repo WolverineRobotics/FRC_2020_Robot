@@ -14,10 +14,18 @@ public class RevAbsoluteEncoder extends DutyCycle {
         super(digitalSource);
     }
 
+    /**
+     * Returns -1 if noting is connected.
+     * @return
+     */
     public int getEncoderPosition() {
         double encoderTick = getOutput();
         encoderTick = Math.round(encoderTick * 1025) - 1;
         return (int) encoderTick;
+    }
+
+    public boolean isConnected(){
+        return getEncoderPosition() == -1;
     }
 
 }

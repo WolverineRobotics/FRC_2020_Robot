@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.RobotConst.ShooterConst;
 import frc.robot.constants.RobotMap;
@@ -31,6 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
         hood = new TalonSRX(RobotMap.SHOOTER_HOOD_MOTOR_ADDRESS);
         hoodEncoder = new RevAbsoluteEncoder(RobotMap.SHOOTER_HOOD_ENCODER_ADDRESS);
 
+        SendableRegistry.add(this, "Shooter Subsystem");
     }
 
     public void setFlywheelSpeed(double speed) {
@@ -43,6 +45,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public int getHoodEncoderPosition() {
         return hoodEncoder.getEncoderPosition();
+    }
+
+    public boolean isHoodEncoderConnected() {
+        return hoodEncoder.isConnected();
     }
 
     public void setHoodSpeed(double speed) {
@@ -63,10 +69,11 @@ public class ShooterSubsystem extends SubsystemBase {
         return getFlywheelRawSpeed() * ShooterConst.SHOOTER_FLYWHEEL_GEAR_RATIO;
     }
 
-    // @Override
-    // public void initSendable(SendableBuilder builder) {
-    //     // TODO Auto-generated method stub
-    //     super.initSendable(builder);
-    // }
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Shooter Subsystem");
+        builder.addDoubleProperty("[Shooter] Hood Position", this::getHoodEncoderPosition, null);
+        builder.addDoubleProperty("[Shooter] Flywheel RPM", this::getFlywheelSpeed, null);
+    }
 
 }
