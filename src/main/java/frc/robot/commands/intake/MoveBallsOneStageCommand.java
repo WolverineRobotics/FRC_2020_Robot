@@ -56,6 +56,8 @@ public class MoveBallsOneStageCommand extends CommandBase {
     @Override
     public void execute() {
         switch (currentStage) {
+            case 0:
+                isDone = true;
             case 1:
                 s_intake.setEntrySpeed(0.3);
                 s_intake.setCurveSpeed(0.5);
@@ -64,12 +66,31 @@ public class MoveBallsOneStageCommand extends CommandBase {
                 }
                 break;
             case 2:
+                s_intake.setEntrySpeed(0.3);
+                s_intake.setCurveSpeed(0.5);
+                s_intake.setVerticalSpeed(0.5);
+                if(s_intake.isSensorThreeActivated()) {
+                    isDone = true;
+                }
                 break;
             case 3:
+                s_intake.setEntrySpeed(0.3);
+                s_intake.setCurveSpeed(0.5);
+                s_intake.setVerticalSpeed(0.5);
+                if(s_intake.isSensorFourActivated()) {
+                    isDone = true;
+                }
                 break;
             case 4:
+                s_intake.setEntrySpeed(0.3);
+                s_intake.setCurveSpeed(0.5);
+                s_intake.setVerticalSpeed(0.5);
+                if(s_intake.isSensorFiveActivated()) {
+                    isDone = true;
+                }
                 break;
             case 5:
+                isDone = true;
                 break;
             default:
                 //never supposed to reach here
@@ -86,6 +107,7 @@ public class MoveBallsOneStageCommand extends CommandBase {
         if(s_intake.getAmountOfBalls() == 0 || isDone) {
             return true;
         }
+        return false;
     }
 
 }
