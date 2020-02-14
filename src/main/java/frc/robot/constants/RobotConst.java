@@ -33,4 +33,13 @@ public class RobotConst {
         public static final double GYRO_KD = 0;
 
     }
+
+    public class ShooterConst{
+
+        // **********************************************************************************
+        // Shooter constants
+        // **********************************************************************************
+
+        public static final double SHOOTER_FLYWHEEL_GEAR_RATIO = 1;
+    }
 }
