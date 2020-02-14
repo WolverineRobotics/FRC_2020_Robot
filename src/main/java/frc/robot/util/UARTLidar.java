@@ -19,6 +19,10 @@ public class UARTLidar {
 
     private final byte FRAME_HEADER = (byte) 0x59;
 
+
+    private final int MIN_DISTANCE = 30;
+    private final int MAX_DISTANCE = 1200;
+
     /**
      * The last lidar measurement.
      */
@@ -61,6 +65,20 @@ public class UARTLidar {
      */
     public int getDistanceCM() {
         return lastMeasurement;
+    }
+
+    public boolean isMeasurementAccurate(){
+        if(lastMeasurement == -1 || lastMeasurement == MIN_DISTANCE || lastMeasurement == MAX_DISTANCE){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isMeasurementValid(){
+        if(lastMeasurement == -1){
+            return false;
+        }
+        return true;
     }
 
 }
