@@ -25,14 +25,15 @@ public class ShooterSubsystem extends SubsystemBase {
     // private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, kMaxRPM;
 
     public ShooterSubsystem() {
+        super();
+
         flywheel = new CANSparkMax(RobotMap.SHOOTER_FLYWHEEL_MOTOR_ADDRESS, MotorType.kBrushless);
         flywheelEncoder = new CANEncoder(flywheel);
         // flywheelPID = new CANPIDController(flywheel);
 
         hood = new TalonSRX(RobotMap.SHOOTER_HOOD_MOTOR_ADDRESS);
         hoodEncoder = new RevAbsoluteEncoder(RobotMap.SHOOTER_HOOD_ENCODER_ADDRESS);
-
-        SendableRegistry.add(this, "Shooter Subsystem");
+        
     }
 
     public void setFlywheelSpeed(double speed) {

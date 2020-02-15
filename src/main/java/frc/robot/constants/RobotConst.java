@@ -40,6 +40,6 @@ public class RobotConst {
         // Shooter constants
         // **********************************************************************************
 
-        public static final double SHOOTER_FLYWHEEL_GEAR_RATIO = 1;
+        public static final double SHOOTER_FLYWHEEL_GEAR_RATIO = 22/18;
     }
 }
