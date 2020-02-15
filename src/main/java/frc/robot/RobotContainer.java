@@ -9,12 +9,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.LidarSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -35,6 +36,8 @@ public class RobotContainer {
 
   private final DriveSubsystem m_drive = new DriveSubsystem();
   private final DefaultDriveCommand c_drive = new DefaultDriveCommand(m_drive);
+
+  private final LidarSubsystem s_lidar = new LidarSubsystem();
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
