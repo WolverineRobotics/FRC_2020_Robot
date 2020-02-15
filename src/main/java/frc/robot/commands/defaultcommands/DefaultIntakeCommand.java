@@ -33,17 +33,23 @@ public class DefaultIntakeCommand extends CommandBase {
                 s_intake.setIntakePiston(true);
             }
             final boolean[] sen = s_intake.getSensors();
+            /**
+             * The reason why we don't check for sensor 1 sometimes
+             * is because the robot can potentially drop the ball @ location entry.
+             * So we don't want to disable intake entirely when the ball @ location entry
+             * is dropped.
+             */
             if(!sen[0] && sen[1] && sen[2] && sen[3] && sen[4]) { //if sensor 2, 3, 4, and 5 are detecting but not 1
                 s_intake.setEntrySpeed(IntakeConst.ENTRY_SPEED);
             } else if(sen[0] && !sen[1] && !sen[2] && !sen[3] && !sen[4]) { //if sensor 1 is only one with ball
                 s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, 0, 0, 0);
-            } else if(sen[0] && sen[1] && !sen[2] && !sen[3] && !sen[4]) { //if sensor 1 and 2 is only one with ball
+            } else if(sen[1] && !sen[2] && !sen[3] && !sen[4]) { //if sensor 1 (potentially) and 2 is only one with ball
                 s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, 0);
-            } else if(sen[0] && sen[1] && sen[2] && !sen[3] && !sen[4]) { //if sensor 1, 2, 3, has ball
+            } else if(sen[1] && sen[2] && !sen[3] && !sen[4]) { //if sensor 1 (potentially), 2, 3, has ball
                 s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, 0);
-            } else if(sen[0] && sen[1] && sen[2] && sen[3] && !sen[4]) { //if sensor 1, 2, 3, and 4 has ball
+            } else if(sen[1] && sen[2] && sen[3] && !sen[4]) { //if sensor 1 (potentially), 2, 3, and 4 has ball
                 s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, IntakeConst.UPPER_VERTICAL_SPEED);
-            } else if(!sen[0] && !sen[1] && !sen[2] && !sen[3] && !sen[4]) {
+            } else if(!sen[0] && !sen[1] && !sen[2] && !sen[3] && !sen[4]) { //if none of the sensors have balls
                 s_intake.setEntrySpeed(IntakeConst.ENTRY_SPEED);
             }
         } else if(oc.isHoldingRightTrigger()) { //if operator outaking

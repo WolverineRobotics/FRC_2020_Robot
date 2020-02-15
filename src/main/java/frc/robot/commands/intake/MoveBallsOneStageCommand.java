@@ -1,7 +1,10 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.RobotConst;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.constants.RobotConst.IntakeConst;
+import frc.robot.constants.RobotConst.IntakeConst.*;
 
 /**
  * Will move all of the balls one stage upon intaking one ball.
@@ -39,67 +42,86 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class MoveBallsOneStageCommand extends CommandBase {
 
     private IntakeSubsystem s_intake;
-    private int currentStage;
 
+    private int currentStage;
     private boolean isDone;
 
     public MoveBallsOneStageCommand(final IntakeSubsystem s_intake) {
         this.s_intake = s_intake;
-    }
-
-    @Override
-    public void initialize() {
-        currentStage = s_intake.getAmountOfBalls();
+        currentStage = 0;
         isDone = false;
     }
 
     @Override
+    public void initialize() {
+        boolean[] sen = s_intake.getSensors();
+        // evaluate the current stage and set the speeds to move balls to the next stage.
+        // ! means ball detected
+        // ? means no ball detected
+        if(!sen[0] && !sen[1] && !sen[2] && !sen[3] && !sen[4]) { // ? ? ? ? ?
+            // no stage, so there is no balls to move.
+            currentStage = 0;
+            s_intake.setSpeeds(0, 0, 0, 0);
+            isDone = true;
+        } else if(sen[0] && !sen[1] && !sen[2] && !sen[3] && !sen[4]) { // ! ? ? ? ? 
+            currentStage = 1;
+            s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, 0, 0);
+        } else if(sen[0] && sen[1] && !sen[2] && !sen[3] && !sen[4]) {// ! ! ? ? ?
+            currentStage = 2;
+            s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, 0);
+        } else if(sen[0] && sen[1] && sen[2] && !sen[3] && !sen[4]) { // ! ! ! ? ? 
+            currentStage = 3;
+            s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, 0);
+        } else if(sen[0] && sen[1] && sen[2] && sen[3] && !sen[4]) { // ! ! ! ! ?
+            currentStage = 4;
+            s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, IntakeConst.UPPER_VERTICAL_SPEED;
+        } else if(sen[0] && sen[1] && sen[2] && sen[3] && sen[4]) { // ! ! ! ! !
+            // no stage to be moved.
+            currentStage = 5;
+            s_intake.setSpeeds(0, 0, 0, 0);
+            isDone = true;
+        } else { // stage is not identifiable
+            s_intake.setSpeeds(0, 0, 0, 0);
+            isDone = true;
+        }
+    }
+
+    @Override
     public void execute() {
-        switch (currentStage) {
-            case 0:
+        boolean sen[] = s_intake.getSensors();
+        switch(currentStage) {
+            case 0: //should never reach here, but it's here for safety measures.
                 isDone = true;
+                return;
             case 1:
-                s_intake.setEntrySpeed(0.3);
-                s_intake.setCurveSpeed(0.5);
-                if(s_intake.isSensorTwoActivated()) {
+                if(sen[1] && !sen[2] && !sen[3] && !sen[4]) {
                     isDone = true;
                 }
                 break;
             case 2:
-                s_intake.setEntrySpeed(0.3);
-                s_intake.setCurveSpeed(0.5);
-                s_intake.setVerticalSpeed(0.5);
-                if(s_intake.isSensorThreeActivated()) {
+                if(sen[1] && sen[2] && !sen[3] && !sen[4]) {
                     isDone = true;
                 }
                 break;
             case 3:
-                s_intake.setEntrySpeed(0.3);
-                s_intake.setCurveSpeed(0.5);
-                s_intake.setVerticalSpeed(0.5);
-                if(s_intake.isSensorFourActivated()) {
+                if(sen[1] && sen[2] && sen[3] && !sen[4]) {
                     isDone = true;
                 }
                 break;
             case 4:
-                s_intake.setEntrySpeed(0.3);
-                s_intake.setCurveSpeed(0.5);
-                s_intake.setVerticalSpeed(0.5);
-                if(s_intake.isSensorFiveActivated()) {
+                if(sen[1] && sen[2] && sen[3] && sen[4]) {
                     isDone = true;
                 }
                 break;
-            case 5:
+            case 5: //shoudl never reach here, but it's here for safety measures.
                 isDone = true;
-                break;
-            default:
-                //never supposed to reach here
+                return;
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        
+        s_intake.setSpeeds(0, 0, 0, 0);
     }
 
     @Override
