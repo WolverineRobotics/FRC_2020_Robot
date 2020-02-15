@@ -31,7 +31,8 @@ public class RobotMap{
     public class SpeedController {
         public static final int ENTRY = -1;
         public static final int CURVE = -1;
-        public static final int VERTICAL = -1;
+        public static final int VERTICAL_LOWER = -1;
+        public static final int VERTICAL_UPPER = -1;
         public static final int SHOOT = -1;
         public static final int HOOD = -1;
     }

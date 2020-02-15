@@ -13,6 +13,11 @@ public class DefaultIntakeCommand extends CommandBase {
     private final IntakeSubsystem s_intake;
     private final OperatorController oc;
 
+    private final double entrySpeed = 0.3;
+    private final double curveSpeed = 0.5;
+    private final double verticalLowerSpeed = 0.5;
+    private final double verticalUpperSpeed = 0.5;
+
     public DefaultIntakeCommand(final IntakeSubsystem s_intake) {
         this.s_intake = s_intake;
         addRequirements(s_intake);
@@ -23,7 +28,8 @@ public class DefaultIntakeCommand extends CommandBase {
     public void initialize() {
         s_intake.setCurveSpeed(0);
         s_intake.setEntrySpeed(0);
-        s_intake.setVerticalSpeed(0);
+        s_intake.setVerticalLowerSpeed(0);
+        s_intake.setVerticalUpperSpeed(0);
     }
 
     @Override
@@ -32,32 +38,22 @@ public class DefaultIntakeCommand extends CommandBase {
             if(s_intake.isIntakeOpen()) {
                 s_intake.setIntakePiston(true);
             }
-            final int amountOfBalls = s_intake.getAmountOfBalls();
             final boolean[] sen = s_intake.getSensors();
-            if(!sen[0]) { //if sensor 1 is not detecting anything and there are 4+ balls in the mag
-                s_intake.setEntrySpeed(0.5);
-            } else if(sen[0]) {
-                s_intake.setEntrySpeed(0.3);
-                s_intake.setCurveSpeed(0.5);
-            } else if(sen[0] && sen[1]) {
-                s_intake.setEntrySpeed(0.3);
-                s_intake.setCurveSpeed(0.5);
-                s_intake.setVerticalSpeed(0.5);
-            } else if(sen[0] && sen[1] && sen[2] && sen[3] && !sen[4]) {
-                s_intake.setEntrySpeed(0.3);
-                s_intake.setCurveSpeed(0.5);
-                s_intake.setVerticalSpeed(0.5);
-            } else if(sen[0] && sen[1] && sen[2] && !sen[3] && !sen[4]) {
-                s_intake.setEntrySpeed(0.3);
-                s_intake.setCurveSpeed(0.5);
-                s_intake.setVerticalSpeed(0.5);
-            } else {
+            if(!sen[0] && sen[1] && sen[2] && sen[3] && sen[4]) { //if sensor 2, 3, 4, and 5 are detecting but not 1
+                s_intake.setEntrySpeed(entrySpeed);
+            } else if(sen[0] && !sen[1] && !sen[2] && !sen[3] && !sen[4]) { //if sensor 1 is only one with ball
+                s_intake.setSpeeds(entrySpeed, 0, 0, 0);
+            } else if(sen[0] && sen[1] && !sen[2] && !sen[3] && !sen[4]) { //if sensor 1 and 2 is only one with ball
+                s_intake.setSpeeds(entrySpeed, curveSpeed, verticalLowerSpeed, 0);
+            } else if(sen[0] && sen[1] && sen[2] && !sen[3] && !sen[4]) { //if sensor 1, 2, 3, has ball
+                s_intake.setSpeeds(entrySpeed, curveSpeed, verticalLowerSpeed, 0);
+            } else if(sen[0] && sen[1] && sen[2] && sen[3] && !sen[4]) { //if sensor 1, 2, 3, and 4 has ball
+                s_intake.setSpeeds(entrySpeed, curveSpeed, verticalLowerSpeed, verticalUpperSpeed);
+            } else if(!sen[0] && !sen[1] && !sen[2] && !sen[3] && !sen[4]) {
                 s_intake.setEntrySpeed(0.5);
             }
         } else if(oc.isHoldingRightTrigger()) { //if operator outaking
-            s_intake.setEntrySpeed(0.1);
-            s_intake.setCurveSpeed(0.3);
-            s_intake.setVerticalSpeed(0.3);
+            s_intake.setSpeeds(0.2, 0.4, 0.4, 0.3);
         } else if(oc.getAutoShootButton()) { // if operator wants to auto shoot
             /**
             * Operator presses one button and the robot will:
