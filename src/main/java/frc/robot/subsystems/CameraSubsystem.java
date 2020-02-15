@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import java.util.HashMap;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -8,6 +10,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.RobotConst;
+import frc.robot.constants.RobotConst.VisionConst;
 import frc.robot.exceptions.NTNullEntryException;
 
 public class CameraSubsystem extends SubsystemBase {
@@ -358,11 +361,58 @@ public class CameraSubsystem extends SubsystemBase {
     // SENDABLE
     // ========================================================================
 
+    private DoubleSupplier catchEntyError(DoubleSupplier something) {
+        try{
+            return something;
+        } catch (NTNullEntryException e){
+            return null;
+        }
+    }
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         builder.addBooleanProperty("[Camera] Detected Target", this::hasValidTargets, null);
-        // TODO: Add more (tx, etc)
+    
+        builder.addStringProperty("[Camera] LED Mode", () -> {
+            try {
+                return getLEDMode().toString();
+            } catch (NTNullEntryException e) {
+                return "ERROR";
+            }
+        }, null);
+        builder.addDoubleProperty("[Camera] Angle Horizontal", () -> {
+            try{
+                return getTargetHorizontal();
+            } catch (NTNullEntryException e){
+                return RobotConst.VisionConst.ERROR;
+            }
+        }, null);
+
+       builder.addDoubleProperty("[Camera] Angle Vertical", () -> {
+           try{
+               return getTargetVertical();
+           } catch (NTNullEntryException e){
+               return RobotConst.VisionConst.ERROR;
+           }
+       }, null);
+
+       builder.addDoubleProperty("[Camera] Target Skew", () -> {
+           try{
+               return getTargetSkew();
+           } catch (NTNullEntryException e){
+               return RobotConst.VisionConst.ERROR;
+           }
+       }, null);
+
+        builder.addDoubleProperty("[Camera] Pipeline Latency", () -> {
+            try{
+                return getPipelineLatency();
+            } catch (NTNullEntryException e){
+                return RobotConst.VisionConst.ERROR;
+            }
+        }, null);       
+
+ 
     }
 
 }
