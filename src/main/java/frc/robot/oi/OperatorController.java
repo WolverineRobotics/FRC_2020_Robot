@@ -12,7 +12,7 @@ import frc.robot.constants.RobotConst;
  * Left Stick Button:
  * 
  * Right Stick X: 
- * Right Stick Y: [up] = hood close | [down] = hood open
+ * Right Stick Y:
  * Right Stick Button:
  * 
  * Left Bumper:
@@ -55,13 +55,6 @@ public class OperatorController extends Controller {
      */
     public boolean isHoldingRightTrigger() {
         return operator.getRawAxis(JoystickMap.RIGHT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_INTAKE;
-    }
-
-    /**
-     * @return double value from -1 to 1.
-     */
-    public double getRightStickY() {
-        return operator.getRawAxis(JoystickMap.RIGHT_STICK_Y);
     }
 
     /**
