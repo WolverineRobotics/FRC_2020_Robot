@@ -5,6 +5,7 @@ import java.util.HashMap;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.RobotConst;
 import frc.robot.exceptions.NTNullEntryException;
@@ -18,6 +19,8 @@ public class CameraSubsystem extends SubsystemBase {
     private NetworkTableEntry pipelineLatency;
 
     public CameraSubsystem() {
+        super();
+
         nt = NetworkTableInstance.getDefault().getTable("limelight");
 
         // NetworkTableAPI docs:
@@ -349,6 +352,17 @@ public class CameraSubsystem extends SubsystemBase {
         public static LEDMode reverseLookup(final int value) {
             return map.get(value);
         }
+    }
+
+    // ========================================================================
+    // SENDABLE
+    // ========================================================================
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+        builder.addBooleanProperty("[Camera] Detected Target", this::hasValidTargets, null);
+        // TODO: Add more (tx, etc)
     }
 
 }

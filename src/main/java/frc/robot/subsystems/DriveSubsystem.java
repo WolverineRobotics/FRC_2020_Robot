@@ -57,6 +57,8 @@ public class DriveSubsystem extends SubsystemBase {
     private GyroPID gyroPID;
 
     public DriveSubsystem() {
+        super();
+
         leftDrive01 = new Spark(DRIVE_LEFT_MOTOR_MASTER_ADDRESS);
         leftDrive02 = new Spark(DRIVE_LEFT_MOTOR_SLAVE_ADDRESS);
         rightDrive01 = new Spark(DRIVE_RIGHT_MOTOR_MASTER_ADDRESS);
@@ -89,9 +91,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
 
-        SendableRegistry.add(this, "DriveSubsystem");
-        SendableRegistry.add(leftPid, "[Drive] Left PID");
-        SendableRegistry.add(rightPid, "[Drive] Right PID");
+        SendableRegistry.addLW(leftPid, "[Drive] Left PID");
+        SendableRegistry.addLW(rightPid, "[Drive] Right PID");
     }
 
     public void setLeftSpeed(double speed) {
