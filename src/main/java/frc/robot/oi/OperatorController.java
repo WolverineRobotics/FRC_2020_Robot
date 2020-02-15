@@ -18,8 +18,8 @@ import frc.robot.constants.RobotConst;
  * Left Bumper:
  * Right Bumper:
  * 
- * Left Trigger: Intake Balls
- * Right Trigger: Outake Balls
+ * Left Trigger: Intake Balls - programmed with sensors / should be idiot proof
+ * Right Trigger: Outake Balls from top
  * 
  * Button A:
  * Button B: Auto-Shoot (See DefaultIntakeCommand)
@@ -29,18 +29,21 @@ import frc.robot.constants.RobotConst;
  * Button Select:
  * Button Start:
  * 
- * POV 0:
+ * POV 0: (POV Up) Outake balls from bottom
  * POV 45:
- * POV 90:
+ * POV 90: 
  * POV 135:
- * POV 180:
+ * POV 180: (POV Down) Entry intake motor only
  * POV 225:
  * POV 270:
  */
 public class OperatorController extends Controller {
 
+    private Joystick operator;
+
     public OperatorController(int port) {
         super(port);
+        operator = super.getJoystick();
     }
 
     /**
@@ -62,6 +65,20 @@ public class OperatorController extends Controller {
      */
     public boolean getAutoShootButton() {
         return operator.getRawButton(JoystickMap.BUTTON_B);
+    }
+
+    /**
+     * @return true if pressing POV North
+     */
+    public boolean isPOVUp() {
+        return operator.getPOV() == JoystickMap.POV_NORTH;
+    }
+
+    /**
+     * @return true if pressing POV South
+     */
+    public boolean isPOVDown() {
+        return operator.getPOV() == JoystickMap.POV_SOUTH;
     }
 
 }

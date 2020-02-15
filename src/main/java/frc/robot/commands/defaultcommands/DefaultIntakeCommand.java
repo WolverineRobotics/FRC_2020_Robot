@@ -56,8 +56,8 @@ public class DefaultIntakeCommand extends CommandBase {
             }
         } else if(oc.isHoldingRightTrigger()) { //if operator outaking
             s_intake.setEntrySpeed(0.1);
-            s_intake.setCurveSpeed(0.1);
-            s_intake.setVerticalSpeed(0.1);
+            s_intake.setCurveSpeed(0.3);
+            s_intake.setVerticalSpeed(0.3);
         } else if(oc.getAutoShootButton()) { // if operator wants to auto shoot
             /**
             * Operator presses one button and the robot will:
@@ -69,6 +69,12 @@ public class DefaultIntakeCommand extends CommandBase {
                 // new RotateToVisionTargetCommand(s_camera, s_drive);
                 
             );
+        } else if(oc.isPOVUp()) { //if operator
+            s_intake.setEntrySpeed(-0.3);
+            s_intake.setCurveSpeed(-0.5);
+            s_intake.setVerticalSpeed(-0.5);
+        } else if(oc.isPOVDown()) {
+            s_intake.setEntrySpeed(0.3);
         }
     }
 
