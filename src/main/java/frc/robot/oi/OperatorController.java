@@ -12,7 +12,7 @@ import frc.robot.constants.RobotConst;
  * Left Stick Button:
  * 
  * Right Stick X: 
- * Right Stick Y: [up] = hood down | [down] = hood up
+ * Right Stick Y: [up] = hood close | [down] = hood open
  * Right Stick Button:
  * 
  * Left Bumper:
