@@ -50,6 +50,7 @@ public class MoveBallsOneStageCommand extends CommandBase {
         this.s_intake = s_intake;
         currentStage = 0;
         isDone = false;
+        addRequirements(s_intake);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class MoveBallsOneStageCommand extends CommandBase {
             s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, 0);
         } else if(sen[0] && sen[1] && sen[2] && sen[3] && !sen[4]) { // ! ! ! ! ?
             currentStage = 4;
-            s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, IntakeConst.UPPER_VERTICAL_SPEED;
+            s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, IntakeConst.UPPER_VERTICAL_SPEED);
         } else if(sen[0] && sen[1] && sen[2] && sen[3] && sen[4]) { // ! ! ! ! !
             // no stage to be moved.
             currentStage = 5;
