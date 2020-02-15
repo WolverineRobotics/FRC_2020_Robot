@@ -20,8 +20,13 @@ public class RobotConst {
         public static final int ENTRY_SPEED_REDUCTION_RATIO = 1;
         public static final int CURVE_SPEED_REDUCTION_RATIO = 1;
         public static final int VERTICAL_SPEED_REDUCTION_RATIO = 1;
-        public static final int SHOOT_SPEED_REDUCTION_RATIO = 1;
-        public static final int HOOD_SPEED_REDUCTION_RATIO = 1;
+        public static final int LOWER_VERTICAL_SPEED_REDUCTION_RATIO = 1;
+        public static final int UPPER_VERTICAL_SPEED_REDUCTION_RATIO = 1;
+
+        public static final double ENTRY_SPEED = 0.3;
+        public static final double CURVE_SPEED = 0.5;
+        public static final double LOWER_VERTICAL_SPEED = 0.5;
+        public static final double UPPER_VERTICAL_SPEED = 0.5;
     }
 
     public class PIDConst {
@@ -47,4 +52,6 @@ public class RobotConst {
 
         public static final double DEADZONE_INTAKE = 0.2;
     }
+
+
 }

@@ -1,22 +1,16 @@
 package frc.robot.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.oi.OperatorController;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.constants.RobotConst.IntakeConst;
 
 public class DefaultIntakeCommand extends CommandBase {
 
     private final IntakeSubsystem s_intake;
     private final OperatorController oc;
-
-    private final double entrySpeed = 0.3;
-    private final double curveSpeed = 0.5;
-    private final double verticalLowerSpeed = 0.5;
-    private final double verticalUpperSpeed = 0.5;
 
     public DefaultIntakeCommand(final IntakeSubsystem s_intake) {
         this.s_intake = s_intake;
@@ -26,8 +20,8 @@ public class DefaultIntakeCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        s_intake.setCurveSpeed(0);
         s_intake.setEntrySpeed(0);
+        s_intake.setCurveSpeed(0);
         s_intake.setVerticalLowerSpeed(0);
         s_intake.setVerticalUpperSpeed(0);
     }
@@ -40,17 +34,17 @@ public class DefaultIntakeCommand extends CommandBase {
             }
             final boolean[] sen = s_intake.getSensors();
             if(!sen[0] && sen[1] && sen[2] && sen[3] && sen[4]) { //if sensor 2, 3, 4, and 5 are detecting but not 1
-                s_intake.setEntrySpeed(entrySpeed);
+                s_intake.setEntrySpeed(IntakeConst.ENTRY_SPEED);
             } else if(sen[0] && !sen[1] && !sen[2] && !sen[3] && !sen[4]) { //if sensor 1 is only one with ball
-                s_intake.setSpeeds(entrySpeed, 0, 0, 0);
+                s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, 0, 0, 0);
             } else if(sen[0] && sen[1] && !sen[2] && !sen[3] && !sen[4]) { //if sensor 1 and 2 is only one with ball
-                s_intake.setSpeeds(entrySpeed, curveSpeed, verticalLowerSpeed, 0);
+                s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, 0);
             } else if(sen[0] && sen[1] && sen[2] && !sen[3] && !sen[4]) { //if sensor 1, 2, 3, has ball
-                s_intake.setSpeeds(entrySpeed, curveSpeed, verticalLowerSpeed, 0);
+                s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, 0);
             } else if(sen[0] && sen[1] && sen[2] && sen[3] && !sen[4]) { //if sensor 1, 2, 3, and 4 has ball
-                s_intake.setSpeeds(entrySpeed, curveSpeed, verticalLowerSpeed, verticalUpperSpeed);
+                s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED, IntakeConst.UPPER_VERTICAL_SPEED);
             } else if(!sen[0] && !sen[1] && !sen[2] && !sen[3] && !sen[4]) {
-                s_intake.setEntrySpeed(0.5);
+                s_intake.setEntrySpeed(IntakeConst.ENTRY_SPEED);
             }
         } else if(oc.isHoldingRightTrigger()) { //if operator outaking
             s_intake.setSpeeds(0.2, 0.4, 0.4, 0.3);
@@ -65,11 +59,12 @@ public class DefaultIntakeCommand extends CommandBase {
                 // new RotateToVisionTargetCommand(s_camera, s_drive);
                 
             );
-        } else if(oc.isPOVUp()) { //if operator
+        } else if(oc.isPOVUp()) { //if operator wants to outake the balls from the bottom
             s_intake.setEntrySpeed(-0.3);
             s_intake.setCurveSpeed(-0.5);
-            s_intake.setVerticalSpeed(-0.5);
-        } else if(oc.isPOVDown()) {
+            s_intake.setVerticalLowerSpeed(-0.5);
+            s_intake.setVerticalUpperSpeed(-0.5);
+        } else if(oc.isPOVDown()) { //if operator wants to intake only entry motor
             s_intake.setEntrySpeed(0.3);
         }
     }
