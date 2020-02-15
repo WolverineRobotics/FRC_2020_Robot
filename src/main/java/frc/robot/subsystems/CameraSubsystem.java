@@ -361,13 +361,6 @@ public class CameraSubsystem extends SubsystemBase {
     // SENDABLE
     // ========================================================================
 
-    private DoubleSupplier catchEntyError(DoubleSupplier something) {
-        try{
-            return something;
-        } catch (NTNullEntryException e){
-            return null;
-        }
-    }
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
