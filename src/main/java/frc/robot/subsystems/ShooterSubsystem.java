@@ -32,8 +32,9 @@ public class ShooterSubsystem extends SubsystemBase {
         // flywheelPID = new CANPIDController(flywheel);
 
         hood = new TalonSRX(RobotMap.SHOOTER_HOOD_MOTOR_ADDRESS);
-        hoodEncoder = new RevAbsoluteEncoder(RobotMap.SHOOTER_HOOD_ENCODER_ADDRESS);
-        
+        hoodEncoder = new RevAbsoluteEncoder(RobotMap.SHOOTER_HOOD_ENCODER_ADDRESS,
+                ShooterConst.HOOD_ENCODER_ZERO_POSITION);
+
     }
 
     public void setFlywheelSpeed(double speed) {
