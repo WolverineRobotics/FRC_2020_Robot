@@ -12,6 +12,7 @@ public class MoveBallsToShootCommand extends CommandBase {
     public MoveBallsToShootCommand(IntakeSubsystem subsystem) {
         super();
         s_intake = subsystem;
+        addRequirements(subsystem);
     }
 
     @Override
