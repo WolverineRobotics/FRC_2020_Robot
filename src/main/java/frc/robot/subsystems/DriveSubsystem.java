@@ -3,19 +3,16 @@ package frc.robot.subsystems;
 import static frc.robot.constants.RobotConst.DriveConst.CharacterizationConst.K_TRACKWIDTH_METERS;
 import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_A;
 import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_B;
-import static frc.robot.constants.RobotMap.DRIVE_LEFT_MOTOR_MASTER_ADDRESS;
-import static frc.robot.constants.RobotMap.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS;
 import static frc.robot.constants.RobotMap.DRIVE_RIGHT_ENCODER_A;
 import static frc.robot.constants.RobotMap.DRIVE_RIGHT_ENCODER_B;
-import static frc.robot.constants.RobotMap.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS;
-import static frc.robot.constants.RobotMap.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -37,7 +34,7 @@ import frc.robot.pid.GyroToRotate;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private Spark leftDrive01, leftDrive02, rightDrive01, rightDrive02;
+    private CANSparkMax leftMaster, leftSlave1,leftSlave2, rightMaster, rightSlave1, rightSlave2;
     private Encoder leftEncoder, rightEncoder;
 
     private SpeedControllerGroup leftGroup, rightGroup;
@@ -59,13 +56,22 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem() {
         super();
 
-        leftDrive01 = new Spark(DRIVE_LEFT_MOTOR_MASTER_ADDRESS);
-        leftDrive02 = new Spark(DRIVE_LEFT_MOTOR_SLAVE_ADDRESS);
-        rightDrive01 = new Spark(DRIVE_RIGHT_MOTOR_MASTER_ADDRESS);
-        rightDrive02 = new Spark(DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS);
+        leftMaster = new CANSparkMax(RobotMap.DRIVE_LEFT_MOTOR_MASTER_ADDRESS, MotorType.kBrushless);
+        leftSlave1 = new CANSparkMax(RobotMap.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS_1, MotorType.kBrushless);
+        leftSlave2 = new CANSparkMax(RobotMap.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS_2, MotorType.kBrushless);
+        
+        leftSlave1.follow(leftMaster);
+        leftSlave2.follow(leftMaster);
 
-        leftGroup = new SpeedControllerGroup(leftDrive01, leftDrive02);
-        rightGroup = new SpeedControllerGroup(rightDrive01, rightDrive02);
+        rightMaster = new CANSparkMax(RobotMap.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS, MotorType.kBrushless);
+        rightSlave1 = new CANSparkMax(RobotMap.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS_1, MotorType.kBrushless);
+        rightSlave2 = new CANSparkMax(RobotMap.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS_2, MotorType.kBrushless);
+
+        rightSlave1.follow(rightMaster);
+        rightSlave2.follow(rightMaster);
+
+        leftGroup = new SpeedControllerGroup(leftMaster);
+        rightGroup = new SpeedControllerGroup(rightMaster);
         rightGroup.setInverted(true);
 
         driveTrain = new DifferentialDrive(leftGroup, rightGroup);
@@ -166,6 +172,45 @@ public class DriveSubsystem extends SubsystemBase {
     public double getDistance() {
         return (getDistanceLeftEncoder() + getDistanceRightEncoder()) / 2;
     }
+    
+    public double getLeftVoltage(){
+        return (leftMaster.getAppliedOutput()* leftMaster.getBusVoltage()); 
+    }
+
+    public double getRightVoltage(){
+        return (rightMaster.getAppliedOutput()*rightMaster.getBusVoltage());
+    }
+    /**
+     * 
+     * @return the average current of the 3 motors on the left side
+     */
+    public double getLeftCurent(){
+        return (leftMaster.getOutputCurrent() + leftSlave1.getOutputCurrent() + leftSlave2.getOutputCurrent()) / 3 ;
+    }
+
+    /**
+     * 
+     * @return the average current of the 3 motors on the right side.
+     */
+    public double getRightCurent(){
+        return (rightMaster.getOutputCurrent() + rightSlave1.getOutputCurrent() + rightSlave2.getOutputCurrent()) / 3 ;
+    }
+
+    /**
+     * 
+     * @return left side velocity in meters per second.
+     */
+    public double getLeftVelocity(){
+        return leftEncoder.getRate();
+    }
+
+    /**
+     * 
+     * @return right side velocity in meters per second.
+     */
+    public double getRightVelocity(){
+        return rightEncoder.getRate();
+    }
 
     /**
      * resets encoder values
@@ -194,11 +239,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getLeftSpeed() {
-        return (leftDrive01.get() + leftDrive02.get()) / 2;
+        return (leftMaster.get());
     }
 
     public double getRightSpeed() {
-        return (rightDrive01.get() + rightDrive02.get()) / 2;
+        return (rightMaster.get());
     }
 
     /**
@@ -313,9 +358,23 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        // TODO Auto-generated method stub
+        // TODO Auto-generated method stub 
+        //volatage, current for left and right. 
         super.initSendable(builder);
         builder.setSmartDashboardType("DriveSubsystem");
+        
+        builder.addDoubleProperty("[Drive] Left Speed", this::getLeftSpeed, null);
+        builder.addDoubleProperty("[Drive] Right Speed", this::getRightSpeed, null);
+        builder.addDoubleProperty("[Drive] Left Distance Encoder", this::getDistanceLeftEncoder,null);
+        builder.addDoubleProperty("[Drive] Right Distance Encoder", this::getDistanceRightEncoder,null);
+        builder.addDoubleProperty("[Drive] Right Voltage", this::getRightVoltage, null);
+        builder.addDoubleProperty("[Drive] Left Voltage", this::getLeftVoltage, null);
+        builder.addDoubleProperty("[Drive] Left Current", this::getLeftCurent, null);
+        builder.addDoubleProperty("[Drive] Right Current", this::getRightCurent, null);
+        builder.addDoubleProperty("[Drive] Left Velocity", this::getLeftVelocity, null);
+        builder.addDoubleProperty("[Drive] Right Velocity", this::getRightVelocity, null);
+
+
     }
 
 }
