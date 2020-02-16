@@ -17,6 +17,9 @@ import frc.robot.util.Util;
 
 public class ShooterSubsystem extends SubsystemBase {
 
+    // TODO: Change value
+    private final double FLYWHEEL_kP = 0.01;
+
     private final CANSparkMax flywheel;
     private final CANEncoder flywheelEncoder;
     // private final CANPIDController flywheelPID;
@@ -76,6 +79,20 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public double getFlywheelSpeed() {
         return getFlywheelRawSpeed() * ShooterConst.SHOOTER_FLYWHEEL_GEAR_RATIO;
+    }
+
+    public void setFlywheelRPM(double rpmSetpoint){
+        setFlywheelRPM(rpmSetpoint, 0);
+    }
+
+    public void setFlywheelRPM(double rpmSetpoint, double basePower){
+        setFlywheelRPM(rpmSetpoint, 0, FLYWHEEL_kP);
+    }
+
+    public void setFlywheelRPM(double rpmSetpoint, double basePower, double kP){
+        double error = rpmSetpoint - getFlywheelRawSpeed();
+        double proportional = error * kP;
+        setFlywheelSpeed(proportional + basePower);
     }
 
     @Override
