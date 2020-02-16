@@ -42,5 +42,7 @@ public class RobotConst {
 
         public static final double SHOOTER_FLYWHEEL_GEAR_RATIO = 22/18;
         public static final int HOOD_ENCODER_ZERO_POSITION = 0;
+
+        public static final double HOOD_MOTOR_POWER = 0.4;
     }
 }
