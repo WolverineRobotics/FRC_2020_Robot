@@ -9,7 +9,7 @@ public class RobotConst {
         public static final double DRIVE_SPEED_REDUCTION_RATIO_FINE = 0.30;
         public static final double DRIVE_SPEED_REDUCTION_RATIO = 0.80;
 
-        public static final double DRIVE_ENCODER_COUNTS_PER_INCH = 12.92;
+        public static final double DRIVE_ENCODER_COUNTS_PER_METER = 12.92;
 
         public static final double DRIVE_MAX_VOLTAGE = 10;
 

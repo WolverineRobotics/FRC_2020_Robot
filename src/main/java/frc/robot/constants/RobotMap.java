@@ -20,4 +20,8 @@ public class RobotMap{
 
     public static final int DRIVE_PIGEON_IMU_ADDRESS                = 12;
 
+    public static final int DRIVE_HIGH_GEAR_ADDRESS = -1;
+    public static final int DRIVE_LOW_GEAR_ADDRESS = -1;
+
+
 }

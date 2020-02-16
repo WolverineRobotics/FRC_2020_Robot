@@ -11,6 +11,8 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -22,7 +24,6 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
@@ -34,11 +35,16 @@ import frc.robot.pid.GyroToRotate;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private CANSparkMax leftMaster, leftSlave1,leftSlave2, rightMaster, rightSlave1, rightSlave2;
+    private CANSparkMax leftMaster, leftSlave1, leftSlave2, rightMaster, rightSlave1, rightSlave2;
     private Encoder leftEncoder, rightEncoder;
 
     private SpeedControllerGroup leftGroup, rightGroup;
     private DifferentialDrive driveTrain;
+
+    /**
+     * High gear is forward, low gear is reverse
+     */
+    private DoubleSolenoid gearShifter;
 
     private DifferentialDriveKinematics m_kinematics;
     private DifferentialDriveOdometry m_odometry;
@@ -59,7 +65,7 @@ public class DriveSubsystem extends SubsystemBase {
         leftMaster = new CANSparkMax(RobotMap.DRIVE_LEFT_MOTOR_MASTER_ADDRESS, MotorType.kBrushless);
         leftSlave1 = new CANSparkMax(RobotMap.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS_1, MotorType.kBrushless);
         leftSlave2 = new CANSparkMax(RobotMap.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS_2, MotorType.kBrushless);
-        
+
         leftSlave1.follow(leftMaster);
         leftSlave2.follow(leftMaster);
 
@@ -82,6 +88,8 @@ public class DriveSubsystem extends SubsystemBase {
         leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
         rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
 
+        gearShifter = new DoubleSolenoid(RobotMap.DRIVE_HIGH_GEAR_ADDRESS, RobotMap.DRIVE_LOW_GEAR_ADDRESS);
+
         navX = new AHRS(Port.kMXP);
         pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
 
@@ -99,6 +107,14 @@ public class DriveSubsystem extends SubsystemBase {
 
         SendableRegistry.addLW(leftPid, "[Drive] Left PID");
         SendableRegistry.addLW(rightPid, "[Drive] Right PID");
+    }
+
+    public void setHighGear() {
+        gearShifter.set(Value.kForward);
+    }
+
+    public void setLowGear() {
+        gearShifter.set(Value.kReverse);
     }
 
     public void setLeftSpeed(double speed) {
@@ -172,35 +188,36 @@ public class DriveSubsystem extends SubsystemBase {
     public double getDistance() {
         return (getDistanceLeftEncoder() + getDistanceRightEncoder()) / 2;
     }
-    
-    public double getLeftVoltage(){
-        return (leftMaster.getAppliedOutput()* leftMaster.getBusVoltage()); 
+
+    public double getLeftVoltage() {
+        return (leftMaster.getAppliedOutput() * leftMaster.getBusVoltage());
     }
 
-    public double getRightVoltage(){
-        return (rightMaster.getAppliedOutput()*rightMaster.getBusVoltage());
+    public double getRightVoltage() {
+        return (rightMaster.getAppliedOutput() * rightMaster.getBusVoltage());
     }
+
     /**
      * 
      * @return the average current of the 3 motors on the left side
      */
-    public double getLeftCurent(){
-        return (leftMaster.getOutputCurrent() + leftSlave1.getOutputCurrent() + leftSlave2.getOutputCurrent()) / 3 ;
+    public double getLeftCurent() {
+        return (leftMaster.getOutputCurrent() + leftSlave1.getOutputCurrent() + leftSlave2.getOutputCurrent()) / 3;
     }
 
     /**
      * 
      * @return the average current of the 3 motors on the right side.
      */
-    public double getRightCurent(){
-        return (rightMaster.getOutputCurrent() + rightSlave1.getOutputCurrent() + rightSlave2.getOutputCurrent()) / 3 ;
+    public double getRightCurent() {
+        return (rightMaster.getOutputCurrent() + rightSlave1.getOutputCurrent() + rightSlave2.getOutputCurrent()) / 3;
     }
 
     /**
      * 
      * @return left side velocity in meters per second.
      */
-    public double getLeftVelocity(){
+    public double getLeftVelocity() {
         return leftEncoder.getRate();
     }
 
@@ -208,7 +225,7 @@ public class DriveSubsystem extends SubsystemBase {
      * 
      * @return right side velocity in meters per second.
      */
-    public double getRightVelocity(){
+    public double getRightVelocity() {
         return rightEncoder.getRate();
     }
 
@@ -287,8 +304,8 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         super.periodic();
-        m_odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), Units.inchesToMeters(getDistanceRightEncoder()),
-                Units.inchesToMeters(getDistanceLeftEncoder()));
+        m_odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), getDistanceRightEncoder(),
+                getDistanceLeftEncoder());
     }
 
     public Pose2d getPose() {
@@ -358,22 +375,21 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        // TODO Auto-generated method stub 
-        //volatage, current for left and right. 
+        // TODO Auto-generated method stub
+        // volatage, current for left and right.
         super.initSendable(builder);
         builder.setSmartDashboardType("DriveSubsystem");
-        
+
         builder.addDoubleProperty("[Drive] Left Speed", this::getLeftSpeed, null);
         builder.addDoubleProperty("[Drive] Right Speed", this::getRightSpeed, null);
-        builder.addDoubleProperty("[Drive] Left Distance Encoder", this::getDistanceLeftEncoder,null);
-        builder.addDoubleProperty("[Drive] Right Distance Encoder", this::getDistanceRightEncoder,null);
+        builder.addDoubleProperty("[Drive] Left Distance Encoder", this::getDistanceLeftEncoder, null);
+        builder.addDoubleProperty("[Drive] Right Distance Encoder", this::getDistanceRightEncoder, null);
         builder.addDoubleProperty("[Drive] Right Voltage", this::getRightVoltage, null);
         builder.addDoubleProperty("[Drive] Left Voltage", this::getLeftVoltage, null);
         builder.addDoubleProperty("[Drive] Left Current", this::getLeftCurent, null);
         builder.addDoubleProperty("[Drive] Right Current", this::getRightCurent, null);
         builder.addDoubleProperty("[Drive] Left Velocity", this::getLeftVelocity, null);
         builder.addDoubleProperty("[Drive] Right Velocity", this::getRightVelocity, null);
-
 
     }
 
