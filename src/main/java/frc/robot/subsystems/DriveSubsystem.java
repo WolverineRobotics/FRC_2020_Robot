@@ -14,24 +14,32 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
+import frc.robot.constants.RobotConst.DriveConst.CharacterizationConst;
 import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.constants.RobotMap;
 import frc.robot.pid.DriveFeedForwardPID;
 import frc.robot.pid.GyroPID;
 import frc.robot.pid.GyroToRotate;
+import frc.robot.util.Util;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -49,6 +57,8 @@ public class DriveSubsystem extends SubsystemBase {
     private DifferentialDriveKinematics m_kinematics;
     private DifferentialDriveOdometry m_odometry;
 
+    private SimpleMotorFeedforward feedForward;
+
     private AHRS navX;
     private PigeonIMU pigeon;
 
@@ -58,6 +68,8 @@ public class DriveSubsystem extends SubsystemBase {
     private GyroToRotate gyroToRotate;
 
     private GyroPID gyroPID;
+
+    private PowerDistributionPanel pdp;
 
     public DriveSubsystem() {
         super();
@@ -98,10 +110,16 @@ public class DriveSubsystem extends SubsystemBase {
         m_kinematics = new DifferentialDriveKinematics(K_TRACKWIDTH_METERS);
         m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()));
 
+        feedForward = new SimpleMotorFeedforward(CharacterizationConst.KS_VOLTS,
+                CharacterizationConst.KV_VOLT_SECONDS_PER_METER,
+                CharacterizationConst.KA_VOLT_SECONDS_SQUARED_PER_METER);
+
         leftPid = new DriveFeedForwardPID();
         rightPid = new DriveFeedForwardPID();
 
         gyroToRotate = new GyroToRotate(K_TRACKWIDTH_METERS);
+
+        pdp = new PowerDistributionPanel();
 
         setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
 
@@ -332,6 +350,24 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * Takes the turn and state from a rotational profiled pid and applies a feed forward to it.
+     * @param turn turn power from pid
+     * @param state current state, in degrees and degrees per second
+     * @param constraints in max degrees per second and max degrees per second squared
+     */
+    public void turnStateFeedForward(double turn, State state, Constraints constraints) {
+        DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(0,0,Units.degreesToRadians(state.velocity)));
+        
+        //May need to invert
+        double ffPowerVolts = feedForward.calculate(wheelSpeeds.rightMetersPerSecond);
+
+        double ffSpeed =  Util.voltageToSpeed(ffPowerVolts, pdp.getVoltage());  
+
+        turn += ffSpeed;
+        arcadeDrive(0, turn, false);
+    }
+
+    /**
      * 
      * @param currentGyroAngle The current gyro angle.
      * @param goal             The gyro angle you want to rotate to.
@@ -375,8 +411,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        // TODO Auto-generated method stub
-        // volatage, current for left and right.
         super.initSendable(builder);
         builder.setSmartDashboardType("DriveSubsystem");
 

@@ -18,8 +18,8 @@ public class RobotConst {
 
         public class CharacterizationConst {
             public static final double KS_VOLTS = 0;
-            public static final double KS_VOLT_SECONDS_PER_METER = 0;
-            public static final double KS_VOLT_SECONDS_SQUARED_PER_METER = 0;
+            public static final double KV_VOLT_SECONDS_PER_METER = 0;
+            public static final double KA_VOLT_SECONDS_SQUARED_PER_METER = 0;
 
             public static final double K_P_DRIVE_VELOCITY = 0;
             /**
@@ -31,6 +31,9 @@ public class RobotConst {
             public static final double K_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 0;
             public static final double DRIVEPID_MAX_ERR_VELOCITY = 1;
             public static final double DRIVEPID_MAX_ERR_ACCELERATION = 1;
+
+            public static final double K_MAX_TURN_DEG_PER_SECOND = 0;
+            public static final double K_MAX_TURN_ACCEL_DEG_PER_SECOND_SQUARED = 0;
 
                 // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
             public static final double K_RAMSETE_B = 2;
@@ -53,6 +56,13 @@ public class RobotConst {
         public static final double DRIVE_FF_KP = 0;
         public static final double DRIVE_FF_KI = 0;
         public static final double DRIVE_FF_KD = 0;
+
+        public static final double DRIVE_TURN_KP = 0;
+        public static final double DRIVE_TURN_KI = 0;
+        public static final double DRIVE_TURN_KD = 0;
+
+        public static final double DRIVE_TURN_TOLERANCE_DEG = 0.4;
+        public static final double DRIVE_TURN_TOLERANCE_DEG_PER_SECOND = 0.4;
 
     }
 

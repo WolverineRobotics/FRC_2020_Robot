@@ -47,6 +47,10 @@ public class Util {
         return (speed * maxVoltage);
     }
 
+    public static double voltageToSpeed(double voltage, double busVoltage){
+        return (voltage / busVoltage);
+    }
+
     public static double normalizeValue(double value, double min, double max) {
         return Math.IEEEremainder(value - min, max - min) + min;
     }
