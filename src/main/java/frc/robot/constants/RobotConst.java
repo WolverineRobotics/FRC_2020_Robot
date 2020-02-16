@@ -65,4 +65,16 @@ public class RobotConst {
         public static final double ERROR = -99999;
         public static final double VISION_FIND_TARGETS_TIMEOUT_SECONDS = 0.5;
     }
+
+    public class ShooterConst{
+
+        // **********************************************************************************
+        // Shooter constants
+        // **********************************************************************************
+
+        public static final double SHOOTER_FLYWHEEL_GEAR_RATIO = 22/18;
+        public static final int HOOD_ENCODER_ZERO_POSITION = 0;
+
+        public static final double HOOD_MOTOR_POWER = 0.4;
+    }
 }

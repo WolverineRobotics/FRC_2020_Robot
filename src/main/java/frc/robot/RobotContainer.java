@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
+import frc.robot.commands.defaultcommands.DefaultShooterCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LidarSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -33,6 +35,9 @@ public class RobotContainer {
 
   private final LidarSubsystem s_lidar;
 
+  private final ShooterSubsystem s_shooter = new ShooterSubsystem();
+  private final DefaultShooterCommand dc_shooter = new DefaultShooterCommand(s_shooter);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -41,6 +46,7 @@ public class RobotContainer {
     s_drive = new DriveSubsystem();
     c_drive = new DefaultDriveCommand(s_drive);
     CommandScheduler.getInstance().setDefaultCommand(s_drive, c_drive);
+    CommandScheduler.getInstance().setDefaultCommand(s_shooter, dc_shooter);
 
     s_lidar = new LidarSubsystem();
 
