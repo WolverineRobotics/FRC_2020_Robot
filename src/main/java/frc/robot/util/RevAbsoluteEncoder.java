@@ -8,7 +8,7 @@ public class RevAbsoluteEncoder {
 
     private DutyCycle absEncoder;
 
-    private final int COUNTS_PER_REVOLUTION = 1024;
+    public final int COUNTS_PER_REVOLUTION = 1024;
     private int zeroPosition;
 
     public RevAbsoluteEncoder(int DIOPort) {

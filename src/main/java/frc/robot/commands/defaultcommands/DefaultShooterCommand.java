@@ -8,6 +8,7 @@ public class DefaultShooterCommand extends CommandBase {
     private ShooterSubsystem s_shooter;
 
     public DefaultShooterCommand(ShooterSubsystem subsystem) {
+        super();
         s_shooter = subsystem;
         addRequirements(subsystem);
     }

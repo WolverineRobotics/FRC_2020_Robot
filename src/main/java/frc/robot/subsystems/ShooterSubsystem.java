@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.RobotConst.ShooterConst;
 import frc.robot.constants.RobotMap;
 import frc.robot.util.RevAbsoluteEncoder;
+import frc.robot.util.Util;
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -59,6 +60,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double getFlywheelRawSpeed() {
         return flywheelEncoder.getVelocity();
+    }
+
+    public double getHoodError(int setpoint){
+        double error = setpoint - getHoodEncoderPosition();
+        error = Util.getContinuousError(error, hoodEncoder.COUNTS_PER_REVOLUTION);
+        return error;
     }
 
     /**
