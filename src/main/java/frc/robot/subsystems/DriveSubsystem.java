@@ -1,20 +1,11 @@
 package frc.robot.subsystems;
 
-import static frc.robot.constants.RobotConst.DriveConst.CharacterizationConst.K_TRACKWIDTH_METERS;
-import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_A;
-import static frc.robot.constants.RobotMap.DRIVE_LEFT_ENCODER_B;
-import static frc.robot.constants.RobotMap.DRIVE_LEFT_MOTOR_MASTER_ADDRESS;
-import static frc.robot.constants.RobotMap.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS;
-import static frc.robot.constants.RobotMap.DRIVE_RIGHT_ENCODER_A;
-import static frc.robot.constants.RobotMap.DRIVE_RIGHT_ENCODER_B;
-import static frc.robot.constants.RobotMap.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS;
-import static frc.robot.constants.RobotMap.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -28,9 +19,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.constants.RobotConst.ControllerConst;
 import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.constants.RobotConst.PIDConst;
+import frc.robot.constants.RobotConst.DriveConst.CharacterizationConst;
 import frc.robot.constants.RobotMap;
+import frc.robot.constants.RobotMap.Drive;
 import frc.robot.pid.DriveFeedForwardPID;
 import frc.robot.pid.GyroPID;
 import frc.robot.pid.GyroToRotate;
@@ -59,10 +53,10 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem() {
         super();
 
-        leftDrive01 = new Spark(DRIVE_LEFT_MOTOR_MASTER_ADDRESS);
-        leftDrive02 = new Spark(DRIVE_LEFT_MOTOR_SLAVE_ADDRESS);
-        rightDrive01 = new Spark(DRIVE_RIGHT_MOTOR_MASTER_ADDRESS);
-        rightDrive02 = new Spark(DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS);
+        leftDrive01 = new Spark(RobotMap.Drive.DRIVE_LEFT_MOTOR_MASTER_ADDRESS);
+        leftDrive02 = new Spark(RobotMap.Drive.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS);
+        rightDrive01 = new Spark(RobotMap.Drive.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS);
+        rightDrive02 = new Spark(RobotMap.Drive.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS);
 
         leftGroup = new SpeedControllerGroup(leftDrive01, leftDrive02);
         rightGroup = new SpeedControllerGroup(rightDrive01, rightDrive02);
@@ -70,29 +64,30 @@ public class DriveSubsystem extends SubsystemBase {
 
         driveTrain = new DifferentialDrive(leftGroup, rightGroup);
 
-        leftEncoder = new Encoder(DRIVE_LEFT_ENCODER_A, DRIVE_LEFT_ENCODER_B);
-        rightEncoder = new Encoder(DRIVE_RIGHT_ENCODER_A, DRIVE_RIGHT_ENCODER_B);
+        leftEncoder = new Encoder(RobotMap.Drive.DRIVE_LEFT_ENCODER_A, RobotMap.Drive.DRIVE_LEFT_ENCODER_B);
+        rightEncoder = new Encoder(RobotMap.Drive.DRIVE_RIGHT_ENCODER_A, RobotMap.Drive.DRIVE_RIGHT_ENCODER_B);
 
         leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
         rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
 
         navX = new AHRS(Port.kMXP);
-        pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
+        pigeon = new PigeonIMU(Drive.DRIVE_PIGEON_IMU_ADDRESS);
 
         gyroPID = new GyroPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
 
-        m_kinematics = new DifferentialDriveKinematics(K_TRACKWIDTH_METERS);
+        m_kinematics = new DifferentialDriveKinematics(CharacterizationConst.K_TRACKWIDTH_METERS);
         m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()));
 
         leftPid = new DriveFeedForwardPID();
         rightPid = new DriveFeedForwardPID();
 
-        gyroToRotate = new GyroToRotate(K_TRACKWIDTH_METERS);
+        gyroToRotate = new GyroToRotate(CharacterizationConst.K_TRACKWIDTH_METERS);
 
-        setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
+        setDeadband(ControllerConst.DRIVE_THORTTLE_TRIGGER_VALUE);
 
         SendableRegistry.addLW(leftPid, "[Drive] Left PID");
         SendableRegistry.addLW(rightPid, "[Drive] Right PID");
+        setDeadband(ControllerConst.DRIVE_THORTTLE_TRIGGER_VALUE);
     }
 
     public void setLeftSpeed(double speed) {
@@ -317,5 +312,6 @@ public class DriveSubsystem extends SubsystemBase {
         super.initSendable(builder);
         builder.setSmartDashboardType("DriveSubsystem");
     }
+
 
 }
