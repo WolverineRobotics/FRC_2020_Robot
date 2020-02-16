@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.constants.RobotConst.ControllerConst;
 import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.constants.RobotMap.Drive;
@@ -59,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         gyroPID = new GyroPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
 
-        setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
+        setDeadband(ControllerConst.DRIVE_THORTTLE_TRIGGER_VALUE);
     }
 
     public void setLeftSpeed(double speed) {
@@ -193,6 +194,10 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void resetNavxHeading() {
         navX.reset();
+    }
+
+    public GyroPID getGyroPID(){
+        return gyroPID;
     }
 
 }
