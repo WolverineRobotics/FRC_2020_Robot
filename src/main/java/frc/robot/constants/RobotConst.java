@@ -27,6 +27,7 @@ public class RobotConst {
         public static final double CURVE_SPEED = 0.5;
         public static final double LOWER_VERTICAL_SPEED = 0.5;
         public static final double UPPER_VERTICAL_SPEED = 0.5;
+        public static final double UPPER_VERTICAL_SHOOT_SPEED = 0.5;
     }
 
     public class PIDConst {
