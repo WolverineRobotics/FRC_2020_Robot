@@ -52,7 +52,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Placeholder command
-    return new CommandBase(){};
+    // Placeholder command that finishes immediately
+    return new CommandBase(){
+      @Override
+      public boolean isFinished() {
+        return true;
+      }
+    };
   }
 }
