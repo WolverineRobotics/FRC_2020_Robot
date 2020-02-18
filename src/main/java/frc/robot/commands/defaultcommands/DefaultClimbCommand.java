@@ -2,6 +2,7 @@ package frc.robot.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.constants.RobotConst;
 import frc.robot.oi.DriverController;
 import frc.robot.subsystems.ClimbSubsystem;
 
@@ -37,5 +38,14 @@ public class DefaultClimbCommand extends CommandBase{
                 c_climb.setClimbSpeed(motorSpeed);
             }
         }
+        // TODO: Check polarity
+        if (c_driver.isRight()){
+            c_climb.setClimbSpeed(RobotConst.ControllerConst.CLIMB_LEVEL_SPEED);
+        } else if (c_driver.isLeft()) {
+            c_climb.setClimbLevel(-RobotConst.ControllerConst.CLIMB_LEVEL_SPEED);
+        }
+
+    
+
     }
 }
