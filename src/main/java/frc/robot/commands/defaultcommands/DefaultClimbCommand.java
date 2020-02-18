@@ -44,8 +44,5 @@ public class DefaultClimbCommand extends CommandBase{
         } else if (c_driver.isLeft()) {
             c_climb.setClimbLevel(-RobotConst.ControllerConst.CLIMB_LEVEL_SPEED);
         }
-
-    
-
     }
 }
