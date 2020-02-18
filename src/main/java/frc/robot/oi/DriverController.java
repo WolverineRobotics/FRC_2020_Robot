@@ -65,6 +65,14 @@ public class DriverController extends Controller {
     public boolean isClimbUp(){
         return driver.getRawAxis(JoystickMap.RIGHT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_TRIGGER;
     }
+
+    public boolean isRight() {
+        return driver.getPOV() == JoystickMap.POV_EAST;
+    }
+
+    public boolean isLeft(){
+        return driver.getPOV() == JoystickMap.POV_WEST;
+    }
     
 
 }

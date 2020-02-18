@@ -38,7 +38,7 @@ public class DefaultClimbCommand extends CommandBase{
                 c_climb.setClimbSpeed(motorSpeed);
             }
         }
-        // TODO: Check polarity
+        // TODO: Check polarity 
         if (c_driver.isRight()){
             c_climb.setClimbSpeed(RobotConst.ControllerConst.CLIMB_LEVEL_SPEED);
         } else if (c_driver.isLeft()) {
