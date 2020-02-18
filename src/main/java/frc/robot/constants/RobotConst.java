@@ -65,4 +65,10 @@ public class RobotConst {
         public static final double ERROR = -99999;
         public static final double VISION_FIND_TARGETS_TIMEOUT_SECONDS = 0.5;
     }
+    public class ControllerConst {
+        public static final double DRIVE_TURN_TRIGGER_VALUE = 0.10;
+        public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.20;
+
+        public static final double DEADZONE_TRIGGER = 0.2;
+    }
 }

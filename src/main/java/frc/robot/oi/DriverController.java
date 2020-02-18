@@ -2,6 +2,7 @@ package frc.robot.oi;
 
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.constants.JoystickMap;
+import frc.robot.constants.RobotConst;
 
 /**
  * Controller Map:
@@ -17,8 +18,8 @@ import frc.robot.constants.JoystickMap;
  * Left Bumper:
  * Right Bumper: Drive Fine Control
  * 
- * Left Trigger:
- * Right Trigger: 
+ * Left Trigger: Is holding climb down
+ * Right Trigger:  Is holding climb up
  * 
  * Button A:
  * Button B:
@@ -56,5 +57,14 @@ public class DriverController extends Controller {
     public boolean getFineControl() {
         return driver.getRawButton(JoystickMap.BUTTON_RIGHT_BUMPER);
     }
+
+    public boolean isClimbDown(){   
+    return driver.getRawAxis(JoystickMap.LEFT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_TRIGGER;
+    }
+
+    public boolean isClimbUp(){
+        return driver.getRawAxis(JoystickMap.RIGHT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_TRIGGER;
+    }
+    
 
 }
