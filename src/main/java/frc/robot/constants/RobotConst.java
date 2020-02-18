@@ -51,7 +51,7 @@ public class RobotConst {
         public static final double DRIVE_TURN_TRIGGER_VALUE = 0.10;
         public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.20;
 
-        public static final double DEADZONE_INTAKE = 0.2;
+        public static final double DEADZONE_TRIGGER = 0.2;
     }
 
 
