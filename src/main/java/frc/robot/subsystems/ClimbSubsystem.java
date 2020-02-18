@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
@@ -15,6 +16,8 @@ public class ClimbSubsystem extends SubsystemBase {
     private CANSparkMax climbMotor;
     private TalonSRX climbLevel;
     private DoubleSolenoid climbLock;
+    private DigitalInput sensor;
+
 
     public ClimbSubsystem(){
         super();
@@ -50,6 +53,10 @@ public class ClimbSubsystem extends SubsystemBase {
 
     public DoubleSolenoid.Value getClimbLock() {
         return climbLock.get();
+    }
+
+    public boolean getSensor(){
+        return sensor.get();
     }
 
 
