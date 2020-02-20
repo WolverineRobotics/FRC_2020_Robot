@@ -7,26 +7,23 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.defaultcommands.DefaultDriveCommand;
-import frc.robot.commands.defaultcommands.DefaultShooterCommand;
-import frc.robot.commands.groups.AutonomousGroup;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.defaultcommands.DefaultCameraCommand;
+import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
+import frc.robot.commands.defaultcommands.DefaultShooterCommand;
+import frc.robot.commands.groups.AutonomousGroup;
 import frc.robot.constants.RobotMap;
 import frc.robot.oi.DriverController;
 import frc.robot.oi.OperatorController;
 import frc.robot.subsystems.CameraSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LidarSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -49,6 +46,8 @@ public class RobotContainer {
   private DefaultIntakeCommand dc_intake;
   private DefaultCameraCommand dc_camera;
   private DefaultShooterCommand dc_shooter;
+
+  private Compressor compressor;
 
   // autonomous command
   private AutonomousGroup auto;
@@ -87,6 +86,8 @@ public class RobotContainer {
 
     //LIDAR
     s_lidar = new LidarSubsystem();
+
+    compressor = new Compressor(3);
   }
 
   /**
