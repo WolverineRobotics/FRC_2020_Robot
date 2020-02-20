@@ -74,5 +74,12 @@ public class Util {
         }
         return error;
     }
+    public static long getSeconds(long milliseconds) {
+        return (milliseconds * 1000);
+    }
+
+    public static boolean isInteger(double value) {
+        return (Math.floor(value) == value && !Double.isInfinite(value));
+    }
 
 }

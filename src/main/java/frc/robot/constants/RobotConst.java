@@ -3,8 +3,6 @@ package frc.robot.constants;
 public class RobotConst {
 
     public class DriveConst {
-        public static final double DRIVE_TURN_TRIGGER_VALUE = 0.10;
-        public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.20;
 
         public static final double DRIVE_SPEED_REDUCTION_RATIO_FINE = 0.30;
         public static final double DRIVE_SPEED_REDUCTION_RATIO = 0.80;
@@ -15,6 +13,7 @@ public class RobotConst {
 
         public static final boolean DRIVE_SQUARE_ARCADE = false;
         public static final boolean DRIVE_SQUARE_TANK = false;
+        public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.3;
 
         public class CharacterizationConst {
             public static final double KS_VOLTS = 0;
@@ -37,6 +36,20 @@ public class RobotConst {
             public static final double K_RAMSETE_ZETA = 0.7;
         }
 
+    }
+
+    public class IntakeConst {
+        public static final int ENTRY_SPEED_REDUCTION_RATIO = 1;
+        public static final int CURVE_SPEED_REDUCTION_RATIO = 1;
+        public static final int VERTICAL_SPEED_REDUCTION_RATIO = 1;
+        public static final int LOWER_VERTICAL_SPEED_REDUCTION_RATIO = 1;
+        public static final int UPPER_VERTICAL_SPEED_REDUCTION_RATIO = 1;
+
+        public static final double ENTRY_SPEED = 0.3;
+        public static final double CURVE_SPEED = 0.5;
+        public static final double LOWER_VERTICAL_SPEED = 0.5;
+        public static final double UPPER_VERTICAL_SPEED = 0.5;
+        public static final double UPPER_VERTICAL_SHOOT_SPEED = 0.5;
     }
 
     public class PIDConst {
@@ -65,4 +78,13 @@ public class RobotConst {
         public static final double ERROR = -99999;
         public static final double VISION_FIND_TARGETS_TIMEOUT_SECONDS = 0.5;
     }
+
+    public class ControllerConst {
+        public static final double DRIVE_TURN_TRIGGER_VALUE = 0.10;
+        public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.20;
+
+        public static final double DEADZONE_TRIGGER = 0.2;
+    }
+
+
 }
