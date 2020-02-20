@@ -12,24 +12,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.LidarSubsystem;
 import frc.robot.commands.defaultcommands.DefaultCameraCommand;
-import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
 import frc.robot.commands.groups.AutonomousGroup;
 import frc.robot.constants.RobotMap;
 import frc.robot.oi.DriverController;
 import frc.robot.oi.OperatorController;
 import frc.robot.subsystems.CameraSubsystem;
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-
-import java.util.HashMap;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
