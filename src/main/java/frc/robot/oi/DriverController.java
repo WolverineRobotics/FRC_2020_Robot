@@ -18,8 +18,8 @@ import frc.robot.constants.RobotConst;
  * Left Bumper:
  * Right Bumper: Drive Fine Control
  * 
- * Left Trigger: Is holding climb down
- * Right Trigger:  Is holding climb up
+ * Left Trigger: Climb down
+ * Right Trigger:  Climb up
  * 
  * Button A:
  * Button B:
