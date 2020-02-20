@@ -319,6 +319,10 @@ public class DriveSubsystem extends SubsystemBase {
         navX.reset();
     }
 
+    public DifferentialDriveKinematics getKinematics(){
+        return m_kinematics;
+    }
+
     @Override
     public void periodic() {
         super.periodic();

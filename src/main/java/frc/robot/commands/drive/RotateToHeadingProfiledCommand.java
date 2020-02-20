@@ -39,11 +39,15 @@ public class RotateToHeadingProfiledCommand extends ProfiledPIDCommand {
         getController().setGoal(gyroAngle);
     }
 
+    public TrapezoidProfile.State getGoal(){
+        return getController().getGoal();
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         builder.setSmartDashboardType("Rotate to Heading Profiled Command");
-
+        builder.addDoubleProperty("Gyro Goal", ()-> {return this.getGoal().position;}, null);
     }
 
 }
