@@ -1,22 +1,30 @@
 package frc.robot.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
+import frc.robot.constants.RobotConst;
+import frc.robot.oi.OperatorController;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class DefaultShooterCommand extends CommandBase {
 
     private ShooterSubsystem s_shooter;
+    private OperatorController oc;
 
     public DefaultShooterCommand(ShooterSubsystem subsystem) {
-        super();
         s_shooter = subsystem;
         addRequirements(subsystem);
+        oc = RobotContainer.getOperatorController();
     }
 
     @Override
     public void execute() {
-        // TODO Auto-generated method stub
-        super.execute();
+        if(oc.isFlyWheelRun()) {
+            s_shooter.setFlywheelSpeed(RobotConst.ShooterConst.SHOOTER_SPEED);
+        }
+        if(oc.getHoodRotation() > 0.3 || oc.getHoodRotation() < -0.3) { //deadzone is 0.3
+            s_shooter.setHoodSpeed(oc.getHoodRotation()*0.05);
+        }
     }
 
     @Override

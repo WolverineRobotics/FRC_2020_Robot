@@ -12,11 +12,11 @@ import frc.robot.constants.RobotConst;
  * Left Stick Button:
  * 
  * Right Stick X: 
- * Right Stick Y:
+ * Right Stick Y: Shooter Hood Rotation UP=CLOSE DOWN=OPEN
  * Right Stick Button:
  * 
  * Left Bumper:
- * Right Bumper:
+ * Right Bumper: Fly Wheel Run
  * 
  * Left Trigger: Intake Balls - programmed with sensors / should be idiot proof
  * Right Trigger: Outake Balls from top
@@ -79,6 +79,14 @@ public class OperatorController extends Controller {
      */
     public boolean isPOVDown() {
         return operator.getPOV() == JoystickMap.POV_SOUTH;
+    }
+
+    public boolean isFlyWheelRun() {
+        return operator.getRawButton(JoystickMap.BUTTON_RIGHT_BUMPER);
+    }
+
+    public double getHoodRotation() {
+        return operator.getRawAxis(JoystickMap.RIGHT_STICK_Y);
     }
 
 }

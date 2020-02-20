@@ -80,9 +80,10 @@ public class RobotContainer {
     dc_shooter = new DefaultShooterCommand(s_shooter);
     CommandScheduler.getInstance().setDefaultCommand(s_shooter, dc_shooter);
 
-    //CAMERa
+    //CAMERA
     s_camera = new CameraSubsystem();
     dc_camera = new DefaultCameraCommand(s_camera);
+    CommandScheduler.getInstance().setDefaultCommand(s_camera, dc_camera);
 
     //LIDAR
     s_lidar = new LidarSubsystem();

@@ -59,7 +59,7 @@ public class DefaultIntakeCommand extends CommandBase {
 
 
         } else if(oc.isHoldingRightTrigger()) { //if operator outaking
-            s_intake.setSpeeds(0.2, 0.4, 0.4, 0.3);
+            s_intake.setSpeeds(0.1, 0.1, 0.1, 0.1);
         } else if(oc.getAutoShootButton()) { // if operator wants to auto shoot
             /**
             * Operator presses one button and the robot will:
