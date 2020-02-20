@@ -20,7 +20,7 @@ public class RobotMap{
 
     public static final int CLIMB_MOTOR_ADDRESS                     = 30;
     public static final int CLIMB_LEVEL_ADDRESS                     = 33;
-    public static final int CLIMB_LOCK_FOWARD_ADDRESS               = -1;
-    public static final int CLIMB_LOCK_RESERVE_ADDRESS              = -1;
+    public static final int CLIMB_LOCK_FOWARD_ADDRESS               = 4;
+    public static final int CLIMB_LOCK_RESERVE_ADDRESS              = 5;
 
 }
