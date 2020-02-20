@@ -20,7 +20,7 @@ public class RobotMap{
     public static final int DRIVE_RIGHT_ENCODER_A                   = 4;
     public static final int DRIVE_RIGHT_ENCODER_B                   = 5;
 
-    public static final int DRIVE_PIGEON_IMU_ADDRESS                = 12;
+    public static final int DRIVE_PIGEON_IMU_ADDRESS                = 6;
 
     public static final SerialPort.Port LIDAR_PORT = Port.kOnboard;
 
