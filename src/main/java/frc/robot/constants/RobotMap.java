@@ -1,5 +1,8 @@
 package frc.robot.constants;
 
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SerialPort.Port;
+
 public class RobotMap{
 
     //TODO: Change addresses
@@ -22,5 +25,6 @@ public class RobotMap{
     public static final int SHOOTER_FLYWHEEL_MOTOR_ADDRESS = -1;
     public static final int SHOOTER_HOOD_MOTOR_ADDRESS = -1;
     public static final int SHOOTER_HOOD_ENCODER_ADDRESS = -1; //DIO
+    public static final SerialPort.Port LIDAR_PORT = Port.kOnboard;
 
 }
