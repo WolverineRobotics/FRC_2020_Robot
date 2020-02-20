@@ -22,12 +22,18 @@ import frc.robot.util.Util;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    private DigitalInput sensor1; //entry sensor of the intake
-    private DigitalInput sensor2; //sensor located at curve
-    private DigitalInput sensor3; //sensor located at bottom of vertical conveyor
-    private DigitalInput sensor4; //sensor located at middle of vertical conveyor
-    private DigitalInput sensor5; //sensor located at top of vertical conveyor
+    /**
+     * Ball sensors detect whether a certain ball is in position
+     */
+    private DigitalInput sensor1; //entry sensor of the intake (ball5 location)
+    private DigitalInput sensor2; //sensor located at curve (ball4 location)
+    private DigitalInput sensor3; //sensor located at bottom of vertical conveyor (ball3 location)
+    private DigitalInput sensor4; //sensor located at middle of vertical conveyor (ball2 location)
+    private DigitalInput sensor5; //sensor located at top of vertical conveyor (ball1 location)
 
+    /**
+     * Motors control certain conveyor systems. 
+     */
     private CANSparkMax entry; // main intake, entry point of ball
     private CANSparkMax curve; // curves ball into vertical conveyor
     private CANSparkMax verticalLower; // controls vertical conveyor lower
@@ -35,9 +41,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private DoubleSolenoid piston; //piston that opens the front intake. Forward=Intake Openened and Reverse=Intake Closed
 
+    /**
+     * Variables helping with evaluating ball states.
+     */
     private List<Ball> mag;
-    private List<Ball> unfinishedDesto = new ArrayList<Ball>(); //contains a list of balls who's destination is not actually the final destination, but take detours to get to their final destination.
-    private List<Ball> ballsToRemove = new ArrayList<Ball>();
+    private List<Ball> unfinishedDesto; //contains a list of balls who's destination is not actually the final destination, but take detours to get to their final destination.
+    private List<Ball> ballsToRemove; //contains a list of balls to remove after the executeMotors() method is done. Balls put in here are balls that were shot out by the Shooter Subsystem
     private boolean moveBalls;
 
     // initializes all of the components within the subsystem
@@ -56,31 +65,39 @@ public class IntakeSubsystem extends SubsystemBase {
         piston = new DoubleSolenoid(RobotMap.Pneumatic.INTAKE_FORWARD, RobotMap.Pneumatic.INTAKE_BACKWARD);
 
         mag = new ArrayList<>();
-        asteriks = new boolean[5];
+        unfinishedDesto = new ArrayList<Ball>();
+        ballsToRemove = new ArrayList<Ball>();
         moveBalls = false;
     }
 
+    /**
+     * Runs periodically while the Robot is enabled.
+     */
     @Override
     public void periodic() {
-        if(moveBalls) {
-            if(isSensorOneActivated()) {
+        if(moveBalls) { //if received commands to move balls
+            if(isSensorOneActivated() && mag.size() >= 4) { //check if sensor 1 is activated and the magazine size is >= 4, (aka a ball was intaked) and if
                 boolean isNewBall = true;
+                //checks if this ball has alreayd been instantiated
                 for(Ball b : mag) {
                     if(b.getCurrentPosition() == Position.ONE) {
                         isNewBall = false;
                     }
                 }
+                //add the ball to the magazine if its a new ball
                 if(isNewBall) {
                     Ball ball = new Ball(getNextEmptyPosition());
                     mag.add(ball);
                 }
             }
+            //evaluate positions based off sensors, evaluate destinations, also keeps track of blind balls
             executeMotors();
         }
     }
 
 
     /**
+     * Rough (not exactly how the code was written but roughly)
      * Algorithm:
      * 1. For every ball in the magazine (in top to bottom order - must loop in this fashion)
      * 2. If the ball is already at destination, go onto next ball
@@ -104,13 +121,13 @@ public class IntakeSubsystem extends SubsystemBase {
         Collections.reverse(localMag);
         //(1) loop through each ball from top to bottom
         for(Ball ball : localMag) {
-            //(2) evaluate next ball if ball is already at destination
+            //(2) evaluate next ball if ball is already at destination or if it's destination isn't finished
             if(ball.isAtDestination() && !unfinishedDesto.contains(ball)) {
                 continue;
             }
 
-            Position currentPos = ball.getCurrentPosition(); //TODO change occurences of this
             //(4) checks if this is third ball
+            Position currentPos = ball.getCurrentPosition();
             if(localMag.size() == 3) { //if there are 3 balls in magazine right now.
                 if(ball == localMag.get(1)) { //if this current ball (in for loop) is the second ball in the mag (aka the ball at Position 4)
                     Ball ball2 = ball;
@@ -139,28 +156,9 @@ public class IntakeSubsystem extends SubsystemBase {
                 direction = -1;
             }
 
-            Motor[] possessions = currentPos.getPossessions();
-            for(Motor possession : possessions) {
-                switch (possession) {
-                    case ENTRY:
-                        setEntrySpeed(direction*RobotConst.IntakeConst.ENTRY_SPEED);
-                        break;
-                    case CURVE:
-                        setCurveSpeed(direction*RobotConst.IntakeConst.CURVE_SPEED);
-                        break;
-                    case LOWER_VERTICAL:
-                        setVerticalLowerSpeed(direction*RobotConst.IntakeConst.LOWER_VERTICAL_SPEED);
-                        break;
-                    case UPPER_VERTICAL:
-                        setVerticalUpperSpeed(direction*RobotConst.IntakeConst.UPPER_VERTICAL_SPEED);
-                        break;
-                }
-            }
-
             //re-evaluate current ball position based on sensor feedback
             double posId = currentPos.getId();
             boolean[] sen = getSensors();
-            
             if(direction == 1) { //motor positive
                 //checking if the current location of the ball has a sensor
                 if(Util.isInteger(currentPos.getId())) {
@@ -194,14 +192,36 @@ public class IntakeSubsystem extends SubsystemBase {
                 }
             }
 
+            //run all of the motor possessions
+            Motor[] possessions = currentPos.getPossessions();
+            for(Motor possession : possessions) {
+                switch (possession) {
+                    case ENTRY:
+                        setEntrySpeed(direction*RobotConst.IntakeConst.ENTRY_SPEED);
+                        break;
+                    case CURVE:
+                        setCurveSpeed(direction*RobotConst.IntakeConst.CURVE_SPEED);
+                        break;
+                    case LOWER_VERTICAL:
+                        setVerticalLowerSpeed(direction*RobotConst.IntakeConst.LOWER_VERTICAL_SPEED);
+                        break;
+                    case UPPER_VERTICAL:
+                        setVerticalUpperSpeed(direction*RobotConst.IntakeConst.UPPER_VERTICAL_SPEED);
+                        break;
+                }
+            }
 
         }
         Collections.reverse(localMag);
         this.mag = localMag;
     }
 
-    public void moveBalls() {
-        moveBalls = true;
+    /**
+     * Check whether you want balls to re-evaluate themselves
+     * @param toMove true - if you want them to move, false otherwise.
+     */
+    public void setMoveBalls(boolean toMove) {
+        this.moveBalls = toMove;
     }
     
     /**
@@ -346,6 +366,10 @@ public class IntakeSubsystem extends SubsystemBase {
         return nextEmptyPosition;
     }
 
+    /**
+     * Check whether a ball is taking up a position
+     * @param pos Position enum
+     */
     public boolean isPositionOccupied(Position pos) {
         for(Ball ball : mag) {
             if(ball.position == pos) {
@@ -355,12 +379,23 @@ public class IntakeSubsystem extends SubsystemBase {
         return false;
     }
 
+    /**
+     * Returns a List<> of occupied positions
+     * @return List<Position> of occupied positions by balls.
+     */
     private List<Position> getOccupiedPositions() {
         List<Position> pos = new ArrayList<Position>();
         mag.stream().forEach((x) -> pos.add(x.position));
         return pos;
     }
 
+    /**
+     * Ball class
+     * has two main variables: destination & position.
+     * Simply has its own getter & seter for each
+     * Also automatically sets its position to Position.ONE
+     * because instantiating a new ball has to come from the front of the intake.
+     */
     public class Ball {
 
         private Position destination;
@@ -383,16 +418,25 @@ public class IntakeSubsystem extends SubsystemBase {
             return destination;
         }
 
-        public boolean isAtDestination() {
-            return position == destination;
-        }
-
         public void setDestination(Position destination) {
             this.destination = destination;
         }
 
+        public boolean isAtDestination() {
+            return position == destination;
+        }
+
     }
 
+    /**
+     * Position enum
+     * Has ids and motor possessios.
+     * Each Ball Position has its own motor possession.
+     * 
+     * Also has a static component which keeps track of all other enums
+     * so you can back track, forward track, get the position enum based off id,
+     * and check if a position is after another position.
+     */
     public enum Position {
         ONE(1.0, Motor.ENTRY),
         ONE_TWO(1.5, Motor.CURVE),
@@ -408,21 +452,37 @@ public class IntakeSubsystem extends SubsystemBase {
 
         private double id;
         private Motor[] possessions;
-        private static Map<Double, Position>  map = new HashMap<>();
-
-        static {
-            for(Position pos : Position.values()) {
-                map.put(pos.getId(), pos);
-            }
-        }
 
         Position(double id, Motor... possession) {
             this.id = id;
             possessions = possession;
         }
 
+        /**
+         * Get all of the motor possessions that this Position has.
+         * @return array of Motor
+         */
         public Motor[] getPossessions() {
             return possessions;
+        }
+
+        /**
+         * Returns the id that is defined in the enum declaration
+         */
+        public double getId() {
+            return id;
+        }
+
+        /**
+         * Static componnet:
+         * Keeps a map of all members of this enum.
+         */
+        private static Map<Double, Position>  map = new HashMap<>();
+
+        static {
+            for(Position pos : Position.values()) {
+                map.put(pos.getId(), pos);
+            }
         }
 
         /**
@@ -493,12 +553,12 @@ public class IntakeSubsystem extends SubsystemBase {
             }
             return null;
         }
-
-        public double getId() {
-            return id;
-        }
     }  
 
+    /**
+     * See #Position enum
+     * Use of this enum is just so that there is a better sense of logic in the code.
+     */
     public enum Motor {
         ENTRY,
         CURVE,
@@ -507,6 +567,9 @@ public class IntakeSubsystem extends SubsystemBase {
         ;
     }
 
+    /**
+     * TODO
+     */
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addBooleanProperty("[BALL SENSOR 1]", this::isSensorOneActivated, null);
