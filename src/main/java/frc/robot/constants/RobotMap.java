@@ -32,12 +32,12 @@ public class RobotMap{
     }
 
     public class SpeedController {
-        public static final int ENTRY = -1;
-        public static final int CURVE = -1;
-        public static final int VERTICAL_LOWER = -1;
-        public static final int VERTICAL_UPPER = -1;
-        public static final int SHOOT = -1;
-        public static final int HOOD = -1;
+        public static final int ENTRY = 20;
+        public static final int CURVE = 21;
+        public static final int VERTICAL_LOWER = 22;
+        public static final int VERTICAL_UPPER = 23;
+        public static final int SHOOT = 25;
+        public static final int HOOD = 28;
     }
 
     public class Controller {
