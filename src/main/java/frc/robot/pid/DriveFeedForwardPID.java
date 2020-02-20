@@ -21,8 +21,8 @@ public class DriveFeedForwardPID extends ProfiledPIDController {
     private static final double DEFAULT_KD = PIDConst.DRIVE_FF_KD;
 
     private static final double kS = CharacterizationConst.KS_VOLTS;
-    private static final double kV = CharacterizationConst.KS_VOLT_SECONDS_PER_METER;
-    private static final double kA = CharacterizationConst.KS_VOLT_SECONDS_SQUARED_PER_METER;
+    private static final double kV = CharacterizationConst.KV_VOLT_SECONDS_PER_METER;
+    private static final double kA = CharacterizationConst.KA_VOLT_SECONDS_SQUARED_PER_METER;
 
     private static final double DEFAULT_PID_ERROR_TOLERANCE = PIDConst.DRIVE_PID_ERROR_TOLERANCE;
 

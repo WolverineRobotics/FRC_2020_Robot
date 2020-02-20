@@ -55,10 +55,12 @@ public class RobotMap{
     //TODO: Change addresses
 
     public static final int DRIVE_LEFT_MOTOR_MASTER_ADDRESS         = 10;
-    public static final int DRIVE_LEFT_MOTOR_SLAVE_ADDRESS          = 11;
+    public static final int DRIVE_LEFT_MOTOR_SLAVE_ADDRESS_1         = 11;
+    public static final int DRIVE_LEFT_MOTOR_SLAVE_ADDRESS_2         = 12;
 
     public static final int DRIVE_RIGHT_MOTOR_MASTER_ADDRESS        = 15;
-    public static final int DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS         = 16;
+    public static final int DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS_1        = 16;
+    public static final int DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS_2        = 17;
 
 
     public static final int DRIVE_LEFT_ENCODER_A                    = 6;

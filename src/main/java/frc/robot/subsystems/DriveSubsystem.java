@@ -1,53 +1,60 @@
 package frc.robot.subsystems;
 
-import static frc.robot.constants.RobotConst.DriveConst.CharacterizationConst.K_TRACKWIDTH_METERS;
-import static frc.robot.constants.RobotMap.Drive.DRIVE_LEFT_ENCODER_A;
-import static frc.robot.constants.RobotMap.Drive.DRIVE_LEFT_ENCODER_B;
-import static frc.robot.constants.RobotMap.Drive.DRIVE_LEFT_MOTOR_MASTER_ADDRESS;
-import static frc.robot.constants.RobotMap.Drive.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS;
-import static frc.robot.constants.RobotMap.Drive.DRIVE_RIGHT_ENCODER_A;
-import static frc.robot.constants.RobotMap.Drive.DRIVE_RIGHT_ENCODER_B;
-import static frc.robot.constants.RobotMap.Drive.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS;
-import static frc.robot.constants.RobotMap.Drive.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS;
-
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SerialPort.Port;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.ControllerConst;
 import frc.robot.constants.RobotConst.DriveConst;
-import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.constants.RobotConst.DriveConst.CharacterizationConst;
+import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.constants.RobotMap;
-import frc.robot.pid.DriveFeedForwardPID;
 import frc.robot.constants.RobotMap.Drive;
+import frc.robot.constants.RobotMap.Pneumatic;
+import frc.robot.pid.DriveFeedForwardPID;
 import frc.robot.pid.GyroPID;
 import frc.robot.pid.GyroToRotate;
+import frc.robot.util.Util;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private Spark leftDrive01, leftDrive02, rightDrive01, rightDrive02;
+    private CANSparkMax leftMaster, leftSlave1, leftSlave2, rightMaster, rightSlave1, rightSlave2;
     private Encoder leftEncoder, rightEncoder;
 
     private SpeedControllerGroup leftGroup, rightGroup;
     private DifferentialDrive driveTrain;
 
+    /**
+     * High gear is forward, low gear is reverse
+     */
+    // private DoubleSolenoid gearShifter;
+
     private DifferentialDriveKinematics m_kinematics;
     private DifferentialDriveOdometry m_odometry;
+
+    private SimpleMotorFeedforward feedForward;
 
     private AHRS navX;
     private PigeonIMU pigeon;
@@ -59,16 +66,27 @@ public class DriveSubsystem extends SubsystemBase {
 
     private GyroPID gyroPID;
 
+    private PowerDistributionPanel pdp;
+
     public DriveSubsystem() {
         super();
 
-        leftDrive01 = new Spark(RobotMap.Drive.DRIVE_LEFT_MOTOR_MASTER_ADDRESS);
-        leftDrive02 = new Spark(RobotMap.Drive.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS);
-        rightDrive01 = new Spark(RobotMap.Drive.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS);
-        rightDrive02 = new Spark(RobotMap.Drive.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS);
+        leftMaster = new CANSparkMax(RobotMap.DRIVE_LEFT_MOTOR_MASTER_ADDRESS, MotorType.kBrushless);
+        leftSlave1 = new CANSparkMax(RobotMap.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS_1, MotorType.kBrushless);
+        leftSlave2 = new CANSparkMax(RobotMap.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS_2, MotorType.kBrushless);
 
-        leftGroup = new SpeedControllerGroup(leftDrive01, leftDrive02);
-        rightGroup = new SpeedControllerGroup(rightDrive01, rightDrive02);
+        leftSlave1.follow(leftMaster);
+        leftSlave2.follow(leftMaster);
+
+        rightMaster = new CANSparkMax(RobotMap.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS, MotorType.kBrushless);
+        rightSlave1 = new CANSparkMax(RobotMap.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS_1, MotorType.kBrushless);
+        rightSlave2 = new CANSparkMax(RobotMap.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS_2, MotorType.kBrushless);
+
+        rightSlave1.follow(rightMaster);
+        rightSlave2.follow(rightMaster);
+
+        leftGroup = new SpeedControllerGroup(leftMaster);
+        rightGroup = new SpeedControllerGroup(rightMaster);
         rightGroup.setInverted(true);
 
         driveTrain = new DifferentialDrive(leftGroup, rightGroup);
@@ -76,8 +94,10 @@ public class DriveSubsystem extends SubsystemBase {
         leftEncoder = new Encoder(RobotMap.Drive.DRIVE_LEFT_ENCODER_A, RobotMap.Drive.DRIVE_LEFT_ENCODER_B);
         rightEncoder = new Encoder(RobotMap.Drive.DRIVE_RIGHT_ENCODER_A, RobotMap.Drive.DRIVE_RIGHT_ENCODER_B);
 
-        leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
-        rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
+        leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
+        rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
+
+        // gearShifter = new DoubleSolenoid(Pneumatic.DRIVE_HIGH_GEAR_ADDRESS, Pneumatic.DRIVE_LOW_GEAR_ADDRESS);
 
         navX = new AHRS(Port.kMXP);
         pigeon = new PigeonIMU(Drive.DRIVE_PIGEON_IMU_ADDRESS);
@@ -87,17 +107,31 @@ public class DriveSubsystem extends SubsystemBase {
         m_kinematics = new DifferentialDriveKinematics(CharacterizationConst.K_TRACKWIDTH_METERS);
         m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()));
 
+        feedForward = new SimpleMotorFeedforward(CharacterizationConst.KS_VOLTS,
+                CharacterizationConst.KV_VOLT_SECONDS_PER_METER,
+                CharacterizationConst.KA_VOLT_SECONDS_SQUARED_PER_METER);
+
         leftPid = new DriveFeedForwardPID();
         rightPid = new DriveFeedForwardPID();
 
         gyroToRotate = new GyroToRotate(CharacterizationConst.K_TRACKWIDTH_METERS);
 
-        setDeadband(ControllerConst.DRIVE_THORTTLE_TRIGGER_VALUE);
+        pdp = new PowerDistributionPanel();
+
+        setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
 
         SendableRegistry.addLW(leftPid, "[Drive] Left PID");
         SendableRegistry.addLW(rightPid, "[Drive] Right PID");
         setDeadband(ControllerConst.DRIVE_THORTTLE_TRIGGER_VALUE);
     }
+
+    // public void setHighGear() {
+    //     gearShifter.set(Value.kForward);
+    // }
+
+    // public void setLowGear() {
+    //     gearShifter.set(Value.kReverse);
+    // }
 
     public void setLeftSpeed(double speed) {
         leftGroup.set(speed);
@@ -171,6 +205,46 @@ public class DriveSubsystem extends SubsystemBase {
         return (getDistanceLeftEncoder() + getDistanceRightEncoder()) / 2;
     }
 
+    public double getLeftVoltage() {
+        return (leftMaster.getAppliedOutput() * leftMaster.getBusVoltage());
+    }
+
+    public double getRightVoltage() {
+        return (rightMaster.getAppliedOutput() * rightMaster.getBusVoltage());
+    }
+
+    /**
+     * 
+     * @return the average current of the 3 motors on the left side
+     */
+    public double getLeftCurent() {
+        return (leftMaster.getOutputCurrent() + leftSlave1.getOutputCurrent() + leftSlave2.getOutputCurrent()) / 3;
+    }
+
+    /**
+     * 
+     * @return the average current of the 3 motors on the right side.
+     */
+    public double getRightCurent() {
+        return (rightMaster.getOutputCurrent() + rightSlave1.getOutputCurrent() + rightSlave2.getOutputCurrent()) / 3;
+    }
+
+    /**
+     * 
+     * @return left side velocity in meters per second.
+     */
+    public double getLeftVelocity() {
+        return leftEncoder.getRate();
+    }
+
+    /**
+     * 
+     * @return right side velocity in meters per second.
+     */
+    public double getRightVelocity() {
+        return rightEncoder.getRate();
+    }
+
     /**
      * resets encoder values
      */
@@ -198,11 +272,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getLeftSpeed() {
-        return (leftDrive01.get() + leftDrive02.get()) / 2;
+        return (leftMaster.get());
     }
 
     public double getRightSpeed() {
-        return (rightDrive01.get() + rightDrive02.get()) / 2;
+        return (rightMaster.get());
     }
 
     /**
@@ -243,11 +317,15 @@ public class DriveSubsystem extends SubsystemBase {
         navX.reset();
     }
 
+    public DifferentialDriveKinematics getKinematics(){
+        return m_kinematics;
+    }
+
     @Override
     public void periodic() {
         super.periodic();
-        m_odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), Units.inchesToMeters(getDistanceRightEncoder()),
-                Units.inchesToMeters(getDistanceLeftEncoder()));
+        m_odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), getDistanceRightEncoder(),
+                getDistanceLeftEncoder());
     }
 
     public Pose2d getPose() {
@@ -271,6 +349,24 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(leftEncoder.getRate(), rightEncoder.getRate());
+    }
+
+    /**
+     * Takes the turn and state from a rotational profiled pid and applies a feed forward to it.
+     * @param turn turn power from pid
+     * @param state current state, in degrees and degrees per second
+     * @param constraints in max degrees per second and max degrees per second squared
+     */
+    public void turnStateFeedForward(double turn, State state, Constraints constraints) {
+        DifferentialDriveWheelSpeeds wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(0,0,Units.degreesToRadians(state.velocity)));
+        
+        //May need to invert
+        double ffPowerVolts = feedForward.calculate(wheelSpeeds.rightMetersPerSecond);
+
+        double ffSpeed =  Util.voltageToSpeed(ffPowerVolts, pdp.getVoltage());  
+
+        turn += ffSpeed;
+        arcadeDrive(0, turn, false);
     }
 
     /**
@@ -317,9 +413,20 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        // TODO Auto-generated method stub
         super.initSendable(builder);
         builder.setSmartDashboardType("DriveSubsystem");
+
+        builder.addDoubleProperty("[Drive] Left Speed", this::getLeftSpeed, null);
+        builder.addDoubleProperty("[Drive] Right Speed", this::getRightSpeed, null);
+        builder.addDoubleProperty("[Drive] Left Distance Encoder", this::getDistanceLeftEncoder, null);
+        builder.addDoubleProperty("[Drive] Right Distance Encoder", this::getDistanceRightEncoder, null);
+        builder.addDoubleProperty("[Drive] Right Voltage", this::getRightVoltage, null);
+        builder.addDoubleProperty("[Drive] Left Voltage", this::getLeftVoltage, null);
+        builder.addDoubleProperty("[Drive] Left Current", this::getLeftCurent, null);
+        builder.addDoubleProperty("[Drive] Right Current", this::getRightCurent, null);
+        builder.addDoubleProperty("[Drive] Left Velocity", this::getLeftVelocity, null);
+        builder.addDoubleProperty("[Drive] Right Velocity", this::getRightVelocity, null);
+
     }
 
 
