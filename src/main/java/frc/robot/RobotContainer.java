@@ -53,12 +53,12 @@ public class RobotContainer {
   // autonomous command
   private AutonomousGroup auto;
 
-  private final LidarSubsystem s_lidar;
-
   // controllers
   private static DriverController joshuaAndrewCadavos;
   private static OperatorController anthonyAttikian;
-
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     s_drive = new DriveSubsystem();
     s_intake = new IntakeSubsystem();
@@ -68,8 +68,6 @@ public class RobotContainer {
     dc_camera = new DefaultCameraCommand(s_camera);
     joshuaAndrewCadavos = new DriverController(RobotMap.Controller.DRIVER);
     anthonyAttikian = new OperatorController(RobotMap.Controller.OPERATOR);
-    s_lidar = new LidarSubsystem();
-
     CommandScheduler.getInstance().setDefaultCommand(s_drive, dc_drive);
     CommandScheduler.getInstance().setDefaultCommand(s_intake, dc_intake);
     CommandScheduler.getInstance().setDefaultCommand(s_camera, dc_camera);
@@ -80,13 +78,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Placeholder command that finishes immediately
-    return new CommandBase(){
-      @Override
-      public boolean isFinished() {
-        return true;
-      }
-    };
+    // Placeholder command
+    return new CommandBase(){};
   }
 
   public static DriverController getDriverController() {
