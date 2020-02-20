@@ -70,8 +70,8 @@ public class ClimbSubsystem extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         // TODO Auto-generated method stub
         super.initSendable(builder);
-        builder.addDoubleProperty("[CLIMB] Motor Speed", this::getClimbSpeed, null);
-        builder.addDoubleProperty("[CLIMB] Climb Level", this::getClimbLevel, null);
-        builder.addStringProperty("[CLIMB]Climb Lock", () -> {return this.getClimbLock().toString();}, null);
+        builder.addDoubleProperty("[Climb] Motor Speed", this::getClimbSpeed, null);
+        builder.addDoubleProperty("[Climb] Climb Level", this::getClimbLevel, null);
+        builder.addStringProperty("[Climb]Climb Lock", () -> {return this.getClimbLock().toString();}, null);
     }
 }
