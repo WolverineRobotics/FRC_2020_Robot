@@ -50,14 +50,14 @@ public class OperatorController extends Controller {
      * @return true if left trigger is pressed down passed at least RobotConst.ControllerConst.DEADZONE_INTAKE
      */
     public boolean isHoldingLeftTrigger() {
-        return operator.getRawAxis(JoystickMap.LEFT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_INTAKE;
+        return operator.getRawAxis(JoystickMap.LEFT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_TRIGGER;
     }
 
     /**
      * @return true if right trigger is pressed down passed at least RobotConst.ControllerConst.DEADZONE_INTAKE
      */
     public boolean isHoldingRightTrigger() {
-        return operator.getRawAxis(JoystickMap.RIGHT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_INTAKE;
+        return operator.getRawAxis(JoystickMap.RIGHT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_TRIGGER;
     }
 
     /**
