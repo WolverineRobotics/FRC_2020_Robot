@@ -60,4 +60,8 @@ public class Util {
         return (milliseconds * 1000);
     }
 
+    public static boolean isInteger(double value) {
+        return (Math.floor(value) == value && !Double.isInfinite(value));
+    }
+
 }
