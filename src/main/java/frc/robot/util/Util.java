@@ -74,6 +74,7 @@ public class Util {
         }
         return error;
     }
+
     public static long getSeconds(long milliseconds) {
         return (milliseconds * 1000);
     }

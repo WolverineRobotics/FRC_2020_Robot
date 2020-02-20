@@ -13,7 +13,9 @@ public class RobotConst {
 
         public static final boolean DRIVE_SQUARE_ARCADE = false;
         public static final boolean DRIVE_SQUARE_TANK = false;
-        public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.3;
+
+        public static final double DRIVE_TURN_TRIGGER_VALUE = 0.1;
+        public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.2;
 
         public class CharacterizationConst {
             public static final double KS_VOLTS = 0;
@@ -79,13 +81,6 @@ public class RobotConst {
         public static final double VISION_FIND_TARGETS_TIMEOUT_SECONDS = 0.5;
     }
 
-    public class ControllerConst {
-        public static final double DRIVE_TURN_TRIGGER_VALUE = 0.10;
-        public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.20;
-
-        public static final double DEADZONE_TRIGGER = 0.2;
-    }
-
     public class ShooterConst{
 
         // **********************************************************************************
@@ -96,5 +91,12 @@ public class RobotConst {
         public static final int HOOD_ENCODER_ZERO_POSITION = 0;
 
         public static final double HOOD_MOTOR_POWER = 0.4;
+    }
+
+    public class ControllerConst {
+        public static final double DRIVE_TURN_TRIGGER_VALUE = 0.10;
+        public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.20;
+
+        public static final double DEADZONE_TRIGGER = 0.2;
     }
 }

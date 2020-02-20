@@ -74,24 +74,7 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        if(moveBalls) { //if received commands to move balls
-            if(isSensorOneActivated() && mag.size() >= 4) { //check if sensor 1 is activated and the magazine size is >= 4, (aka a ball was intaked) and if
-                boolean isNewBall = true;
-                //checks if this ball has alreayd been instantiated
-                for(Ball b : mag) {
-                    if(b.getCurrentPosition() == Position.ONE) {
-                        isNewBall = false;
-                    }
-                }
-                //add the ball to the magazine if its a new ball
-                if(isNewBall) {
-                    Ball ball = new Ball(getNextEmptyPosition());
-                    mag.add(ball);
-                }
-            }
-            //evaluate positions based off sensors, evaluate destinations, also keeps track of blind balls
-            executeMotors();
-        }
+        
     }
 
 

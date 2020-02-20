@@ -55,6 +55,8 @@ public class DefaultIntakeCommand extends CommandBase {
             // }
             
             //run intake
+            s_intake.setMoveBalls(true);
+
 
         } else if(oc.isHoldingRightTrigger()) { //if operator outaking
             s_intake.setSpeeds(0.2, 0.4, 0.4, 0.3);
@@ -76,6 +78,8 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setVerticalUpperSpeed(-0.5);
         } else if(oc.isPOVDown()) { //if operator wants to intake only entry motor
             s_intake.setEntrySpeed(0.3);
+        } else {
+            s_intake.setMoveBalls(false);
         }
     }
 

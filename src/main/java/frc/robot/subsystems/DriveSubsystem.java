@@ -14,7 +14,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SPI.Port;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -31,6 +31,7 @@ import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.ControllerConst;
 import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.constants.RobotConst.PIDConst;
+import frc.robot.constants.RobotConst.DriveConst.CharacterizationConst;
 import frc.robot.constants.RobotMap;
 import frc.robot.pid.DriveFeedForwardPID;
 import frc.robot.constants.RobotMap.Drive;
@@ -61,10 +62,10 @@ public class DriveSubsystem extends SubsystemBase {
     public DriveSubsystem() {
         super();
 
-        leftDrive01 = new Spark(DRIVE_LEFT_MOTOR_MASTER_ADDRESS);
-        leftDrive02 = new Spark(DRIVE_LEFT_MOTOR_SLAVE_ADDRESS);
-        rightDrive01 = new Spark(DRIVE_RIGHT_MOTOR_MASTER_ADDRESS);
-        rightDrive02 = new Spark(DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS);
+        leftDrive01 = new Spark(RobotMap.Drive.DRIVE_LEFT_MOTOR_MASTER_ADDRESS);
+        leftDrive02 = new Spark(RobotMap.Drive.DRIVE_LEFT_MOTOR_SLAVE_ADDRESS);
+        rightDrive01 = new Spark(RobotMap.Drive.DRIVE_RIGHT_MOTOR_MASTER_ADDRESS);
+        rightDrive02 = new Spark(RobotMap.Drive.DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS);
 
         leftGroup = new SpeedControllerGroup(leftDrive01, leftDrive02);
         rightGroup = new SpeedControllerGroup(rightDrive01, rightDrive02);
@@ -72,8 +73,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         driveTrain = new DifferentialDrive(leftGroup, rightGroup);
 
-        leftEncoder = new Encoder(DRIVE_LEFT_ENCODER_A, DRIVE_LEFT_ENCODER_B);
-        rightEncoder = new Encoder(DRIVE_RIGHT_ENCODER_A, DRIVE_RIGHT_ENCODER_B);
+        leftEncoder = new Encoder(RobotMap.Drive.DRIVE_LEFT_ENCODER_A, RobotMap.Drive.DRIVE_LEFT_ENCODER_B);
+        rightEncoder = new Encoder(RobotMap.Drive.DRIVE_RIGHT_ENCODER_A, RobotMap.Drive.DRIVE_RIGHT_ENCODER_B);
 
         leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
         rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_INCH);
@@ -83,15 +84,15 @@ public class DriveSubsystem extends SubsystemBase {
 
         gyroPID = new GyroPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
 
-        m_kinematics = new DifferentialDriveKinematics(K_TRACKWIDTH_METERS);
+        m_kinematics = new DifferentialDriveKinematics(CharacterizationConst.K_TRACKWIDTH_METERS);
         m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getPigeonHeading()));
 
         leftPid = new DriveFeedForwardPID();
         rightPid = new DriveFeedForwardPID();
 
-        gyroToRotate = new GyroToRotate(K_TRACKWIDTH_METERS);
+        gyroToRotate = new GyroToRotate(CharacterizationConst.K_TRACKWIDTH_METERS);
 
-        setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
+        setDeadband(ControllerConst.DRIVE_THORTTLE_TRIGGER_VALUE);
 
         SendableRegistry.addLW(leftPid, "[Drive] Left PID");
         SendableRegistry.addLW(rightPid, "[Drive] Right PID");
@@ -320,5 +321,6 @@ public class DriveSubsystem extends SubsystemBase {
         super.initSendable(builder);
         builder.setSmartDashboardType("DriveSubsystem");
     }
+
 
 }
