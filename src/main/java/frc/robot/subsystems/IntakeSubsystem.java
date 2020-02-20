@@ -35,10 +35,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private DoubleSolenoid piston; //piston that opens the front intake. Forward=Intake Openened and Reverse=Intake Closed
 
-    private Position[] intPositions = {Position.ONE, Position.TWO, Position.THREE, Position.FOUR, Position.FIVE}; //contains integer positions (not the in-betweens)
-
     private List<Ball> mag;
-    private boolean[] asteriks;
+    private List<Ball> unfinishedDesto = new ArrayList<Ball>(); //contains a list of balls who's destination is not actually the final destination, but take detours to get to their final destination.
+    private List<Ball> ballsToRemove = new ArrayList<Ball>();
     private boolean moveBalls;
 
     // initializes all of the components within the subsystem
@@ -76,9 +75,129 @@ public class IntakeSubsystem extends SubsystemBase {
                     mag.add(ball);
                 }
             }
-            
             executeMotors();
         }
+    }
+
+
+    /**
+     * Algorithm:
+     * 1. For every ball in the magazine (in top to bottom order - must loop in this fashion)
+     * 2. If the ball is already at destination, go onto next ball
+     * 3. Check if the ball's destination is clear **unclear of what this means
+     * 4. Check if this ball is ball #3
+     *    > If so, change ball #2's destination to Position.TWO
+     *    > Set ball #3's destination to Position.ONE
+     *    > Once they are both in that position, set ball #2's position to Position.FOUR and #3's to Position.THREE
+     * 5. Bring the ball to next empty position. Check if the ball's destination is negative motor power or positive motor power.
+     * 6. Check if the ball's current position is an integer
+     *  > if it an integer, then check if that corresponding sensor has something.
+     *      > if that corresponding sensor does not have something and the next one doesn't have something as well as no other ball has the next one's position, check if the motor speed was positive or negative
+     *          > set that current motor possession speed to zero
+     *          > if it was positive then the update position is +0.5, otherwise if it is negative -0.5
+     *        
+     */
+
+    private void executeMotors() {
+
+        List<Ball> localMag = new ArrayList<>(this.mag);
+        Collections.reverse(localMag);
+        //(1) loop through each ball from top to bottom
+        for(Ball ball : localMag) {
+            //(2) evaluate next ball if ball is already at destination
+            if(ball.isAtDestination() && !unfinishedDesto.contains(ball)) {
+                continue;
+            }
+
+            Position currentPos = ball.getCurrentPosition(); //TODO change occurences of this
+            //(4) checks if this is third ball
+            if(localMag.size() == 3) { //if there are 3 balls in magazine right now.
+                if(ball == localMag.get(1)) { //if this current ball (in for loop) is the second ball in the mag (aka the ball at Position 4)
+                    Ball ball2 = ball;
+                    Ball ball3 = localMag.get(0);
+                    if(unfinishedDesto.contains(ball2) || unfinishedDesto.contains(ball3)) {
+                        if(ball2.getCurrentPosition() == Position.FOUR && ball3.getCurrentPosition() == Position.ONE) {
+                            ball2.setDestination(Position.TWO);
+                            ball3.setDestination(Position.ONE);
+                            unfinishedDesto.add(ball2);
+                            unfinishedDesto.add(ball3);
+                        } else if(ball2.getCurrentPosition() == Position.TWO && ball3.getCurrentPosition() == Position.ONE) {
+                            ball2.setDestination(Position.FOUR);
+                            ball3.setDestination(Position.THREE);
+                        } else if(ball2.getCurrentPosition() == Position.FOUR && ball3.getCurrentPosition() == Position.THREE) {
+                            unfinishedDesto.remove(ball2);
+                            unfinishedDesto.remove(ball3);
+                        }
+                    }
+                }
+            }
+
+            //evaluate the desired motor power based on whether the destination is after or before the current position.
+            Position destination = ball.getDestination();
+            int direction = 1;
+            if(Position.isAfter(currentPos, destination)) {
+                direction = -1;
+            }
+
+            Motor[] possessions = currentPos.getPossessions();
+            for(Motor possession : possessions) {
+                switch (possession) {
+                    case ENTRY:
+                        setEntrySpeed(direction*RobotConst.IntakeConst.ENTRY_SPEED);
+                        break;
+                    case CURVE:
+                        setCurveSpeed(direction*RobotConst.IntakeConst.CURVE_SPEED);
+                        break;
+                    case LOWER_VERTICAL:
+                        setVerticalLowerSpeed(direction*RobotConst.IntakeConst.LOWER_VERTICAL_SPEED);
+                        break;
+                    case UPPER_VERTICAL:
+                        setVerticalUpperSpeed(direction*RobotConst.IntakeConst.UPPER_VERTICAL_SPEED);
+                        break;
+                }
+            }
+
+            //re-evaluate current ball position based on sensor feedback
+            double posId = currentPos.getId();
+            boolean[] sen = getSensors();
+            
+            if(direction == 1) { //motor positive
+                //checking if the current location of the ball has a sensor
+                if(Util.isInteger(currentPos.getId())) {
+                    int posIdInt = (int) posId;
+                    boolean isDetectingBall = sen[posIdInt - 1]; //gets the sensor of that pos
+                    if(posIdInt < (mag.size() -1)) {
+                        boolean sensorAfterDetectingBall = sen[posIdInt];
+                        Position newPosition = null;
+                        if(!isDetectingBall && !sensorAfterDetectingBall) {
+                            newPosition = Position.getPosition(posIdInt+0.5);
+                            if(newPosition == Position.FIVE_SIX) {
+                                ballsToRemove.add(ball);
+                            }
+                        } else if(!isDetectingBall && sensorAfterDetectingBall) {
+                            newPosition = Position.getIntLocationAfter(currentPos);
+                        }
+                        ball.setPosition(newPosition);
+                    }
+                }
+            } else { //motor negative
+                if(Util.isInteger(currentPos.getId())) {
+                    int posIdInt = (int) posId;
+                    boolean isDetectingBall = sen[posIdInt - 1]; //gets the sensor of that pos
+                    if(!isDetectingBall) {
+                        Position newPosition = Position.getPosition(posIdInt-0.5);
+                        if(newPosition == Position.FIVE_SIX) {
+                            ballsToRemove.add(ball);
+                        }
+                        ball.setPosition(newPosition);
+                    }
+                }
+            }
+
+
+        }
+        Collections.reverse(localMag);
+        this.mag = localMag;
     }
 
     public void moveBalls() {
@@ -240,121 +359,6 @@ public class IntakeSubsystem extends SubsystemBase {
         List<Position> pos = new ArrayList<Position>();
         mag.stream().forEach((x) -> pos.add(x.position));
         return pos;
-    }
-
-    /**
-     * Algorithm:
-     * 1. For every ball in the magazine (in top to bottom order - must loop in this fashion)
-     * 2. If the ball is already at destination, go onto next ball
-     * 3. Check if the ball's destination is clear **unclear of what this means
-     * 4. Check if this ball is ball #3
-     *    > If so, change ball #2's destination to Position.TWO
-     *    > Set ball #3's destination to Position.ONE
-     *    > Once they are both in that position, set ball #2's position to Position.FOUR and #3's to Position.THREE
-     * 5. Bring the ball to next empty position. Check if the ball's destination is negative motor power or positive motor power.
-     * 6. Check if the ball's current position is an integer
-     *  > if it an integer, then check if that corresponding sensor has something.
-     *      > if that corresponding sensor does not have something and the next one doesn't have something as well as no other ball has the next one's position, check if the motor speed was positive or negative
-     *          > set that current motor possession speed to zero
-     *          > if it was positive then the update position is +0.5, otherwise if it is negative -0.5
-     *        
-     */
-
-    private List<Ball> unfinishedDesto = new ArrayList<Ball>(); //contains a list of balls who's destination is not actually the final destination, but take detours to get to their final destination.
-    private List<Ball> ballsToRemove = new ArrayList<Ball>();
-    private void executeMotors() {
-
-        List<Ball> localMag = new ArrayList<>(this.mag);
-        Collections.reverse(localMag);
-        //(1) loop through each ball from top to bottom
-        for(Ball ball : localMag) {
-            //(2) evaluate next ball if ball is already at destination
-            if(ball.isAtDestination()) {
-                continue;
-            }
-
-            Position currentPos = ball.getCurrentPosition(); //TODO change occurences of this
-            //(4) checks if this is third ball
-            if(localMag.size() == 3) { //if there are 3 balls in magazine right now.
-                if(ball == localMag.get(1)) { //if this current ball (in for loop) is the second ball in the mag (aka the ball at Position 4)
-                    Ball ball2 = ball;
-                    Ball ball3 = localMag.get(0);
-                    if(unfinishedDesto.contains(ball2) || unfinishedDesto.contains(ball3)) {
-                        if(ball2.getCurrentPosition() == Position.FOUR && ball3.getCurrentPosition() == Position.ONE) {
-                            ball2.setDestination(Position.TWO);
-                            ball3.setDestination(Position.ONE);
-                        } else if(ball2.getCurrentPosition() == Position.TWO && ball3.getCurrentPosition() == Position.ONE) {
-                            ball2.setDestination(Position.FOUR);
-                            ball3.setDestination(Position.THREE);
-                        } else if(ball2.getCurrentPosition() == Position.FOUR && ball3.getCurrentPosition() == Position.THREE) {
-                            unfinishedDesto.remove(ball2);
-                            unfinishedDesto.remove(ball3);
-                        }
-                    }
-                }
-            }
-
-            //evaluate the desired motor power based on whether the destination is after or before the current position.
-            Position destination = ball.getDestination();
-            int direction = 1;
-            if(Position.isAfter(currentPos, destination)) {
-                direction = -1;
-            }
-
-            Motor[] possessions = currentPos.getPossessions();
-            for(Motor possession : possessions) {
-                switch (possession) {
-                    case ENTRY:
-                        setEntrySpeed(direction*RobotConst.IntakeConst.ENTRY_SPEED);
-                        break;
-                    case CURVE:
-                        setCurveSpeed(direction*RobotConst.IntakeConst.CURVE_SPEED);
-                        break;
-                    case LOWER_VERTICAL:
-                        setVerticalLowerSpeed(direction*RobotConst.IntakeConst.LOWER_VERTICAL_SPEED);
-                        break;
-                    case UPPER_VERTICAL:
-                        setVerticalUpperSpeed(direction*RobotConst.IntakeConst.UPPER_VERTICAL_SPEED);
-                        break;
-                }
-            }
-
-            //re-evaluate current ball position based on sensor feedback
-            double posId = currentPos.getId();
-            double destinationId = destination.getId();
-            boolean[] sen = getSensors();
-
-            if(direction == 1) { //motor positive
-                //checking if the current location of the ball has a sensor
-                if(Util.isInteger(currentPos.getId())) {
-                    int posIdInt = (int) posId;
-                    boolean isDetectingBall = sen[posIdInt - 1]; //gets the sensor of that pos
-                    if(!isDetectingBall) {
-                        Position newPosition = Position.getPosition(posIdInt+0.5);
-                        if(newPosition == Position.FIVE_SIX) {
-                            ballsToRemove.add(ball);
-                        }
-                        ball.setPosition(newPosition);
-                    }
-                }
-            } else { //motor negative
-                if(Util.isInteger(currentPos.getId())) {
-                    int posIdInt = (int) posId;
-                    boolean isDetectingBall = sen[posIdInt - 1]; //gets the sensor of that pos
-                    if(!isDetectingBall) {
-                        Position newPosition = Position.getPosition(posIdInt-0.5);
-                        if(newPosition == Position.FIVE_SIX) {
-                            ballsToRemove.add(ball);
-                        }
-                        ball.setPosition(newPosition);
-                    }
-                }
-            }
-
-
-        }
-        Collections.reverse(localMag);
-        this.mag = localMag;
     }
 
     public class Ball {
