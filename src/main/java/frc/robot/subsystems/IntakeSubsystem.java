@@ -575,10 +575,8 @@ public class IntakeSubsystem extends SubsystemBase {
             Position destination = ball.getDestination();
             ballMag.add("Ball Position: " + position.toString() + " - Destination: " + destination.toString());
         }
-        String[] x = (String[]) ballMag.toArray();
+        final String[] x = (String[]) ballMag.toArray();
         builder.addStringArrayProperty("Ball Magazine", () -> {return x;}, null);
-
-
 
         //Next Empty Position
         builder.addStringProperty("Next Empty Position: ", () -> {return getNextEmptyPosition().toString();}, null);
@@ -588,8 +586,8 @@ public class IntakeSubsystem extends SubsystemBase {
         for(Position pos : getOccupiedPositions()) {
             occupiedPositions.add(pos.toString());
         }
-        String[] x = (String[]) occupiedPositions.toArray();
-        builder.addStringArrayProperty("Occupied Positions", () -> {return x;}, null);
+        final String[] y = (String[]) occupiedPositions.toArray();
+        builder.addStringArrayProperty("Occupied Positions", () -> {return y;}, null);
 
         //Is Intake Open
         builder.addBooleanProperty("Intake Open", this::isIntakeOpen, null);
