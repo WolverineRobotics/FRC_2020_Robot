@@ -66,6 +66,10 @@ public class RobotMap{
 
     public static final int DRIVE_PIGEON_IMU_ADDRESS                = 6;
 
+
+    public static final int SHOOTER_FLYWHEEL_MOTOR_ADDRESS          = 25;
+    public static final int SHOOTER_HOOD_MOTOR_ADDRESS              = 28;
+    public static final int SHOOTER_HOOD_ENCODER_ADDRESS            = -1; //DIO
     public static final SerialPort.Port LIDAR_PORT = Port.kOnboard;
 
 }

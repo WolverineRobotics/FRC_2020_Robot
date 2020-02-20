@@ -82,4 +82,21 @@ public class Util {
         return (Math.floor(value) == value && !Double.isInfinite(value));
     }
 
+    /**
+     * Wraps error around, returning the shortest path for a continuous error.
+     */
+    public static double getContinuousError(double error, double inputRange) {
+        if (inputRange > 0) {
+          error %= inputRange;
+          if (Math.abs(error) > inputRange / 2) {
+            if (error > 0) {
+              return error - inputRange;
+            } else {
+              return error + inputRange;
+            }
+          }
+        }
+        return error;
+      }
+
 }
