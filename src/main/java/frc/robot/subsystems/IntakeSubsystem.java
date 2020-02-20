@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -123,6 +122,9 @@ public class IntakeSubsystem extends SubsystemBase {
         for(Ball ball : localMag) {
             //(2) evaluate next ball if ball is already at destination or if it's destination isn't finished
             if(ball.isAtDestination() && !unfinishedDesto.contains(ball)) {
+                if(ball.getCurrentPosition().equals(Position.ONE) && isIntakeOpen()) {
+                    ballsToRemove.add(ball);
+                }
                 continue;
             }
 
@@ -274,7 +276,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return true if sensor 1 is activated (entry sensor of the entry intake)
      */
     public boolean isSensorOneActivated() {
-        return sensor1.get();
+        return sensor1.get() && isIntakeOpen();
     }
 
     /**
@@ -460,6 +462,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
         /**
          * Get all of the motor possessions that this Position has.
+         * 
          * @return array of Motor
          */
         public Motor[] getPossessions() {
@@ -474,13 +477,12 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
         /**
-         * Static componnet:
-         * Keeps a map of all members of this enum.
+         * Static componnet: Keeps a map of all members of this enum.
          */
-        private static Map<Double, Position>  map = new HashMap<>();
+        private static Map<Double, Position> map = new HashMap<>();
 
         static {
-            for(Position pos : Position.values()) {
+            for (Position pos : Position.values()) {
                 map.put(pos.getId(), pos);
             }
         }
@@ -488,16 +490,13 @@ public class IntakeSubsystem extends SubsystemBase {
         /**
          * 
          * Get the integer position before the position given.
+         * 
          * @param pos Position of the ball
          * @return the Position of the integer location before
          * 
-         * Example:
-         * Argued Position: 1.5
-         * Returns: 1.0
+         *         Example: Argued Position: 1.5 Returns: 1.0
          * 
-         * Another example:
-         * Argued Position: 4.0
-         * Returns: 3.0
+         *         Another example: Argued Position: 4.0 Returns: 3.0
          */
         public static Position getIntLocationBefore(Position pos) {
             double id = pos.getId();
@@ -508,20 +507,17 @@ public class IntakeSubsystem extends SubsystemBase {
         /**
          * 
          * Get the integer position before the position given.
+         * 
          * @param pos Position of the ball. CANNOT BE GREATER THAN 5
          * @return the Position of the integer location before
          * 
-         * Example:
-         * Argued Position: 1.5
-         * Returns: 2
+         *         Example: Argued Position: 1.5 Returns: 2
          * 
-         * Another example:
-         * Argued Position: 4.0
-         * Returns: 5
+         *         Another example: Argued Position: 4.0 Returns: 5
          */
         public static Position getIntLocationAfter(Position pos) {
             double id = pos.getId();
-            if(id > 5) {
+            if (id > 5) {
                 return null;
             }
             double desiredId = Math.ceil(id + 1);
@@ -530,7 +526,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
         /**
          * 
-         * @param pos pos to check
+         * @param pos      pos to check
          * @param checkPos checking if this pos is after pos
          * @return true if checkPos is enum after pos.
          */
@@ -542,29 +538,26 @@ public class IntakeSubsystem extends SubsystemBase {
 
         /**
          * Get the Position enum based on id
+         * 
          * @return the position with that corresponding id, or can return null
          */
         public static Position getPosition(double id) {
-            for(Map.Entry<Double, Position> entry : map.entrySet()) {
+            for (Map.Entry<Double, Position> entry : map.entrySet()) {
                 double entryId = entry.getKey();
-                if(entryId == id) {
+                if (entryId == id) {
                     return entry.getValue();
                 }
             }
             return null;
         }
-    }  
+    }
 
     /**
-     * See #Position enum
-     * Use of this enum is just so that there is a better sense of logic in the code.
+     * See #Position enum Use of this enum is just so that there is a better sense
+     * of logic in the code.
      */
     public enum Motor {
-        ENTRY,
-        CURVE,
-        LOWER_VERTICAL,
-        UPPER_VERTICAL,
-        ;
+        ENTRY, CURVE, LOWER_VERTICAL, UPPER_VERTICAL,;
     }
 
     /**
@@ -572,7 +565,34 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addBooleanProperty("[BALL SENSOR 1]", this::isSensorOneActivated, null);
+        //Sensor Statuses
+        builder.addBooleanArrayProperty("Sensor Statuses", this::getSensors, null);
+
+        //Ball Positions & Destinations (in magazine)
+        List<String> ballMag = new ArrayList<>();
+        for (Ball ball : mag) {
+            Position position = ball.getCurrentPosition();
+            Position destination = ball.getDestination();
+            ballMag.add("Ball Position: " + position.toString() + " - Destination: " + destination.toString());
+        }
+        String[] x = (String[]) ballMag.toArray();
+        builder.addStringArrayProperty("Ball Magazine", () -> {return x;}, null);
+
+
+
+        //Next Empty Position
+        builder.addStringProperty("Next Empty Position: ", () -> {return getNextEmptyPosition().toString();}, null);
+        
+        //Occupied Positions
+        List<String> occupiedPositions = new ArrayList<String>();
+        for(Position pos : getOccupiedPositions()) {
+            occupiedPositions.add(pos.toString());
+        }
+        String[] x = (String[]) occupiedPositions.toArray();
+        builder.addStringArrayProperty("Occupied Positions", () -> {return x;}, null);
+
+        //Is Intake Open
+        builder.addBooleanProperty("Intake Open", this::isIntakeOpen, null);
     }
 
 }
