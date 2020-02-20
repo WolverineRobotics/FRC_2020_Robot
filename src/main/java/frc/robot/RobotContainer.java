@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.LidarSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -31,8 +30,6 @@ public class RobotContainer {
 
   // autonomous command
 
-  private final LidarSubsystem s_lidar;
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -42,8 +39,6 @@ public class RobotContainer {
     c_drive = new DefaultDriveCommand(s_drive);
     CommandScheduler.getInstance().setDefaultCommand(s_drive, c_drive);
 
-    s_lidar = new LidarSubsystem();
-
   }
 
   /**
@@ -52,12 +47,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Placeholder command that finishes immediately
-    return new CommandBase(){
-      @Override
-      public boolean isFinished() {
-        return true;
-      }
-    };
+    // Placeholder command
+    return new CommandBase(){};
   }
 }
