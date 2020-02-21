@@ -38,6 +38,8 @@ public class RobotMap{
         public static final int VERTICAL_UPPER = 23;
         public static final int SHOOT = 25;
         public static final int HOOD = 28;
+        public static final int CLIMB = 30; //neo
+        public static final int CLIMB_LEVEL = 33; //talon
     }
 
     public class Controller {
