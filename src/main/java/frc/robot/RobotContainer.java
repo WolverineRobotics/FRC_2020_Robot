@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.defaultcommands.DefaultCameraCommand;
+import frc.robot.commands.defaultcommands.DefaultClimbCommand;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
 import frc.robot.commands.defaultcommands.DefaultShooterCommand;
@@ -20,6 +21,7 @@ import frc.robot.constants.RobotMap;
 import frc.robot.oi.DriverController;
 import frc.robot.oi.OperatorController;
 import frc.robot.subsystems.CameraSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LidarSubsystem;
@@ -39,6 +41,7 @@ public class RobotContainer {
   private IntakeSubsystem s_intake;
   private CameraSubsystem s_camera;
   private ShooterSubsystem s_shooter;
+  private ClimbSubsystem s_climb;
   // private LidarSubsystem s_lidar;
 
   // default commands
@@ -46,6 +49,7 @@ public class RobotContainer {
   private DefaultIntakeCommand dc_intake;
   private DefaultCameraCommand dc_camera;
   private DefaultShooterCommand dc_shooter;
+  private DefaultClimbCommand dc_climb;
 
   private Compressor compressor;
 
@@ -83,6 +87,11 @@ public class RobotContainer {
     s_camera = new CameraSubsystem();
     dc_camera = new DefaultCameraCommand(s_camera);
     CommandScheduler.getInstance().setDefaultCommand(s_camera, dc_camera);
+
+    //CLIMB
+    s_climb = new ClimbSubsystem();
+    dc_climb = new DefaultClimbCommand(s_climb);
+    CommandScheduler.getInstance().setDefaultCommand(s_climb, dc_climb);
 
     //LIDAR
     // s_lidar = new LidarSubsystem();
