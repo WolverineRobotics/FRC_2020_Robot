@@ -30,9 +30,9 @@ public class DefaultIntakeCommand extends CommandBase {
     @Override
     public void execute() {
         if (oc.isHoldingLeftTrigger()) { // if is intaking
-            if(s_intake.isIntakeOpen()) {
-                s_intake.setIntakePiston(true);
-            }
+            // if(s_intake.isIntakeOpen()) {
+            //     s_intake.setIntakePiston(true);
+            // }
             // PREVIOUS CODE FOR DEFAULT INTAKE
             // final boolean[] sen = s_intake.getSensors();
             // /**
