@@ -13,16 +13,16 @@ import frc.robot.constants.RobotConst;
  * 
  * Right Stick X: 
  * Right Stick Y: Shooter Hood Rotation UP=CLOSE DOWN=OPEN
- * Right Stick Button:
+ * Right Stick Button: 
  * 
- * Left Bumper:
+ * Left Bumper: Manual Outake through BOTTOM
  * Right Bumper: Fly Wheel Run
  * 
- * Left Trigger: Intake Balls - programmed with sensors / should be idiot proof
- * Right Trigger: Outake Balls from top
+ * Left Trigger: 
+ * Right Trigger: Dumby-Proof Intake
  * 
  * Button A:
- * Button B: Auto-Shoot (See DefaultIntakeCommand)
+ * Button B: Reset IntakeSubsystem Logic
  * Button X: 
  * Button Y: 
  * 
@@ -33,7 +33,7 @@ import frc.robot.constants.RobotConst;
  * POV 45:
  * POV 90: 
  * POV 135:
- * POV 180: (POV Down) Entry intake motor only
+ * POV 180: (POV Down) Run all intake motors to spit out from top.
  * POV 225:
  * POV 270:
  */
