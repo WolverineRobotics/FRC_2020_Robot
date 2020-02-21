@@ -83,7 +83,7 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if(moveBalls) {
-            setSpeeds(0.4, 0, 0, 0);
+            if(mag.size() != 5) setSpeeds(0.3, 0, 0, 0);
             if(isSensorOneActivated()) {
                 boolean isNewBall = true;
                 for(Ball b : mag) {
@@ -102,13 +102,17 @@ public class IntakeSubsystem extends SubsystemBase {
                     } else if(mag.size() == 3) {
                         ball.setDestination(Position.TWO);
                         unfinishedDesto.add(ball);
+                    } else if(mag.size() == 4) {
+                        ball.setDestination(Position.TWO);
+                    } else if(mag.size() == 5) {
+                        ball.setDestination(Position.ONE);
                     }
                 }
             }
             executeMotors();
+            stopUnusedPossessions();
         }
         updateSensorPositions();
-        stopUnusedPossessions();
         updateDashboard();
     }
 
@@ -128,6 +132,8 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
         // SmartDashboard.putString("Next Available Position", getNextEmptyPosition().toString());
+        SmartDashboard.putNumber("Magazine Amount", mag.size());
+        
     }
 
 
@@ -151,6 +157,45 @@ public class IntakeSubsystem extends SubsystemBase {
      */
 
     private void executeMotors() {
+
+        // for(Ball b : mag) {
+        //     if(!b.isAtDestination()) {
+        //         for(Motor possession : b.getCurrentPosition().getPossessions()) {
+        //             if(!currentPossessions.contains(possession)) {
+        //                 currentPossessions.add(possession);
+        //             }
+        //         }
+        //     }
+        // }
+        // for(Motor possession : currentPossessions) {
+        //     // Position currentPos = b.getCurrentPosition();
+        //     // Position desto = b.getDestination();
+        //     // int direction = 1;
+        //     // if(Position.isAfter(currentPos, desto)) {
+        //     //     direction = 1;
+        //     // } else {
+        //     //     direction = -1;
+        //     // }
+        //    switch (possession) {
+        //        case ENTRY:
+        //            setEntrySpeed(/*direction*/0.3);
+        //            break;
+        //        case CURVE:
+        //            setCurveSpeed(/*direction*/0.5);
+        //            break;
+        //        case LOWER_VERTICAL:
+        //            boolean[] sen = getSensors();
+        //            if((sen[3-1] && sen[4-1]) && mag.size() >= 3) {
+                   
+        //            } else {
+        //                setVerticalLowerSpeed(/*direction*/0.20);
+        //            }
+        //            break;
+        //        case UPPER_VERTICAL:
+        //            setVerticalUpperSpeed(/*direction*/0.1);
+        //            break;
+        //     }
+        // }
         for(Ball b : mag) {
             if(!b.isAtDestination()) {
                 Position currentPos = b.getCurrentPosition();
@@ -171,18 +216,25 @@ public class IntakeSubsystem extends SubsystemBase {
                                 setEntrySpeed(direction*0.3);
                                 break;
                             case CURVE:
-                                setCurveSpeed(direction*0.4);
+                                setCurveSpeed(direction*0.5);
                                 break;
                             case LOWER_VERTICAL:
                                 boolean[] sen = getSensors();
                                 if((sen[3-1] && sen[4-1]) && mag.size() == 3) {
-                                
+                                    if(isPositionOccupied(Position.THREE) && isPositionOccupied(Position.TWO)) {
+                                        Ball ball2 = getBall(Position.THREE);
+                                        Ball ball3 = getBall(Position.TWO);
+                                        if(ball2 != null && ball3 != null) {
+                                            ball2.setPosition(Position.FOUR);
+                                            ball3.setPosition(Position.THREE);
+                                        }
+                                    }
                                 } else {
-                                    setVerticalLowerSpeed(direction*0.20);
+                                    setVerticalLowerSpeed(direction*0.15);
                                 }
                                 break;
                             case UPPER_VERTICAL:
-                                setVerticalUpperSpeed(direction*0.1);
+                                setVerticalUpperSpeed(direction*0.15);
                                 break;
                         }
                     }
@@ -190,109 +242,32 @@ public class IntakeSubsystem extends SubsystemBase {
                 
             }
         }
-        // List<Ball> localMag = new ArrayList<>(this.mag);
-        // Collections.reverse(localMag);
-        // //(1) loop through each ball from top to bottom
-        // for(Ball ball : localMag) {
-        //     //(2) evaluate next ball if ball is already at destination or if it's destination isn't finished
-        //     if(ball.isAtDestination() && !unfinishedDesto.contains(ball)) {
-        //         if(ball.getCurrentPosition().equals(Position.ONE) && isIntakeOpen()) {
-        //             ballsToRemove.add(ball);
-        //         }
-        //         continue;
-        //     }
-
-        //     //(4) checks if this is third ball
-        //     Position currentPos = ball.getCurrentPosition();
-        //     if(localMag.size() == 3) { //if there are 3 balls in magazine right now.
-        //         if(ball == localMag.get(1)) { //if this current ball (in for loop) is the second ball in the mag (aka the ball at Position 4)
-        //             Ball ball2 = ball;
-        //             Ball ball3 = localMag.get(0);
-        //             if(unfinishedDesto.contains(ball2) || unfinishedDesto.contains(ball3)) {
-        //                 if(ball2.getCurrentPosition() == Position.FOUR && ball3.getCurrentPosition() == Position.ONE) {
-        //                     ball2.setDestination(Position.TWO);
-        //                     ball3.setDestination(Position.ONE);
-        //                     unfinishedDesto.add(ball2);
-        //                     unfinishedDesto.add(ball3);
-        //                 } else if(ball2.getCurrentPosition() == Position.TWO && ball3.getCurrentPosition() == Position.ONE) {
-        //                     ball2.setDestination(Position.FOUR);
-        //                     ball3.setDestination(Position.THREE);
-        //                 } else if(ball2.getCurrentPosition() == Position.FOUR && ball3.getCurrentPosition() == Position.THREE) {
-        //                     unfinishedDesto.remove(ball2);
-        //                     unfinishedDesto.remove(ball3);
-        //                 }
-        //             }
-        //         }
-        //     }
-
-        //     //evaluate the desired motor power based on whether the destination is after or before the current position.
-        //     Position destination = ball.getDestination();
-        //     int direction = 1;
-        //     if(Position.isAfter(currentPos, destination)) {
-        //         direction = -1;
-        //     }
-
-        //     //re-evaluate current ball position based on sensor feedback
-        //     double posId = currentPos.getId();
-        //     boolean[] sen = getSensors();
-        //     if(direction == 1) { //motor positive
-        //         //checking if the current location of the ball has a sensor
-        //         if(Util.isInteger(currentPos.getId())) {
-        //             int posIdInt = (int) posId;
-        //             boolean isDetectingBall = sen[posIdInt - 1]; //gets the sensor of that pos
-        //             if(posIdInt < (mag.size() - 1)) {
-        //                 boolean sensorAfterDetectingBall = sen[posIdInt];
-        //                 Position newPosition = null;
-        //                 if(!isDetectingBall && !sensorAfterDetectingBall) {
-        //                     newPosition = Position.getPosition(posIdInt+0.5);
-        //                     if(newPosition == Position.FIVE_SIX) {
-        //                         ballsToRemove.add(ball);
-        //                     }
-        //                 } else if(!isDetectingBall && sensorAfterDetectingBall) {
-        //                     newPosition = Position.getIntLocationAfter(currentPos);
-        //                 }
-        //                 ball.setPosition(newPosition);
-        //             }
-        //         }
-        //     } else { //motor negative
-        //         if(Util.isInteger(currentPos.getId())) {
-        //             int posIdInt = (int) posId;
-        //             boolean isDetectingBall = sen[posIdInt - 1]; //gets the sensor of that pos
-        //             if(!isDetectingBall) {
-        //                 Position newPosition = Position.getPosition(posIdInt-0.5);
-        //                 if(newPosition == Position.FIVE_SIX) {
-        //                     ballsToRemove.add(ball);
-        //                 }
-        //                 ball.setPosition(newPosition);
-        //             }
-        //         }
-        //     }
-
-        //     //run all of the motor possessions
-        //     Motor[] possessions = currentPos.getPossessions();
-        //     for(Motor possession : possessions) {
-        //         switch (possession) {
-        //             case ENTRY:
-        //                 setEntrySpeed(direction*RobotConst.IntakeConst.ENTRY_SPEED);
-        //                 break;
-        //             case CURVE:
-        //                 setCurveSpeed(direction*RobotConst.IntakeConst.CURVE_SPEED);
-        //                 break;
-        //             case LOWER_VERTICAL:
-        //                 setVerticalLowerSpeed(direction*RobotConst.IntakeConst.LOWER_VERTICAL_SPEED);
-        //                 break;
-        //             case UPPER_VERTICAL:
-        //                 setVerticalUpperSpeed(direction*RobotConst.IntakeConst.UPPER_VERTICAL_SPEED);
-        //                 break;
-        //         }
-        //     }
-
-        // }
-        // Collections.reverse(localMag);
-        // this.mag = localMag;
     }
 
     private void stopUnusedPossessions() {
+        // for(Ball ball : mag) {
+        //     if(ball.isAtDestination()) {
+        //         for(Motor m : ball.getCurrentPosition().getPossessions()) {
+        //             // if(ball.getCurrentPosition().getPossessions()[0] == ) {
+        //                 switch(m) {
+        //                     case ENTRY:
+        //                         setEntrySpeed(0);
+        //                         break;
+        //                     case CURVE:
+        //                         setCurveSpeed(0);
+        //                         break;
+        //                     case LOWER_VERTICAL:
+        //                         // setVerticalLowerSpeed(0);
+        //                         break;
+        //                     case UPPER_VERTICAL:
+        //                         setVerticalUpperSpeed(0);
+        //                         break;
+        //                 }
+        //                 currentPossessions.remove(m);
+        //             // }
+        //         }
+        //     }
+        // }
         for(Ball ball : mag) {
             if(ball.isAtDestination() /*&& !unfinishedDesto.contains(ball)*/) {
                 for(Motor m : ball.getCurrentPosition().getPossessions()) {
@@ -301,7 +276,11 @@ public class IntakeSubsystem extends SubsystemBase {
                             setEntrySpeed(0);
                             break;
                         case CURVE:
-                            setCurveSpeed(0);
+                            if(mag.size() >= 3 && ball.getCurrentPosition() == Position.THREE) {
+
+                            } else {
+                                setCurveSpeed(0);   
+                            }
                             break;
                         case LOWER_VERTICAL:
                             setVerticalLowerSpeed(0);
@@ -310,7 +289,6 @@ public class IntakeSubsystem extends SubsystemBase {
                             setVerticalUpperSpeed(0);
                             break;
                     }
-                    currentPossessions.remove(m);
                 }
             }
         }
@@ -337,26 +315,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
                     } else {
                         List<Position> occupied = getOccupiedPositions();
-                        // System.out.println(sen[intPosId] + " " + !occupied.contains(position));
-                        //checks if next sensor is on (relative to current position)
                         boolean nextSensor = sen[intPosId];
-                        //and checks if next position is not occupied by a ball
                         boolean nextPosNotOccupied = !occupied.contains(getPosition(intPosId + 1));
-                        //check if next position's ball is unfinished desto
-                        // Ball nextPosBall = getBall(getPosition(intPosId + 1));
-                        // boolean nextPosBallUnfinishedDesto = false;
-                        // if(nextPosBall != null) {
-                        //     if(unfinishedDesto.contains(nextPosBall)) {
-                        //         nextPosBallUnfinishedDesto = true;
-                        //     }
-                        // }
                         if(nextSensor && (nextPosNotOccupied)) {
                             b.setPosition(getPosition(intPosId + 1));
                             // System.out.println("============================================================");
                         }
-                        if(mag.size() == 3 && mag.get(2) == b) {
-                            Ball ball3 = b;
-                            Ball ball2 = mag.get(1);
+                        if(mag.size() == 3 && mag.get(1) == b) {
+                            Ball ball2 = b;
+                            Ball ball3 = mag.get(2);
                             if(ball2.getCurrentPosition() == Position.FOUR) {
                                 ball3.setPosition(Position.THREE);
                             }
@@ -401,12 +368,20 @@ public class IntakeSubsystem extends SubsystemBase {
         entry.set(speed);
     }
 
+    public double getEntrySpeed() {
+        return entry.get();
+    }
+
     /**
      * Sets the speed of the curve motor
      * @param speed -1 to 1
      */
     public void setCurveSpeed(double speed) {
         curve.set(speed);
+    }
+
+    public double getCurveSpeed() {
+        return curve.get();
     }
 
     /**
@@ -417,12 +392,20 @@ public class IntakeSubsystem extends SubsystemBase {
         verticalLower.set(speed);
     }
 
+    public double getVerticalLowerSpeed() {
+        return verticalLower.get();
+    }
+
     /**
      * Sets the speed of the upper vertical motor
      * @param speed -1 to 1
      */
     public void setVerticalUpperSpeed(double speed) {
         verticalUpper.set(MathUtil.clamp(speed, -1, 1));
+    }
+
+    public double getVerticalUpperSpeed() {
+        return verticalUpper.get();
     }
 
     /**
@@ -566,7 +549,6 @@ public class IntakeSubsystem extends SubsystemBase {
         List<Position> pos = new ArrayList<Position>();
         for(Ball b : mag) {
             pos.add(b.getCurrentPosition());
-            System.out.println("OCCUPIED: " + b.getCurrentPosition().toString());
         }
         return pos;
     }

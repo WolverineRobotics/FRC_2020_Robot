@@ -84,13 +84,17 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.unfinishedDesto.clear();
             s_intake.ballsToRemove.clear();
             s_intake.currentPossessions.clear();
+            s_intake.setMoveBalls(false);
         } else if(oc.isOutaking()) { //if operator wants to outake the balls from the bottom
             s_intake.setEntrySpeed(-0.3);
             s_intake.setCurveSpeed(-0.5);
             s_intake.setVerticalLowerSpeed(-0.5);
             s_intake.setVerticalUpperSpeed(-0.5);
         } else if(oc.isPOVDown()) { //if operator wants to intake only entry motor
-            s_intake.setEntrySpeed(0.3);
+            s_intake.setEntrySpeed(0.1);
+            s_intake.setCurveSpeed(0.3);
+            s_intake.setVerticalLowerSpeed(0.1);
+            s_intake.setVerticalUpperSpeed(0.5);
         } else {
             s_intake.setMoveBalls(false);
             s_intake.setSpeeds(0, 0, 0, 0);
