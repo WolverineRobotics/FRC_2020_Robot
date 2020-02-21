@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.util.Units;
@@ -94,8 +95,8 @@ public class DriveSubsystem extends SubsystemBase {
         leftEncoder = new Encoder(RobotMap.Drive.DRIVE_LEFT_ENCODER_A, RobotMap.Drive.DRIVE_LEFT_ENCODER_B);
         rightEncoder = new Encoder(RobotMap.Drive.DRIVE_RIGHT_ENCODER_A, RobotMap.Drive.DRIVE_RIGHT_ENCODER_B);
 
-        leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
-        rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
+        // leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
+        // rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
 
         // gearShifter = new DoubleSolenoid(Pneumatic.DRIVE_HIGH_GEAR_ADDRESS, Pneumatic.DRIVE_LOW_GEAR_ADDRESS);
 
@@ -326,6 +327,7 @@ public class DriveSubsystem extends SubsystemBase {
         super.periodic();
         m_odometry.update(Rotation2d.fromDegrees(getPigeonHeading()), getDistanceRightEncoder(),
                 getDistanceLeftEncoder());
+        updateSDashboard();
     }
 
     public Pose2d getPose() {
@@ -420,14 +422,29 @@ public class DriveSubsystem extends SubsystemBase {
         builder.addDoubleProperty("[Drive] Right Speed", this::getRightSpeed, null);
         builder.addDoubleProperty("[Drive] Left Distance Encoder", this::getDistanceLeftEncoder, null);
         builder.addDoubleProperty("[Drive] Right Distance Encoder", this::getDistanceRightEncoder, null);
-        builder.addDoubleProperty("[Drive] Right Voltage", this::getRightVoltage, null);
         builder.addDoubleProperty("[Drive] Left Voltage", this::getLeftVoltage, null);
+        builder.addDoubleProperty("[Drive] Right Voltage", this::getRightVoltage, null);
         builder.addDoubleProperty("[Drive] Left Current", this::getLeftCurent, null);
         builder.addDoubleProperty("[Drive] Right Current", this::getRightCurent, null);
         builder.addDoubleProperty("[Drive] Left Velocity", this::getLeftVelocity, null);
         builder.addDoubleProperty("[Drive] Right Velocity", this::getRightVelocity, null);
 
     }
+
+    private void updateSDashboard(){
+        SmartDashboard.putNumber("[Drive] Left Speed", this.getLeftSpeed());
+        SmartDashboard.putNumber("[Drive] Right Speed", this.getRightSpeed());
+        SmartDashboard.putNumber("[Drive] Left Distance Encoder", this.getDistanceLeftEncoder());
+        SmartDashboard.putNumber("[Drive] Right Distance Encoder", this.getDistanceRightEncoder());
+        SmartDashboard.putNumber("[Drive] Left Voltage", this.getLeftVoltage());
+        SmartDashboard.putNumber("[Drive] Right Voltage", this.getRightVoltage());
+        SmartDashboard.putNumber("[Drive] Left Current", this.getLeftCurent());
+        SmartDashboard.putNumber("[Drive] Right Current", this.getRightCurent());
+        SmartDashboard.putNumber("[Drive] Left Velocity", this.getLeftVelocity());
+        SmartDashboard.putNumber("[Drive] Right Velocity", this.getRightVelocity());
+
+    }
+
 
 
 }
