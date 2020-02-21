@@ -432,6 +432,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void updateSDashboard(){
+        SmartDashboard.putNumber("[Drive] Pigeon Heading", this.getPigeonHeading());
         SmartDashboard.putNumber("[Drive] Left Speed", this.getLeftSpeed());
         SmartDashboard.putNumber("[Drive] Right Speed", this.getRightSpeed());
         SmartDashboard.putNumber("[Drive] Left Distance Encoder", this.getDistanceLeftEncoder());

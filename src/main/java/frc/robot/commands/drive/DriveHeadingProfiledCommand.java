@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.util.Units;
@@ -258,11 +259,20 @@ public class DriveHeadingProfiledCommand extends CommandBase {
         previousTurnLeftVelocity = m_kinematics.toWheelSpeeds(
                 new ChassisSpeeds(0, 0, Units.degreesToRadians(turnSetpoint.velocity))).leftMetersPerSecond;
         previousWheelSpeeds = wheelSpeeds;
+
+        updateSDashboard();
     }
 
     @Override
     public boolean isFinished() {
         return pid_straight.atGoal() && pid_turn.atGoal();
+    }
+
+    protected void updateSDashboard(){
+        SmartDashboard.putData("[Drive Heading Profiled Command] Straight PID", pid_straight);
+        SmartDashboard.putData("[Drive Heading Profiled Command] Turn PID", pid_turn);
+        SmartDashboard.putNumber("[Drive Heading Profiled Command] Straight Goal", getStraightGoal());
+        SmartDashboard.putNumber("[Drive Heading Profiled Command] Turn Goal", getTurnGoal());
     }
 
 
