@@ -80,11 +80,11 @@ public class DefaultIntakeCommand extends CommandBase {
             * 2. Spin the fly wheel for X seconds
             * 3. Run all of the conveyors to unload magazine.
             */
-            new SequentialCommandGroup(
-                // new RotateToVisionTargetCommand(s_camera, s_drive);
-                
-            );
-        } else if(oc.isPOVUp()) { //if operator wants to outake the balls from the bottom
+            s_intake.mag.clear();
+            s_intake.unfinishedDesto.clear();
+            s_intake.ballsToRemove.clear();
+            s_intake.currentPossessions.clear();
+        } else if(oc.isOutaking()) { //if operator wants to outake the balls from the bottom
             s_intake.setEntrySpeed(-0.3);
             s_intake.setCurveSpeed(-0.5);
             s_intake.setVerticalLowerSpeed(-0.5);

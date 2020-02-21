@@ -89,4 +89,8 @@ public class OperatorController extends Controller {
         return operator.getRawAxis(JoystickMap.RIGHT_STICK_Y);
     }
 
+    public boolean isOutaking() {
+        return operator.getRawButton(JoystickMap.BUTTON_LEFT_BUMPER);
+    }
+
 }

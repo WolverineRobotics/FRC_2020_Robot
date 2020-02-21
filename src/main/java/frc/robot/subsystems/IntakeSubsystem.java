@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.RobotContainer;
 import frc.robot.constants.RobotConst;
 import frc.robot.constants.RobotMap;
 import frc.robot.util.Util;
@@ -44,10 +45,11 @@ public class IntakeSubsystem extends SubsystemBase {
     /**
      * Variables helping with evaluating ball states.
      */
-    private List<Ball> mag;
-    private List<Ball> unfinishedDesto; //contains a list of balls who's destination is not actually the final destination, but take detours to get to their final destination.
-    private List<Ball> ballsToRemove; //contains a list of balls to remove after the executeMotors() method is done. Balls put in here are balls that were shot out by the Shooter Subsystem
-    private boolean moveBalls;
+    public List<Ball> mag;
+    public List<Ball> unfinishedDesto; //contains a list of balls who's destination is not actually the final destination, but take detours to get to their final destination.
+    public List<Ball> ballsToRemove; //contains a list of balls to remove after the executeMotors() method is done. Balls put in here are balls that were shot out by the Shooter Subsystem
+    public List<Motor> currentPossessions;
+    public boolean moveBalls;
 
     // initializes all of the components within the subsystem
     public IntakeSubsystem() {
@@ -71,6 +73,7 @@ public class IntakeSubsystem extends SubsystemBase {
         mag = new ArrayList<>();
         unfinishedDesto = new ArrayList<Ball>();
         ballsToRemove = new ArrayList<Ball>();
+        currentPossessions = new ArrayList<>();
         moveBalls = false;
     }
 
@@ -79,25 +82,33 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        // if(moveBalls) {
-        //     if(isSensorOneActivated()) {
-        //         boolean isNewBall = true;
-        //         for(Ball b : mag) {
-        //             if(b.getCurrentPosition() == Position.ONE) {
-        //                 isNewBall = false;
-        //             }
-        //         }
+        if(moveBalls) {
+            setSpeeds(0.4, 0, 0, 0);
+            if(isSensorOneActivated()) {
+                boolean isNewBall = true;
+                for(Ball b : mag) {
+                    if(b.getCurrentPosition() == Position.ONE) {
+                        isNewBall = false;
+                        break;
+                    }
+                }
 
-        //         if(isNewBall) {
-        //             Ball ball = new Ball(getNextEmptyPosition());
-        //             mag.add(ball);
-        //         }
-        //     } else if(mag.size() == 0) {
-        //         setSpeeds(0.3, 0, 0, 0);
-        //     }
-        //     executeMotors();
-        // }
-        // updateSensorPositions();
+                if(isNewBall && !RobotContainer.getOperatorController().isOutaking()) {
+                    Ball ball = new Ball(getNextEmptyPosition());
+                    mag.add(ball);
+                    if(mag.size() == 2) {
+                        ball.setDestination(Position.THREE);
+                        unfinishedDesto.add(ball);
+                    } else if(mag.size() == 3) {
+                        ball.setDestination(Position.TWO);
+                        unfinishedDesto.add(ball);
+                    }
+                }
+            }
+            executeMotors();
+        }
+        updateSensorPositions();
+        stopUnusedPossessions();
         updateDashboard();
     }
 
@@ -111,10 +122,12 @@ public class IntakeSubsystem extends SubsystemBase {
         //display all of the ball object data
         for(int i = 0; i < mag.size(); i++) {
             SmartDashboard.putString("Ball #" + (i+1) + " Destination:", mag.get(i).getDestination().toString());
+            // System.out.println("Ball #" + (i+1) + " Destination: " + mag.get(i).getDestination());
             SmartDashboard.putString("Ball #" + (i+1) + " Position:", mag.get(i).getCurrentPosition().toString());
+            // System.out.println("Ball #" + (i+1) + " Position: " + mag.get(i).getCurrentPosition().toString());
         }
 
-        SmartDashboard.putString("Next Available Position", getNextEmptyPosition().toString());
+        // SmartDashboard.putString("Next Available Position", getNextEmptyPosition().toString());
     }
 
 
@@ -138,6 +151,45 @@ public class IntakeSubsystem extends SubsystemBase {
      */
 
     private void executeMotors() {
+        for(Ball b : mag) {
+            if(!b.isAtDestination()) {
+                Position currentPos = b.getCurrentPosition();
+                Position desto = b.getDestination();
+                int direction = 1;
+                if(Position.isAfter(currentPos, desto)) {
+                    direction = 1;
+                } else {
+                    direction = -1;
+                }
+                // System.out.println("Direction: " + direction);
+                // run all of the motor possessions
+                Motor[] possessions = currentPos.getPossessions();
+                for(Motor possession : possessions) {
+                    if(!currentPossessions.contains(possession)) {
+                        switch (possession) {
+                            case ENTRY:
+                                setEntrySpeed(direction*0.3);
+                                break;
+                            case CURVE:
+                                setCurveSpeed(direction*0.4);
+                                break;
+                            case LOWER_VERTICAL:
+                                boolean[] sen = getSensors();
+                                if((sen[3-1] && sen[4-1]) && mag.size() == 3) {
+                                
+                                } else {
+                                    setVerticalLowerSpeed(direction*0.20);
+                                }
+                                break;
+                            case UPPER_VERTICAL:
+                                setVerticalUpperSpeed(direction*0.1);
+                                break;
+                        }
+                    }
+                }
+                
+            }
+        }
         // List<Ball> localMag = new ArrayList<>(this.mag);
         // Collections.reverse(localMag);
         // //(1) loop through each ball from top to bottom
@@ -240,8 +292,97 @@ public class IntakeSubsystem extends SubsystemBase {
         // this.mag = localMag;
     }
 
-    private void updateSensorPositions() {
+    private void stopUnusedPossessions() {
+        for(Ball ball : mag) {
+            if(ball.isAtDestination() /*&& !unfinishedDesto.contains(ball)*/) {
+                for(Motor m : ball.getCurrentPosition().getPossessions()) {
+                    switch(m) {
+                        case ENTRY:
+                            setEntrySpeed(0);
+                            break;
+                        case CURVE:
+                            setCurveSpeed(0);
+                            break;
+                        case LOWER_VERTICAL:
+                            setVerticalLowerSpeed(0);
+                            break;
+                        case UPPER_VERTICAL:
+                            setVerticalUpperSpeed(0);
+                            break;
+                    }
+                    currentPossessions.remove(m);
+                }
+            }
+        }
+    }
 
+    public Ball getBall(Position pos) {
+        for(Ball b : mag) {
+            if(b.getCurrentPosition() == pos) {
+                return b;
+            }
+        }
+        return null;
+    }
+
+    private void updateSensorPositions() {
+        for(Ball b : mag) {
+            if(!b.isAtDestination()) {
+                Position position = b.getCurrentPosition();
+                double positionId = position.getId();
+                boolean[] sen = getSensors();
+                if(Util.isInteger(positionId)) {
+                    int intPosId = (int) positionId;
+                    if(sen[intPosId - 1]) {
+
+                    } else {
+                        List<Position> occupied = getOccupiedPositions();
+                        // System.out.println(sen[intPosId] + " " + !occupied.contains(position));
+                        //checks if next sensor is on (relative to current position)
+                        boolean nextSensor = sen[intPosId];
+                        //and checks if next position is not occupied by a ball
+                        boolean nextPosNotOccupied = !occupied.contains(getPosition(intPosId + 1));
+                        //check if next position's ball is unfinished desto
+                        // Ball nextPosBall = getBall(getPosition(intPosId + 1));
+                        // boolean nextPosBallUnfinishedDesto = false;
+                        // if(nextPosBall != null) {
+                        //     if(unfinishedDesto.contains(nextPosBall)) {
+                        //         nextPosBallUnfinishedDesto = true;
+                        //     }
+                        // }
+                        if(nextSensor && (nextPosNotOccupied)) {
+                            b.setPosition(getPosition(intPosId + 1));
+                            // System.out.println("============================================================");
+                        }
+                        if(mag.size() == 3 && mag.get(2) == b) {
+                            Ball ball3 = b;
+                            Ball ball2 = mag.get(1);
+                            if(ball2.getCurrentPosition() == Position.FOUR) {
+                                ball3.setPosition(Position.THREE);
+                            }
+                        }
+                    }
+                }
+            } else if(unfinishedDesto.contains(b)) {
+                if(mag.size() == 3) {
+                    if(b.getCurrentPosition() == Position.THREE) {
+                       Ball ball3 = mag.get(2);
+                       if(ball3.getCurrentPosition() == Position.TWO) {
+                           b.setDestination(Position.FOUR);
+                           ball3.setDestination(Position.THREE);
+                           unfinishedDesto.remove(b);
+                           unfinishedDesto.remove(ball3);
+                       }
+                    
+                    // if(b.getCurrentPosition() == Position.FOUR && mag.size() == 3 && mag.get(1) == b) {
+                    //     Ball ball3 = mag.get(2);
+                    //     ball3.setPosition(Position.THREE);
+                    //     ball3.setDestination(Position.THREE);
+                    // }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -425,7 +566,8 @@ public class IntakeSubsystem extends SubsystemBase {
         List<Position> pos = new ArrayList<Position>();
         for(Ball b : mag) {
             pos.add(b.getCurrentPosition());
-;        }
+            System.out.println("OCCUPIED: " + b.getCurrentPosition().toString());
+        }
         return pos;
     }
 
@@ -478,13 +620,13 @@ public class IntakeSubsystem extends SubsystemBase {
      * and check if a position is after another position.
      */
     public enum Position {
-        ONE(1.0, Motor.ENTRY),
+        ONE(1.0, Motor.ENTRY, Motor.CURVE),
         ONE_TWO(1.5, Motor.CURVE),
-        TWO(2.0, Motor.CURVE),
+        TWO(2.0, Motor.CURVE, Motor.LOWER_VERTICAL),
         TWO_THREE(2.5, Motor.LOWER_VERTICAL),
-        THREE(3.0, Motor.LOWER_VERTICAL),
+        THREE(3.0, Motor.CURVE, Motor.LOWER_VERTICAL),
         THREE_FOUR(3.5, Motor.LOWER_VERTICAL),
-        FOUR(4.0, Motor.LOWER_VERTICAL),
+        FOUR(4.0, Motor.LOWER_VERTICAL, Motor.UPPER_VERTICAL),
         FOUR_FIVE(4.5, Motor.LOWER_VERTICAL),
         FIVE(5.0, Motor.UPPER_VERTICAL),
         FIVE_SIX(5.5, Motor.UPPER_VERTICAL),
@@ -575,21 +717,6 @@ public class IntakeSubsystem extends SubsystemBase {
             double checkPosId = checkPos.getId();
             return checkPosId > posId;
         }
-
-        /**
-         * Get the Position enum based on id
-         * 
-         * @return the position with that corresponding id, or can return null
-         */
-        public static Position getPosition(double id) {
-            for (Map.Entry<Double, Position> entry : map.entrySet()) {
-                double entryId = entry.getKey();
-                if (entryId == id) {
-                    return entry.getValue();
-                }
-            }
-            return null;
-        }
     }
 
     /**
@@ -607,5 +734,14 @@ public class IntakeSubsystem extends SubsystemBase {
     // public void initSendable(SendableBuilder builder) {
         
     // }
+
+    private Position getPosition(double id) {
+        for(Position pos : Position.values()) {
+            if(pos.getId() == id) {
+                return pos;
+            }
+        }
+        return null;
+    }
 
 }
