@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.RobotConst.ShooterConst;
 import frc.robot.constants.RobotMap;
@@ -100,6 +101,14 @@ public class ShooterSubsystem extends SubsystemBase {
         builder.setSmartDashboardType("Shooter Subsystem");
         builder.addDoubleProperty("[Shooter] Hood Position", this::getHoodEncoderPosition, null);
         builder.addDoubleProperty("[Shooter] Flywheel RPM", this::getFlywheelSpeed, null);
+    }
+
+    @Override
+    public void periodic() {
+        // SmartDashboard.putData(this);
+        SmartDashboard.putNumber("[Shooter] Hood Position1", this.getHoodEncoderPosition());
+        SmartDashboard.putNumber("[Shooter] Flywheel RPM1", this.getFlywheelSpeed());
+        // SmartDashboard.putData(value);
     }
 
 }

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst;
@@ -50,6 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // initializes all of the components within the subsystem
     public IntakeSubsystem() {
+        super();
         sensor1 = new DigitalInput(RobotMap.Sensors.BALL_SENSOR_1);
         sensor2 = new DigitalInput(RobotMap.Sensors.BALL_SENSOR_2);
         sensor3 = new DigitalInput(RobotMap.Sensors.BALL_SENSOR_3);
@@ -58,6 +60,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
         entry = new CANSparkMax(RobotMap.SpeedController.ENTRY, MotorType.kBrushless);
         curve = new CANSparkMax(RobotMap.SpeedController.CURVE, MotorType.kBrushless);
+
+        curve.setInverted(true);
+
         verticalLower = new CANSparkMax(RobotMap.SpeedController.VERTICAL_LOWER, MotorType.kBrushless);
         verticalUpper = new CANSparkMax(RobotMap.SpeedController.VERTICAL_UPPER, MotorType.kBrushless);
 
@@ -74,7 +79,42 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        
+        // if(moveBalls) {
+        //     if(isSensorOneActivated()) {
+        //         boolean isNewBall = true;
+        //         for(Ball b : mag) {
+        //             if(b.getCurrentPosition() == Position.ONE) {
+        //                 isNewBall = false;
+        //             }
+        //         }
+
+        //         if(isNewBall) {
+        //             Ball ball = new Ball(getNextEmptyPosition());
+        //             mag.add(ball);
+        //         }
+        //     } else if(mag.size() == 0) {
+        //         setSpeeds(0.3, 0, 0, 0);
+        //     }
+        //     executeMotors();
+        // }
+        // updateSensorPositions();
+        updateDashboard();
+    }
+
+    private void updateDashboard() {
+        //display all sensor values
+        boolean[] sen = getSensors();
+        for(int i = 0; i < sen.length; i++) {
+            SmartDashboard.putBoolean("Sensor " + (i+1), sen[i]);
+        }
+
+        //display all of the ball object data
+        for(int i = 0; i < mag.size(); i++) {
+            SmartDashboard.putString("Ball #" + (i+1) + " Destination:", mag.get(i).getDestination().toString());
+            SmartDashboard.putString("Ball #" + (i+1) + " Position:", mag.get(i).getCurrentPosition().toString());
+        }
+
+        SmartDashboard.putString("Next Available Position", getNextEmptyPosition().toString());
     }
 
 
@@ -98,107 +138,110 @@ public class IntakeSubsystem extends SubsystemBase {
      */
 
     private void executeMotors() {
+        // List<Ball> localMag = new ArrayList<>(this.mag);
+        // Collections.reverse(localMag);
+        // //(1) loop through each ball from top to bottom
+        // for(Ball ball : localMag) {
+        //     //(2) evaluate next ball if ball is already at destination or if it's destination isn't finished
+        //     if(ball.isAtDestination() && !unfinishedDesto.contains(ball)) {
+        //         if(ball.getCurrentPosition().equals(Position.ONE) && isIntakeOpen()) {
+        //             ballsToRemove.add(ball);
+        //         }
+        //         continue;
+        //     }
 
-        List<Ball> localMag = new ArrayList<>(this.mag);
-        Collections.reverse(localMag);
-        //(1) loop through each ball from top to bottom
-        for(Ball ball : localMag) {
-            //(2) evaluate next ball if ball is already at destination or if it's destination isn't finished
-            if(ball.isAtDestination() && !unfinishedDesto.contains(ball)) {
-                if(ball.getCurrentPosition().equals(Position.ONE) && isIntakeOpen()) {
-                    ballsToRemove.add(ball);
-                }
-                continue;
-            }
+        //     //(4) checks if this is third ball
+        //     Position currentPos = ball.getCurrentPosition();
+        //     if(localMag.size() == 3) { //if there are 3 balls in magazine right now.
+        //         if(ball == localMag.get(1)) { //if this current ball (in for loop) is the second ball in the mag (aka the ball at Position 4)
+        //             Ball ball2 = ball;
+        //             Ball ball3 = localMag.get(0);
+        //             if(unfinishedDesto.contains(ball2) || unfinishedDesto.contains(ball3)) {
+        //                 if(ball2.getCurrentPosition() == Position.FOUR && ball3.getCurrentPosition() == Position.ONE) {
+        //                     ball2.setDestination(Position.TWO);
+        //                     ball3.setDestination(Position.ONE);
+        //                     unfinishedDesto.add(ball2);
+        //                     unfinishedDesto.add(ball3);
+        //                 } else if(ball2.getCurrentPosition() == Position.TWO && ball3.getCurrentPosition() == Position.ONE) {
+        //                     ball2.setDestination(Position.FOUR);
+        //                     ball3.setDestination(Position.THREE);
+        //                 } else if(ball2.getCurrentPosition() == Position.FOUR && ball3.getCurrentPosition() == Position.THREE) {
+        //                     unfinishedDesto.remove(ball2);
+        //                     unfinishedDesto.remove(ball3);
+        //                 }
+        //             }
+        //         }
+        //     }
 
-            //(4) checks if this is third ball
-            Position currentPos = ball.getCurrentPosition();
-            if(localMag.size() == 3) { //if there are 3 balls in magazine right now.
-                if(ball == localMag.get(1)) { //if this current ball (in for loop) is the second ball in the mag (aka the ball at Position 4)
-                    Ball ball2 = ball;
-                    Ball ball3 = localMag.get(0);
-                    if(unfinishedDesto.contains(ball2) || unfinishedDesto.contains(ball3)) {
-                        if(ball2.getCurrentPosition() == Position.FOUR && ball3.getCurrentPosition() == Position.ONE) {
-                            ball2.setDestination(Position.TWO);
-                            ball3.setDestination(Position.ONE);
-                            unfinishedDesto.add(ball2);
-                            unfinishedDesto.add(ball3);
-                        } else if(ball2.getCurrentPosition() == Position.TWO && ball3.getCurrentPosition() == Position.ONE) {
-                            ball2.setDestination(Position.FOUR);
-                            ball3.setDestination(Position.THREE);
-                        } else if(ball2.getCurrentPosition() == Position.FOUR && ball3.getCurrentPosition() == Position.THREE) {
-                            unfinishedDesto.remove(ball2);
-                            unfinishedDesto.remove(ball3);
-                        }
-                    }
-                }
-            }
+        //     //evaluate the desired motor power based on whether the destination is after or before the current position.
+        //     Position destination = ball.getDestination();
+        //     int direction = 1;
+        //     if(Position.isAfter(currentPos, destination)) {
+        //         direction = -1;
+        //     }
 
-            //evaluate the desired motor power based on whether the destination is after or before the current position.
-            Position destination = ball.getDestination();
-            int direction = 1;
-            if(Position.isAfter(currentPos, destination)) {
-                direction = -1;
-            }
+        //     //re-evaluate current ball position based on sensor feedback
+        //     double posId = currentPos.getId();
+        //     boolean[] sen = getSensors();
+        //     if(direction == 1) { //motor positive
+        //         //checking if the current location of the ball has a sensor
+        //         if(Util.isInteger(currentPos.getId())) {
+        //             int posIdInt = (int) posId;
+        //             boolean isDetectingBall = sen[posIdInt - 1]; //gets the sensor of that pos
+        //             if(posIdInt < (mag.size() - 1)) {
+        //                 boolean sensorAfterDetectingBall = sen[posIdInt];
+        //                 Position newPosition = null;
+        //                 if(!isDetectingBall && !sensorAfterDetectingBall) {
+        //                     newPosition = Position.getPosition(posIdInt+0.5);
+        //                     if(newPosition == Position.FIVE_SIX) {
+        //                         ballsToRemove.add(ball);
+        //                     }
+        //                 } else if(!isDetectingBall && sensorAfterDetectingBall) {
+        //                     newPosition = Position.getIntLocationAfter(currentPos);
+        //                 }
+        //                 ball.setPosition(newPosition);
+        //             }
+        //         }
+        //     } else { //motor negative
+        //         if(Util.isInteger(currentPos.getId())) {
+        //             int posIdInt = (int) posId;
+        //             boolean isDetectingBall = sen[posIdInt - 1]; //gets the sensor of that pos
+        //             if(!isDetectingBall) {
+        //                 Position newPosition = Position.getPosition(posIdInt-0.5);
+        //                 if(newPosition == Position.FIVE_SIX) {
+        //                     ballsToRemove.add(ball);
+        //                 }
+        //                 ball.setPosition(newPosition);
+        //             }
+        //         }
+        //     }
 
-            //re-evaluate current ball position based on sensor feedback
-            double posId = currentPos.getId();
-            boolean[] sen = getSensors();
-            if(direction == 1) { //motor positive
-                //checking if the current location of the ball has a sensor
-                if(Util.isInteger(currentPos.getId())) {
-                    int posIdInt = (int) posId;
-                    boolean isDetectingBall = sen[posIdInt - 1]; //gets the sensor of that pos
-                    if(posIdInt < (mag.size() -1)) {
-                        boolean sensorAfterDetectingBall = sen[posIdInt];
-                        Position newPosition = null;
-                        if(!isDetectingBall && !sensorAfterDetectingBall) {
-                            newPosition = Position.getPosition(posIdInt+0.5);
-                            if(newPosition == Position.FIVE_SIX) {
-                                ballsToRemove.add(ball);
-                            }
-                        } else if(!isDetectingBall && sensorAfterDetectingBall) {
-                            newPosition = Position.getIntLocationAfter(currentPos);
-                        }
-                        ball.setPosition(newPosition);
-                    }
-                }
-            } else { //motor negative
-                if(Util.isInteger(currentPos.getId())) {
-                    int posIdInt = (int) posId;
-                    boolean isDetectingBall = sen[posIdInt - 1]; //gets the sensor of that pos
-                    if(!isDetectingBall) {
-                        Position newPosition = Position.getPosition(posIdInt-0.5);
-                        if(newPosition == Position.FIVE_SIX) {
-                            ballsToRemove.add(ball);
-                        }
-                        ball.setPosition(newPosition);
-                    }
-                }
-            }
+        //     //run all of the motor possessions
+        //     Motor[] possessions = currentPos.getPossessions();
+        //     for(Motor possession : possessions) {
+        //         switch (possession) {
+        //             case ENTRY:
+        //                 setEntrySpeed(direction*RobotConst.IntakeConst.ENTRY_SPEED);
+        //                 break;
+        //             case CURVE:
+        //                 setCurveSpeed(direction*RobotConst.IntakeConst.CURVE_SPEED);
+        //                 break;
+        //             case LOWER_VERTICAL:
+        //                 setVerticalLowerSpeed(direction*RobotConst.IntakeConst.LOWER_VERTICAL_SPEED);
+        //                 break;
+        //             case UPPER_VERTICAL:
+        //                 setVerticalUpperSpeed(direction*RobotConst.IntakeConst.UPPER_VERTICAL_SPEED);
+        //                 break;
+        //         }
+        //     }
 
-            //run all of the motor possessions
-            Motor[] possessions = currentPos.getPossessions();
-            for(Motor possession : possessions) {
-                switch (possession) {
-                    case ENTRY:
-                        setEntrySpeed(direction*RobotConst.IntakeConst.ENTRY_SPEED);
-                        break;
-                    case CURVE:
-                        setCurveSpeed(direction*RobotConst.IntakeConst.CURVE_SPEED);
-                        break;
-                    case LOWER_VERTICAL:
-                        setVerticalLowerSpeed(direction*RobotConst.IntakeConst.LOWER_VERTICAL_SPEED);
-                        break;
-                    case UPPER_VERTICAL:
-                        setVerticalUpperSpeed(direction*RobotConst.IntakeConst.UPPER_VERTICAL_SPEED);
-                        break;
-                }
-            }
+        // }
+        // Collections.reverse(localMag);
+        // this.mag = localMag;
+    }
 
-        }
-        Collections.reverse(localMag);
-        this.mag = localMag;
+    private void updateSensorPositions() {
+
     }
 
     /**
@@ -259,35 +302,35 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return true if sensor 1 is activated (entry sensor of the entry intake)
      */
     public boolean isSensorOneActivated() {
-        return sensor1.get() && isIntakeOpen();
+        return !sensor1.get() ;
     }
 
     /**
      * @return true if sensor 2 is activated (curve point)
      */
     public boolean isSensorTwoActivated() {
-        return sensor2.get();
+        return !sensor2.get();
     }
 
     /**
      * @return true if sensor 3 is activated (lower of the vertical conveyor)
      */
     public boolean isSensorThreeActivated() {
-        return sensor3.get();
+        return !sensor3.get();
     }
 
     /**
      * @return true if sensor 4 is activated (middle of the vertical conveyor)
      */
     public boolean isSensorFourActivated() {
-        return sensor4.get();
+        return !sensor4.get();
     }
 
     /**
      * @return true if sensor 5 is activated (upper top of vertical conveyor)
      */
     public boolean isSensorFiveActivated() {
-        return sensor5.get();
+        return !sensor5.get();
     }
 
     /**
@@ -343,12 +386,22 @@ public class IntakeSubsystem extends SubsystemBase {
      * 
      *  Let's say that only number 5 has a ball.
      *  The next empty location will be 4.
+     * 
+     * If 2 and 5 are occupied, return 1.
      */
     public Position getNextEmptyPosition() {
-        List<Position> poses = getOccupiedPositions();
-        Position lowestEmptyPosition = poses.get(poses.size() - 1);
-        Position nextEmptyPosition = Position.getIntLocationBefore(lowestEmptyPosition);
-        return nextEmptyPosition;
+        List<Position> occupied = getOccupiedPositions();
+        if(occupied.isEmpty()) {
+            return Position.FIVE;
+        } else {
+            Position currentLowest = Position.FIVE;
+            for(Position pos : occupied) {
+                if(!Position.isAfter(pos, currentLowest)) {
+                    currentLowest = pos;
+                }
+            }
+            return currentLowest;
+        }
     }
 
     /**
@@ -357,7 +410,7 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public boolean isPositionOccupied(Position pos) {
         for(Ball ball : mag) {
-            if(ball.position == pos) {
+            if(ball.getCurrentPosition() == pos) {
                 return true;
             }
         }
@@ -370,7 +423,9 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     private List<Position> getOccupiedPositions() {
         List<Position> pos = new ArrayList<Position>();
-        mag.stream().forEach((x) -> pos.add(x.position));
+        for(Ball b : mag) {
+            pos.add(b.getCurrentPosition());
+;        }
         return pos;
     }
 
@@ -508,7 +563,9 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
         /**
-         * 
+         * Checks if a Position is after another Position.
+         * Use instructions: Position.isAfter().
+         * Note that this is a static method.
          * @param pos      pos to check
          * @param checkPos checking if this pos is after pos
          * @return true if checkPos is enum after pos.
@@ -543,37 +600,12 @@ public class IntakeSubsystem extends SubsystemBase {
         ENTRY, CURVE, LOWER_VERTICAL, UPPER_VERTICAL,;
     }
 
-    /**
-     * TODO
-     */
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        //Sensor Statuses
-        builder.addBooleanArrayProperty("Sensor Statuses", this::getSensors, null);
-
-        //Ball Positions & Destinations (in magazine)
-        List<String> ballMag = new ArrayList<>();
-        for (Ball ball : mag) {
-            Position position = ball.getCurrentPosition();
-            Position destination = ball.getDestination();
-            ballMag.add("Ball Position: " + position.toString() + " - Destination: " + destination.toString());
-        }
-        final String[] x = (String[]) ballMag.toArray();
-        builder.addStringArrayProperty("Ball Magazine", () -> {return x;}, null);
-
-        //Next Empty Position
-        builder.addStringProperty("Next Empty Position: ", () -> {return getNextEmptyPosition().toString();}, null);
+    // /**
+    //  * TODO
+    //  */
+    // @Override
+    // public void initSendable(SendableBuilder builder) {
         
-        //Occupied Positions
-        List<String> occupiedPositions = new ArrayList<String>();
-        for(Position pos : getOccupiedPositions()) {
-            occupiedPositions.add(pos.toString());
-        }
-        final String[] y = (String[]) occupiedPositions.toArray();
-        builder.addStringArrayProperty("Occupied Positions", () -> {return y;}, null);
-
-        //Is Intake Open
-        builder.addBooleanProperty("Intake Open", this::isIntakeOpen, null);
-    }
+    // }
 
 }

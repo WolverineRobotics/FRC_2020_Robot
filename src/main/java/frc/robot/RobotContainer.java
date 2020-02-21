@@ -39,7 +39,7 @@ public class RobotContainer {
   private IntakeSubsystem s_intake;
   private CameraSubsystem s_camera;
   private ShooterSubsystem s_shooter;
-  private LidarSubsystem s_lidar;
+  // private LidarSubsystem s_lidar;
 
   // default commands
   private DefaultDriveCommand dc_drive;
@@ -85,7 +85,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().setDefaultCommand(s_camera, dc_camera);
 
     //LIDAR
-    s_lidar = new LidarSubsystem();
+    // s_lidar = new LidarSubsystem();
 
     compressor = new Compressor(3);
   }

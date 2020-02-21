@@ -21,9 +21,13 @@ public class DefaultShooterCommand extends CommandBase {
     public void execute() {
         if(oc.isFlyWheelRun()) {
             s_shooter.setFlywheelSpeed(RobotConst.ShooterConst.SHOOTER_SPEED);
+        } else {
+            s_shooter.setFlywheelSpeed(0);
         }
         if(oc.getHoodRotation() > 0.3 || oc.getHoodRotation() < -0.3) { //deadzone is 0.3
-            s_shooter.setHoodSpeed(oc.getHoodRotation()*0.05);
+            s_shooter.setHoodSpeed(oc.getHoodRotation()*0.2);
+        } else {
+            s_shooter.setHoodSpeed(0);
         }
     }
 

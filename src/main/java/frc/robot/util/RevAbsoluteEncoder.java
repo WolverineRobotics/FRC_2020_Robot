@@ -49,7 +49,7 @@ public class RevAbsoluteEncoder {
      * @return
      */
     public int getEncoderPosition() {
-        int encoderTicks = getEncoderPosition();
+        int encoderTicks = getRawEncoderPosition();
         if (encoderTicks == -1) {
             return encoderTicks;
         }
