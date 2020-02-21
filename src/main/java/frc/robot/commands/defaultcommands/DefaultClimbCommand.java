@@ -13,22 +13,23 @@ public class DefaultClimbCommand extends CommandBase {
     private ClimbSubsystem s_climb;
 
     public DefaultClimbCommand(ClimbSubsystem s_climb) {
-        dc = RobotContainer.getDriverController();
+        addRequirements(s_climb);
         this.s_climb = s_climb;
+        dc = RobotContainer.getDriverController();
     }
 
     @Override
     public void execute() {
-        if(dc.isPOVDown()) {
-            s_climb.setClimbSpeed(-0.2);
-        } else if(dc.isPOVUp()) {
-            s_climb.setClimbSpeed(0.2);
+        if(dc.isPOVUp()) {
+            s_climb.setClimbSpeed(-1);
+        } else if(dc.isPOVDown()) {
+            s_climb.setClimbSpeed(1);
         } else {
             s_climb.setClimbSpeed(0);
         }
         double rightTrig = dc.getRightTrigger();
         double leftTrig = dc.getLeftTrigger();
-        s_climb.setClimbLevelSpeed(rightTrig + leftTrig);
+        s_climb.setClimbLevelSpeed((rightTrig - leftTrig)*0.4);
     }
 
 }

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -28,7 +29,7 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void setClimbLevelSpeed(double speed) {
-        climb.set(MathUtil.clamp(speed, -1, 1));
+        climb_level.set(ControlMode.PercentOutput, MathUtil.clamp(speed, -1, 1));
     }
 
     public double getClimbLevelSpeed() {
