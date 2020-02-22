@@ -1,19 +1,22 @@
 package frc.robot.subsystems;
 
 import java.util.HashMap;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.RobotConst;
-import frc.robot.constants.RobotConst.VisionConst;
 import frc.robot.exceptions.NTNullEntryException;
 
 public class CameraSubsystem extends SubsystemBase {
+
+    private final double LIMELIGHT_HEIGHT_IN = 32;
+    //PLACEHOLDER VALUE
+    private final double LIMELIGHT_ANGLE_ELEVATION_DEG = 0;//TODO
+    private final double VISION_TARGET_MIDDLE_HIGHT_IN = 89.75;
 
     private NetworkTable nt;
     private NetworkTableEntry validTargets, xDegOff, yDegOff, targetArea;
@@ -260,6 +263,28 @@ public class CameraSubsystem extends SubsystemBase {
         return horizontal;
     }
 
+    public double getDistanceInches() {
+        try {
+            if (hasValidTargets()) {
+                double angleOfElevation = getYDegOff() + LIMELIGHT_ANGLE_ELEVATION_DEG;
+                double heightDifference = VISION_TARGET_MIDDLE_HIGHT_IN - LIMELIGHT_HEIGHT_IN;
+                double distance = heightDifference / Math.tan(Math.toRadians(LIMELIGHT_ANGLE_ELEVATION_DEG));
+                return distance;
+            }
+            return -1;
+        } catch (NTNullEntryException e) {
+            return -1;
+        }
+    }
+
+    public double getDistanceCM() {
+        double distanceInches = getDistanceInches();
+        if (distanceInches == -1) {
+            return -1;
+        }
+        return distanceInches;
+    }
+
     // ========================================================================
     // SETTERS
     // ========================================================================
@@ -365,7 +390,7 @@ public class CameraSubsystem extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         builder.addBooleanProperty("[Camera] Detected Target", this::hasValidTargets, null);
-    
+
         builder.addStringProperty("[Camera] LED Mode", () -> {
             try {
                 return getLEDMode().toString();
@@ -374,38 +399,47 @@ public class CameraSubsystem extends SubsystemBase {
             }
         }, null);
         builder.addDoubleProperty("[Camera] Angle Horizontal", () -> {
-            try{
+            try {
                 return getTargetHorizontal();
-            } catch (NTNullEntryException e){
+            } catch (NTNullEntryException e) {
                 return RobotConst.VisionConst.ERROR;
             }
         }, null);
 
-       builder.addDoubleProperty("[Camera] Angle Vertical", () -> {
-           try{
-               return getTargetVertical();
-           } catch (NTNullEntryException e){
-               return RobotConst.VisionConst.ERROR;
-           }
-       }, null);
-
-       builder.addDoubleProperty("[Camera] Target Skew", () -> {
-           try{
-               return getTargetSkew();
-           } catch (NTNullEntryException e){
-               return RobotConst.VisionConst.ERROR;
-           }
-       }, null);
-
-        builder.addDoubleProperty("[Camera] Pipeline Latency", () -> {
-            try{
-                return getPipelineLatency();
-            } catch (NTNullEntryException e){
+        builder.addDoubleProperty("[Camera] Angle Vertical", () -> {
+            try {
+                return getTargetVertical();
+            } catch (NTNullEntryException e) {
                 return RobotConst.VisionConst.ERROR;
             }
-        }, null);       
+        }, null);
 
- 
+        builder.addDoubleProperty("[Camera] Target Skew", () -> {
+            try {
+                return getTargetSkew();
+            } catch (NTNullEntryException e) {
+                return RobotConst.VisionConst.ERROR;
+            }
+        }, null);
+
+        builder.addDoubleProperty("[Camera] Pipeline Latency", () -> {
+            try {
+                return getPipelineLatency();
+            } catch (NTNullEntryException e) {
+                return RobotConst.VisionConst.ERROR;
+            }
+        }, null);
+
+    }
+
+    private void updateSDashboard() {
+        SmartDashboard.putNumber("[Camera] Distance Inches", getDistanceInches());
+        SmartDashboard.putNumber("[Camera] Distance CM", getDistanceCM());
+    }
+
+    @Override
+    public void periodic() {
+        updateSDashboard();
     }
 
 }

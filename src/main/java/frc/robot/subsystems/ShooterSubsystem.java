@@ -66,10 +66,18 @@ public class ShooterSubsystem extends SubsystemBase {
         return flywheelEncoder.getVelocity();
     }
 
-    public double getHoodError(int setpoint){
+    public double getHoodError(int setpoint) {
         double error = setpoint - getHoodEncoderPosition();
         error = Util.getContinuousError(error, hoodEncoder.COUNTS_PER_REVOLUTION);
         return error;
+    }
+
+    public double getFlywheelVoltage() {
+        return flywheel.getAppliedOutput() * flywheel.getBusVoltage();
+    }
+
+    public double getFlywheelCurrent() {
+        return flywheel.getOutputCurrent();
     }
 
     /**
@@ -82,15 +90,15 @@ public class ShooterSubsystem extends SubsystemBase {
         return getFlywheelRawSpeed() * ShooterConst.SHOOTER_FLYWHEEL_GEAR_RATIO;
     }
 
-    public void setFlywheelRPM(double rpmSetpoint){
+    public void setFlywheelRPM(double rpmSetpoint) {
         setFlywheelRPM(rpmSetpoint, 0);
     }
 
-    public void setFlywheelRPM(double rpmSetpoint, double basePower){
+    public void setFlywheelRPM(double rpmSetpoint, double basePower) {
         setFlywheelRPM(rpmSetpoint, 0, FLYWHEEL_kP);
     }
 
-    public void setFlywheelRPM(double rpmSetpoint, double basePower, double kP){
+    public void setFlywheelRPM(double rpmSetpoint, double basePower, double kP) {
         double error = rpmSetpoint - getFlywheelRawSpeed();
         double proportional = error * kP;
         setFlywheelSpeed(proportional + basePower);
@@ -106,9 +114,15 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // SmartDashboard.putData(this);
-        SmartDashboard.putNumber("[Shooter] Hood Position1", this.getHoodEncoderPosition());
-        SmartDashboard.putNumber("[Shooter] Flywheel RPM1", this.getFlywheelSpeed());
-        // SmartDashboard.putData(value);
+        updateSDashboard();
+    }
+
+    private void updateSDashboard() {
+        SmartDashboard.putNumber("[Shooter] Hood Position", this.getHoodEncoderPosition());
+        SmartDashboard.putNumber("[Shooter] Flywheel RPM", this.getFlywheelSpeed());
+        SmartDashboard.putNumber("[Shooter] Flywheel Voltage", this.getFlywheelVoltage());
+        SmartDashboard.putNumber("[Shooter] Flywheel Current", this.getFlywheelCurrent());
+
     }
 
 }
