@@ -319,15 +319,12 @@ public class IntakeSubsystem extends SubsystemBase {
                     }
                 }
             } else {
-                boolean[] sen = getSensors();
-                int amountSensorsDetectingSomething = 0;
+                Position currentPos = b.getCurrentPosition();
+                Position destination = b.getDestination();
+                // if(Position.isAfter(currentPos, destination) && currentPos) {
 
-                for(boolean s : sen) {
-                    if(s) {
-                        amountSensorsDetectingSomething += 1;
-                    }
-                }
-                
+                // }
+
             }
         }
     }
@@ -422,7 +419,11 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return true if sensor 1 is activated (entry sensor of the entry intake)
      */
     public boolean isSensorOneActivated() {
-        return !sensor1.get() ;
+        if(isIntakeOpen()) {
+            return false;
+        } else {
+            return !sensor1.get();
+        }
     }
 
     /**
@@ -463,6 +464,14 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     /**
+     * Returns if the ball magazine is empty
+     * @return true if ball magazine is empty
+     */
+    public boolean isMagazineEmpty() {
+        return mag.isEmpty();
+    }
+
+    /**
      * Returns a boolean array of all of the sensors
      * Index range is 0-4 (size:5)
      * @return boolean array
@@ -487,10 +496,6 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public void setIntakePiston(boolean toOpen) {
         piston.set(toOpen ? Value.kForward : Value.kReverse);
-    }
-
-    public boolean isMagazineEmpty() {
-        return mag.isEmpty();
     }
 
     /**

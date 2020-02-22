@@ -73,7 +73,7 @@ public class DefaultIntakeCommand extends CommandBase {
             //     s_intake.setSpeeds(0.3, 0.5, 0.25, 0.10);
             // }
             s_intake.setMoveBalls(true);
-        } else if(oc.getAutoShootButton()) { // if operator wants to auto shoot
+        } else if(oc.isResetIntakeLogic()) { // if operator wants to auto shoot
             /**
             * Operator presses one button and the robot will:
             * 1. Rotate to vision target, will cancel command if none found
@@ -95,6 +95,12 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setCurveSpeed(0.3);
             s_intake.setVerticalLowerSpeed(0.1);
             s_intake.setVerticalUpperSpeed(0.5);
+        } else if(oc.isPressingB()) {
+            if(s_intake.isIntakeOpen()) {
+                s_intake.setIntakePiston(false);
+            } else {
+                s_intake.setIntakePiston(true);
+            }
         } else {
             s_intake.setMoveBalls(false);
             s_intake.setSpeeds(0, 0, 0, 0);

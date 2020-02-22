@@ -22,12 +22,12 @@ import frc.robot.constants.RobotConst;
  * Right Trigger: Dumby-Proof Intake
  * 
  * Button A:
- * Button B: Reset IntakeSubsystem Logic
+ * Button B: 
  * Button X: 
  * Button Y: 
  * 
- * Button Select:
- * Button Start:
+ * Button Select: 
+ * Button Start: Reset IntakeSubsystem Logic
  * 
  * POV 0: (POV Up) Outake balls from bottom
  * POV 45:
@@ -61,9 +61,13 @@ public class OperatorController extends Controller {
     }
 
     /**
-     * @return true if B is pressed
+     * @return true if Start is pressed
      */
-    public boolean getAutoShootButton() {
+    public boolean isResetIntakeLogic() {
+        return operator.getRawButton(JoystickMap.BUTTON_START);
+    }
+
+    public boolean isPressingB() {
         return operator.getRawButton(JoystickMap.BUTTON_B);
     }
 
