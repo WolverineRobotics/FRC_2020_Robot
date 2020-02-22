@@ -15,7 +15,7 @@ public class CameraSubsystem extends SubsystemBase {
 
     private final double LIMELIGHT_HEIGHT_IN = 32;
     //PLACEHOLDER VALUE
-    private final double LIMELIGHT_ANGLE_ELEVATION_DEG = 0;//TODO
+    private final double LIMELIGHT_ANGLE_ELEVATION_DEG = 16;
     private final double VISION_TARGET_MIDDLE_HIGHT_IN = 89.75;
 
     private NetworkTable nt;

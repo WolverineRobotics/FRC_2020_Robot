@@ -123,7 +123,6 @@ public class DriveSubsystem extends SubsystemBase {
 
         SendableRegistry.addLW(leftPid, "[Drive] Left PID");
         SendableRegistry.addLW(rightPid, "[Drive] Right PID");
-        setDeadband(ControllerConst.DRIVE_THORTTLE_TRIGGER_VALUE);
     }
 
     // public void setHighGear() {

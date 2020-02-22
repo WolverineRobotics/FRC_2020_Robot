@@ -3,6 +3,7 @@ package frc.robot.commands.drive;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import frc.robot.constants.RobotConst.DriveConst.CharacterizationConst;
@@ -27,7 +28,7 @@ public class RotateToHeadingProfiledCommand extends ProfiledPIDCommand {
         getController().enableContinuousInput(-180, 180);
         getController().setTolerance(PIDConst.DRIVE_TURN_TOLERANCE_DEG, PIDConst.DRIVE_TURN_TOLERANCE_DEG_PER_SECOND);
 
-        SendableRegistry.addLW(getController(), "Rotate to Heading Profiled PID");
+        // SendableRegistry.addLW(getController(), "Rotate to Heading Profiled PID");
     }
 
     @Override
@@ -35,19 +36,51 @@ public class RotateToHeadingProfiledCommand extends ProfiledPIDCommand {
         return getController().atGoal();
     }
 
-    public void setGoal(double gyroAngle){
+    public void setGoal(double gyroAngle) {
         getController().setGoal(gyroAngle);
     }
 
-    public TrapezoidProfile.State getGoal(){
+    public TrapezoidProfile.State getGoal() {
         return getController().getGoal();
+    }
+
+    @Override
+    public void execute() {
+        super.execute();
+        SmartDashboard.putData(getController());
+        updateSDashboard();
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         builder.setSmartDashboardType("Rotate to Heading Profiled Command");
-        builder.addDoubleProperty("Gyro Goal", ()-> {return this.getGoal().position;}, null);
+        builder.addDoubleProperty("Gyro Goal", () -> {
+            return this.getGoal().position;
+        }, null);
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+        var controller = getController();
+        SmartDashboard.putNumber("kP", controller.getP());
+        SmartDashboard.putNumber("kI", controller.getI());
+        SmartDashboard.putNumber("kD", controller.getD());
+
+    }
+
+    private void updateSDashboard(){
+        var controller = getController();
+
+        double kp  = SmartDashboard.getNumber("kP", 0);
+        double ki  = SmartDashboard.getNumber("kI", 0);
+        double kd  = SmartDashboard.getNumber("kD", 0);
+        
+        controller.setP(kp);
+        controller.setI(ki);
+        controller.setD(kd);
+
     }
 
 }
