@@ -126,9 +126,7 @@ public class IntakeSubsystem extends SubsystemBase {
         //display all of the ball object data
         for(int i = 0; i < mag.size(); i++) {
             SmartDashboard.putString("Ball #" + (i+1) + " Destination:", mag.get(i).getDestination().toString());
-            // System.out.println("Ball #" + (i+1) + " Destination: " + mag.get(i).getDestination());
             SmartDashboard.putString("Ball #" + (i+1) + " Position:", mag.get(i).getCurrentPosition().toString());
-            // System.out.println("Ball #" + (i+1) + " Position: " + mag.get(i).getCurrentPosition().toString());
         }
 
         // SmartDashboard.putString("Next Available Position", getNextEmptyPosition().toString());
@@ -157,45 +155,6 @@ public class IntakeSubsystem extends SubsystemBase {
      */
 
     private void executeMotors() {
-
-        // for(Ball b : mag) {
-        //     if(!b.isAtDestination()) {
-        //         for(Motor possession : b.getCurrentPosition().getPossessions()) {
-        //             if(!currentPossessions.contains(possession)) {
-        //                 currentPossessions.add(possession);
-        //             }
-        //         }
-        //     }
-        // }
-        // for(Motor possession : currentPossessions) {
-        //     // Position currentPos = b.getCurrentPosition();
-        //     // Position desto = b.getDestination();
-        //     // int direction = 1;
-        //     // if(Position.isAfter(currentPos, desto)) {
-        //     //     direction = 1;
-        //     // } else {
-        //     //     direction = -1;
-        //     // }
-        //    switch (possession) {
-        //        case ENTRY:
-        //            setEntrySpeed(/*direction*/0.3);
-        //            break;
-        //        case CURVE:
-        //            setCurveSpeed(/*direction*/0.5);
-        //            break;
-        //        case LOWER_VERTICAL:
-        //            boolean[] sen = getSensors();
-        //            if((sen[3-1] && sen[4-1]) && mag.size() >= 3) {
-                   
-        //            } else {
-        //                setVerticalLowerSpeed(/*direction*/0.20);
-        //            }
-        //            break;
-        //        case UPPER_VERTICAL:
-        //            setVerticalUpperSpeed(/*direction*/0.1);
-        //            break;
-        //     }
-        // }
         for(Ball b : mag) {
             if(!b.isAtDestination()) {
                 Position currentPos = b.getCurrentPosition();
@@ -244,6 +203,9 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    /**
+     * Stops unused motor possessions
+     */
     private void stopUnusedPossessions() {
         // for(Ball ball : mag) {
         //     if(ball.isAtDestination()) {
@@ -294,6 +256,11 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets ball object with corresponding Position
+     * @param pos Position enum
+     * @return Ball object. Can return null if no ball is found at that position
+     */
     public Ball getBall(Position pos) {
         for(Ball b : mag) {
             if(b.getCurrentPosition() == pos) {
@@ -303,6 +270,9 @@ public class IntakeSubsystem extends SubsystemBase {
         return null;
     }
 
+    /**
+     * Updates Ball Position based on sensor logic
+     */
     private void updateSensorPositions() {
         for(Ball b : mag) {
             if(!b.isAtDestination()) {
@@ -348,6 +318,16 @@ public class IntakeSubsystem extends SubsystemBase {
                     // }
                     }
                 }
+            } else {
+                boolean[] sen = getSensors();
+                int amountSensorsDetectingSomething = 0;
+
+                for(boolean s : sen) {
+                    if(s) {
+                        amountSensorsDetectingSomething += 1;
+                    }
+                }
+                
             }
         }
     }
@@ -368,6 +348,10 @@ public class IntakeSubsystem extends SubsystemBase {
         entry.set(speed);
     }
 
+    /**
+     * Gets the speed of the entry motor
+     * @return -1 to 1
+     */
     public double getEntrySpeed() {
         return entry.get();
     }
@@ -380,6 +364,10 @@ public class IntakeSubsystem extends SubsystemBase {
         curve.set(speed);
     }
 
+    /**
+     * Returns the curve speed conveyor
+     * @return speed double -1 to 1
+     */
     public double getCurveSpeed() {
         return curve.get();
     }
@@ -392,6 +380,10 @@ public class IntakeSubsystem extends SubsystemBase {
         verticalLower.set(speed);
     }
 
+    /**
+     * Returns Lower Vertical Conveyor Motor Speed
+     * @return speed double (-1 to 1)
+     */
     public double getVerticalLowerSpeed() {
         return verticalLower.get();
     }
@@ -404,6 +396,10 @@ public class IntakeSubsystem extends SubsystemBase {
         verticalUpper.set(MathUtil.clamp(speed, -1, 1));
     }
 
+    /**
+     * Gets the vertical upper conveyor speed
+     * @return upper vertical conveyor speed
+     */
     public double getVerticalUpperSpeed() {
         return verticalUpper.get();
     }
@@ -709,14 +705,11 @@ public class IntakeSubsystem extends SubsystemBase {
         ENTRY, CURVE, LOWER_VERTICAL, UPPER_VERTICAL,;
     }
 
-    // /**
-    //  * TODO
-    //  */
-    // @Override
-    // public void initSendable(SendableBuilder builder) {
-        
-    // }
-
+    /**
+     * Gets the position by ID (1 - 5.5)
+     * @param id (double) position ID
+     * @return the position. Can return null if position with id is not found.
+     */
     private Position getPosition(double id) {
         for(Position pos : Position.values()) {
             if(pos.getId() == id) {
