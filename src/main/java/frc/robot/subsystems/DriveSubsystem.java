@@ -89,6 +89,8 @@ public class DriveSubsystem extends SubsystemBase {
         leftGroup = new SpeedControllerGroup(leftMaster);
         rightGroup = new SpeedControllerGroup(rightMaster);
         rightGroup.setInverted(true);
+        leftGroup.setInverted(true);
+
 
         driveTrain = new DifferentialDrive(leftGroup, rightGroup);
 

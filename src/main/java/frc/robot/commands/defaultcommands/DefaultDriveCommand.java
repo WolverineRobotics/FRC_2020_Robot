@@ -32,13 +32,21 @@ public class DefaultDriveCommand extends CommandBase {
             arcadeDrive(throttle, turn, DriveConst.DRIVE_SPEED_REDUCTION_RATIO_FINE);
         } else {
             arcadeDrive(throttle, turn, DriveConst.DRIVE_SPEED_REDUCTION_RATIO);
+            
         }
 
     }
 
     private void arcadeDrive(double throttle, double turn, double speedReduction) {
-        arcadeDrive(throttle, turn, speedReduction, false);
+        arcadeDrive(throttle, turn, speedReduction, true);
+        // c_drive.tankDrive(throttle, turn);
     }
+
+    // private void tankDrive(double left, double right, double speedReduction){
+    //     c_drive.tankDrive(throttle, turn);
+
+    // }
+
 
     private void arcadeDrive(double throttle, double turn, double speedReduction, boolean invertTurn) {
         if (invertTurn) {

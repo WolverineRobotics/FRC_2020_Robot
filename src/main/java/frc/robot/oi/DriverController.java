@@ -3,6 +3,7 @@ package frc.robot.oi;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.constants.JoystickMap;
 import frc.robot.constants.RobotConst;
+import frc.robot.constants.JoystickMap.AxisMap;
 
 /**
  * Controller Map:
@@ -47,11 +48,19 @@ public class DriverController extends Controller {
     }
 
     public double getThrottle() {
-        return getAxis(JoystickMap.AxisMap.LEFT_STICK_X);
+        return getAxis(JoystickMap.AxisMap.LEFT_STICK_Y);
+    }
+
+    public double getLeftThrottle() {
+        return getAxis(JoystickMap.AxisMap.LEFT_STICK_Y);
     }
 
     public double getTurn() {
         return getAxis(JoystickMap.AxisMap.RIGHT_STICK_X);
+    }
+
+    public double getRightThrottle(){
+        return getAxis(AxisMap.RIGHT_STICK_Y);
     }
 
     public boolean getFineControl() {
