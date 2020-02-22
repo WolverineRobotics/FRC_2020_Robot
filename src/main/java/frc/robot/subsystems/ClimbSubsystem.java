@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -36,12 +37,19 @@ public class ClimbSubsystem extends SubsystemBase {
         return climb_level.getSelectedSensorVelocity();
     }
 
+    public double getClimbCurrent(){
+        return climb.getOutputCurrent();
+    }
+
     @Override
     public void periodic() {
+        updateSDashboard();
         SmartDashboard.putNumber("Climb LEVEL Speed", getClimbLevelSpeed());
         SmartDashboard.putNumber("Climb Speed", getClimbSpeed());
     }
 
-
+    private void updateSDashboard(){
+        SmartDashboard.putNumber("[Climb] Climb Current", getClimbCurrent());
+    }
 
 }
