@@ -92,7 +92,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         driveTrain = new DifferentialDrive(leftGroup, rightGroup);
 
-        leftEncoder = new Encoder(RobotMap.Drive.DRIVE_LEFT_ENCODER_A, RobotMap.Drive.DRIVE_LEFT_ENCODER_B);
+        leftEncoder = new Encoder(Drive.DRIVE_LEFT_ENCODER_A, Drive.DRIVE_LEFT_ENCODER_B);
         rightEncoder = new Encoder(RobotMap.Drive.DRIVE_RIGHT_ENCODER_A, RobotMap.Drive.DRIVE_RIGHT_ENCODER_B);
 
         // leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
@@ -432,8 +432,12 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     private void updateSDashboard(){
+        SmartDashboard.putNumber("[Drive] Pigeon Heading", this.getPigeonHeading());
         SmartDashboard.putNumber("[Drive] Left Speed", this.getLeftSpeed());
         SmartDashboard.putNumber("[Drive] Right Speed", this.getRightSpeed());
+        SmartDashboard.putNumber("[Drive] Left Encoder", this.getRawLeftEncoder());
+        SmartDashboard.putNumber("[Drive] Right Encoder", this.getRawRightEncoder());
+
         SmartDashboard.putNumber("[Drive] Left Distance Encoder", this.getDistanceLeftEncoder());
         SmartDashboard.putNumber("[Drive] Right Distance Encoder", this.getDistanceRightEncoder());
         SmartDashboard.putNumber("[Drive] Left Voltage", this.getLeftVoltage());
