@@ -24,7 +24,7 @@ import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LidarSubsystem;
+import frc.robot.subsystems.ArduinoSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
@@ -42,7 +42,7 @@ public class RobotContainer {
   private CameraSubsystem s_camera;
   private ShooterSubsystem s_shooter;
   private ClimbSubsystem s_climb;
-  // private LidarSubsystem s_lidar;
+  private ArduinoSubsystem s_arduino;
 
   // default commands
   private DefaultDriveCommand dc_drive;
@@ -93,8 +93,8 @@ public class RobotContainer {
     dc_climb = new DefaultClimbCommand(s_climb);
     CommandScheduler.getInstance().setDefaultCommand(s_climb, dc_climb);
 
-    //LIDAR
-    // s_lidar = new LidarSubsystem();
+    //ARDUINO
+    s_arduino = new ArduinoSubsystem();
 
     compressor = new Compressor(3);
   }
