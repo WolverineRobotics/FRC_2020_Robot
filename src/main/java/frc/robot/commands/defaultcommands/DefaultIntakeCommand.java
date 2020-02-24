@@ -93,7 +93,7 @@ public class DefaultIntakeCommand extends CommandBase {
         } else if(oc.isPOVDown()) { //if operator wants to intake only entry motor
             s_intake.setEntrySpeed(0.1);
             s_intake.setCurveSpeed(0.3);
-            s_intake.setVerticalLowerSpeed(0.1);
+            s_intake.setVerticalLowerSpeed(0.2);
             s_intake.setVerticalUpperSpeed(0.5);
         } else if(oc.isPressingB()) {
             if(s_intake.isIntakeOpen()) {
