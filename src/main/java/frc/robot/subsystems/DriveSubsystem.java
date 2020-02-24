@@ -89,6 +89,8 @@ public class DriveSubsystem extends SubsystemBase {
         leftGroup = new SpeedControllerGroup(leftMaster);
         rightGroup = new SpeedControllerGroup(rightMaster);
         rightGroup.setInverted(true);
+        leftGroup.setInverted(true);
+
 
         driveTrain = new DifferentialDrive(leftGroup, rightGroup);
 
@@ -123,7 +125,6 @@ public class DriveSubsystem extends SubsystemBase {
 
         SendableRegistry.addLW(leftPid, "[Drive] Left PID");
         SendableRegistry.addLW(rightPid, "[Drive] Right PID");
-        setDeadband(ControllerConst.DRIVE_THORTTLE_TRIGGER_VALUE);
     }
 
     // public void setHighGear() {

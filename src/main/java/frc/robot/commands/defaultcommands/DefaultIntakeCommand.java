@@ -87,7 +87,7 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setMoveBalls(false);
         } else if(oc.isOutaking()) { //if operator wants to outake the balls from the bottom
             s_intake.setEntrySpeed(-0.3);
-            s_intake.setCurveSpeed(-0.5);
+            s_intake.setCurveSpeed(-0.8);
             s_intake.setVerticalLowerSpeed(-0.5);
             s_intake.setVerticalUpperSpeed(-0.5);
         } else if(oc.isPOVDown()) { //if operator wants to intake only entry motor
