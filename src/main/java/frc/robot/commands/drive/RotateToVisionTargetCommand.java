@@ -15,7 +15,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
     private final MedianPercentileFilter xMedianFilter;
     private final MedianPercentileFilter yMedianFilter;
 
-    private final int MEDIAN_FILTER_ENTRIES = 30;
+    private final int MEDIAN_FILTER_ENTRIES = 10;
     private final int CYCLES_UNTIL_CHECK_FINISHED = 10;
     private final double MIN_PERCENT_TARGETS_FOUND = 0.5;
     private final double MAX_IQR_X = 20;
