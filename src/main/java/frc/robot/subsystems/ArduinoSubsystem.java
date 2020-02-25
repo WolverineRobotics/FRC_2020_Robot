@@ -45,8 +45,9 @@ public class ArduinoSubsystem extends SubsystemBase{
     public void periodic() {
         if(serial != null) {
             String read = serial.readString();
+            raw = read;
             if(read.length() > 0) {
-                int distance;
+                int distance = read;
                 try {
                     distance = Integer.parseInt(read);
                 } catch (Exception e) {
