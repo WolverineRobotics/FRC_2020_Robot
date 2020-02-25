@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
@@ -11,6 +14,7 @@ public class ArduinoSubsystem extends SubsystemBase{
 
     private SerialPort serial;
 
+    private String raw;
     private int distanceCm;
 
     public ArduinoSubsystem(){
@@ -31,6 +35,7 @@ public class ArduinoSubsystem extends SubsystemBase{
             }
         }
         distanceCm = -1;
+        raw = "nothing";
     }
 
     /**
@@ -45,16 +50,17 @@ public class ArduinoSubsystem extends SubsystemBase{
     public void periodic() {
         if(serial != null) {
             String read = serial.readString();
+            byte[] ascii = read.getBytes(StandardCharsets.US_ASCII);
+            String asciiString = Arrays.toString(ascii);
             raw = read;
             if(read.length() > 0) {
-                int distance = read;
+                int distance;
                 try {
-                    distance = Integer.parseInt(read);
+                    distance = Integer.parseInt(asciiString);
+                    distanceCm = distance;
                 } catch (Exception e) {
-                    System.out.println("Could not parse String: " + read);
-                    return;
+                    System.out.println("Could not parse String: " + asciiString);
                 }
-                distanceCm = distance;
             }
             updateDashboard();
         }
@@ -69,6 +75,7 @@ public class ArduinoSubsystem extends SubsystemBase{
 
     private void updateDashboard() {
         SmartDashboard.putNumber("[Arduino] Lidar Distance Cm", distanceCm);
+        SmartDashboard.putString("[Arduino] Raw", raw);
     }
     
 }
