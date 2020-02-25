@@ -1,20 +1,17 @@
 package frc.robot.subsystems;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArduinoSubsystem extends SubsystemBase{
 
     private SerialPort serial;
 
-    private String raw;
     private int distanceCm;
 
     public ArduinoSubsystem(){
@@ -35,7 +32,6 @@ public class ArduinoSubsystem extends SubsystemBase{
             }
         }
         distanceCm = -1;
-        raw = "nothing";
     }
 
     /**
@@ -48,22 +44,63 @@ public class ArduinoSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if(serial != null) {
-            String read = serial.readString();
-            byte[] ascii = read.getBytes(StandardCharsets.US_ASCII);
-            String asciiString = Arrays.toString(ascii);
-            raw = read;
-            if(read.length() > 0) {
-                int distance;
-                try {
-                    distance = Integer.parseInt(asciiString);
-                    distanceCm = distance;
-                } catch (Exception e) {
-                    System.out.println("Could not parse String: " + asciiString);
+        if(serial != null && serial.getBytesReceived() >= 5) {
+            // String read = serial.readString();
+            // byte[] ascii = read.getBytes(StandardCharsets.US_ASCII);
+            // String asciiString = Arrays.toString(ascii);
+            // raw = read;
+            byte[] read = serial.read(5);
+            if(read[0] != 0xF0){
+                boolean arrChanged = false;
+                for(int i = 0; i < read.length; i++){
+                    if(read[i] == 0xF0){
+                        read = changeStart(read, i);
+                        arrChanged = true;
+                        break;
+                    }
+                }
+                if(!arrChanged || read == null){
+                    distanceCm = -1;
+                    return;
                 }
             }
+
+            int distance = Byte.toUnsignedInt(read[4]) + (Byte.toUnsignedInt(read[3]) << 8);
+            this.distanceCm = distance;
             updateDashboard();
         }
+    }
+
+    private byte[] changeStart(byte[] oldArr, int offset){
+        int numToRead = oldArr.length - offset - 1;
+        if(serial == null || serial.getBytesReceived() < numToRead){
+            return null;
+        }
+        byte[] newArr = serial.read(numToRead);
+        
+        if(newArr.length != numToRead){
+            return null;
+        }
+
+        // Byte[] oldArr2 = oldArr;
+
+        ArrayList<Byte> list = new ArrayList<>();
+        for(int i = offset; i < oldArr.length; i++) {
+            list.add(oldArr[i]);
+        }
+        for(byte b: newArr){
+            list.add(b);
+        }
+        Byte[] objArr = list.toArray(new Byte[0]);
+
+        byte[] retArr = new byte[objArr.length];
+
+        for(int i = 0; i < objArr.length; i++){
+            retArr[i] = (byte) objArr[i];
+        }
+
+        return retArr;
+        // Collections.addAll(oldArr, list);
     }
 
     @Override
@@ -75,7 +112,7 @@ public class ArduinoSubsystem extends SubsystemBase{
 
     private void updateDashboard() {
         SmartDashboard.putNumber("[Arduino] Lidar Distance Cm", distanceCm);
-        SmartDashboard.putString("[Arduino] Raw", raw);
+        // SmartDashboard.putString("[Arduino] Raw", raw);
     }
     
 }

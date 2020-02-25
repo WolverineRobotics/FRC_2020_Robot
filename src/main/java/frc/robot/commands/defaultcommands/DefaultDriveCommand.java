@@ -44,15 +44,12 @@ public class DefaultDriveCommand extends CommandBase {
     @Override
     public void execute() {
 
-        setSlewRate(SmartDashboard.getNumber("[Drive - Default] Slew Rate ", slew_rate));
         
         // Driver Left Stick Y and Driver Right Stick X
         double throttle = RobotContainer.getDriverController().getThrottle();
         double turn = RobotContainer.getDriverController().getTurn();
 
-        if(USE_SLEW_LIMITER){
-            throttle = calculateSlew(throttle);
-        }
+
 
         if (RobotContainer.getDriverController().getFineControl()) {
             // If fine control is active.
@@ -80,6 +77,11 @@ public class DefaultDriveCommand extends CommandBase {
 
 
     private void arcadeDrive(double throttle, double turn, double speedReduction, boolean invertTurn) {
+        
+        if(USE_SLEW_LIMITER){
+            throttle = calculateSlew(throttle);
+        }
+
         if (invertTurn) {
             turn = -turn;
         }
