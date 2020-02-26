@@ -78,15 +78,18 @@ public class DefaultDriveCommand extends CommandBase {
 
     private void arcadeDrive(double throttle, double turn, double speedReduction, boolean invertTurn) {
         
-        if(USE_SLEW_LIMITER){
-            throttle = calculateSlew(throttle);
-        }
 
         if (invertTurn) {
             turn = -turn;
         }
         throttle *= speedReduction;
         turn *= speedReduction;
+
+        
+        if(USE_SLEW_LIMITER){
+            throttle = calculateSlew(throttle);
+        }
+
         c_drive.arcadeDrive(throttle, turn);
     }
 
