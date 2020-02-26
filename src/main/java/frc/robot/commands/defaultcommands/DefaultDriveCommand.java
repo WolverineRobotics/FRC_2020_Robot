@@ -49,15 +49,15 @@ public class DefaultDriveCommand extends CommandBase {
         double throttle = RobotContainer.getDriverController().getThrottle();
         double turn = RobotContainer.getDriverController().getTurn();
 
+        double speedReduction = DriveConst.DRIVE_SPEED_REDUCTION_RATIO;
 
 
         if (RobotContainer.getDriverController().getFineControl()) {
             // If fine control is active.
-            arcadeDrive(throttle, turn, DriveConst.DRIVE_SPEED_REDUCTION_RATIO_FINE);
-        } else {
-            arcadeDrive(throttle, turn, DriveConst.DRIVE_SPEED_REDUCTION_RATIO);
-            
-        }
+            speedReduction = DriveConst.DRIVE_SPEED_REDUCTION_RATIO_FINE;
+        } 
+
+        arcadeDrive(throttle, turn, speedReduction, true);
 
     }
 

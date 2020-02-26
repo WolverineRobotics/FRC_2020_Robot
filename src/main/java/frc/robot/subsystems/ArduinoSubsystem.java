@@ -44,29 +44,47 @@ public class ArduinoSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if(serial != null && serial.getBytesReceived() >= 5) {
+        if(serial != null && serial.getBytesReceived() > 0) {
             // String read = serial.readString();
             // byte[] ascii = read.getBytes(StandardCharsets.US_ASCII);
             // String asciiString = Arrays.toString(ascii);
             // raw = read;
-            byte[] read = serial.read(5);
-            if(read[0] != 0xF0){
-                boolean arrChanged = false;
-                for(int i = 0; i < read.length; i++){
-                    if(read[i] == 0xF0){
-                        read = changeStart(read, i);
-                        arrChanged = true;
-                        break;
-                    }
-                }
-                if(!arrChanged || read == null){
-                    distanceCm = -1;
-                    return;
-                }
+            // byte[] read = serial.read(5);
+            // if(read[0] != 0xF0){
+            //     boolean arrChanged = false;
+            //     for(int i = 0; i < read.length; i++){
+            //         if(read[i] == 0xF0){
+            //             read = changeStart(read, i);
+            //             arrChanged = true;
+            //             break;
+            //         }
+            //     }
+            //     if(!arrChanged || read == null){
+            //         distanceCm = -1;
+            //         return;
+            //     }
+            // }
+
+            // int distance = Byte.toUnsignedInt(read[4]) + (Byte.toUnsignedInt(read[3]) << 8);
+            // this.distanceCm = distance;
+
+            String strOutput = serial.readString();
+            
+            if(strOutput == null || strOutput.length() == 0){
+                return;
             }
 
-            int distance = Byte.toUnsignedInt(read[4]) + (Byte.toUnsignedInt(read[3]) << 8);
-            this.distanceCm = distance;
+            String[] strArr = strOutput.split("\n");
+            if (strArr.length < 2){
+                return;
+            }
+
+            if (strArr[strArr.length - 1].endsWith("\n")){
+                distanceCm = Integer.parseInt(strArr[strArr.length - 1].trim());
+            }else{
+                distanceCm = Integer.parseInt(strArr[strArr.length - 2].trim());
+            }
+            
             updateDashboard();
         }
     }
