@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.defaultcommands.DefaultCameraCommand;
 import frc.robot.commands.defaultcommands.DefaultClimbCommand;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
@@ -18,6 +19,7 @@ import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
 import frc.robot.commands.defaultcommands.DefaultShooterCommand;
 import frc.robot.commands.groups.AutonomousGroup;
 import frc.robot.constants.RobotMap;
+import frc.robot.constants.JoystickMap.ButtonMap;
 import frc.robot.oi.DriverController;
 import frc.robot.oi.OperatorController;
 import frc.robot.subsystems.CameraSubsystem;
@@ -57,46 +59,57 @@ public class RobotContainer {
   private AutonomousGroup auto;
 
   // controllers
-  private static DriverController joshuaAndrewCadavos;
-  private static OperatorController anthonyAttikian;
+  private static DriverController control_driver;
+  private static OperatorController control_operator;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    //CONTROLLERS
-    joshuaAndrewCadavos = new DriverController(RobotMap.Controller.DRIVER);
-    anthonyAttikian = new OperatorController(RobotMap.Controller.OPERATOR);
+    // CONTROLLERS
+    control_driver = new DriverController(RobotMap.Controller.DRIVER);
+    control_operator = new OperatorController(RobotMap.Controller.OPERATOR);
 
-    //DRIVE
+    // DRIVE
     s_drive = new DriveSubsystem();
     dc_drive = new DefaultDriveCommand(s_drive);
     CommandScheduler.getInstance().setDefaultCommand(s_drive, dc_drive);
 
-    //INTAKE
+    // INTAKE
     s_intake = new IntakeSubsystem();
     dc_intake = new DefaultIntakeCommand(s_intake);
     CommandScheduler.getInstance().setDefaultCommand(s_intake, dc_intake);
 
-    //SHOOTER
+    // SHOOTER
     s_shooter = new ShooterSubsystem();
     dc_shooter = new DefaultShooterCommand(s_shooter);
     CommandScheduler.getInstance().setDefaultCommand(s_shooter, dc_shooter);
 
-    //CAMERA
+    // CAMERA
     s_camera = new CameraSubsystem();
     dc_camera = new DefaultCameraCommand(s_camera);
     CommandScheduler.getInstance().setDefaultCommand(s_camera, dc_camera);
 
-    //CLIMB
+    // CLIMB
     s_climb = new ClimbSubsystem();
     dc_climb = new DefaultClimbCommand(s_climb);
     CommandScheduler.getInstance().setDefaultCommand(s_climb, dc_climb);
 
-    //ARDUINO
+    // ARDUINO
     s_arduino = new ArduinoSubsystem();
 
     compressor = new Compressor(3);
+
+    configureButtonBindings();
+  }
+
+  /**
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by instantiating a {@link GenericHID} or one of its subclasses
+   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+   * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   */
+  private void configureButtonBindings() {
   }
 
   /**
@@ -116,10 +129,10 @@ public class RobotContainer {
   }
 
   public static DriverController getDriverController() {
-    return joshuaAndrewCadavos;
+    return control_driver;
   }
 
   public static OperatorController getOperatorController() {
-    return anthonyAttikian;
+    return control_operator;
   }
 }

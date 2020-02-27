@@ -1,9 +1,12 @@
 package frc.robot.oi;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.JoystickMap;
-import frc.robot.constants.RobotConst;
 import frc.robot.constants.JoystickMap.AxisMap;
+import frc.robot.constants.JoystickMap.ButtonMap;
+import frc.robot.constants.JoystickMap.POVMap;
+import frc.robot.constants.RobotConst;
 
 /**
  * Controller Map:
@@ -40,11 +43,9 @@ import frc.robot.constants.JoystickMap.AxisMap;
  */
 public class DriverController extends Controller {
 
-    private Joystick driver;
 
     public DriverController(int port) {
         super(port);
-        driver = super.getJoystick();
     }
 
     public double getThrottle() {
@@ -68,7 +69,7 @@ public class DriverController extends Controller {
     }
 
     public double getRightTrigger() {
-        double value = driver.getRawAxis(JoystickMap.RIGHT_TRIGGER);
+        double value = getAxis(AxisMap.RIGHT_TRIGGER);
         if(value > RobotConst.ControllerConst.DEADZONE_TRIGGER) {
             return value;
         }
@@ -76,7 +77,7 @@ public class DriverController extends Controller {
     }
 
     public double getLeftTrigger() {
-        double value = driver.getRawAxis(JoystickMap.LEFT_TRIGGER);
+        double value = getAxis(AxisMap.LEFT_TRIGGER);
         if(value > RobotConst.ControllerConst.DEADZONE_TRIGGER) {
             return value;
         }
@@ -84,11 +85,15 @@ public class DriverController extends Controller {
     }
 
     public boolean isPOVUp() {
-        return driver.getPOV() == JoystickMap.POV_NORTH;
+        return getPOV() == POVMap.POV_NORTH;
     }
 
     public boolean isPOVDown() {
-        return driver.getPOV() == JoystickMap.POV_SOUTH;
+        return getPOV() == POVMap.POV_SOUTH;
+    }
+
+    public JoystickButton getRotateVisionTargetButtonObj(){
+        return getButtonObject(ButtonMap.BUTTON_A);
     }
 
 }
