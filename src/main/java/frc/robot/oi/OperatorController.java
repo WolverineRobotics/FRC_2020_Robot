@@ -1,7 +1,8 @@
 package frc.robot.oi;
 
-import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.constants.JoystickMap;
+import frc.robot.constants.JoystickMap.AxisMap;
+import frc.robot.constants.JoystickMap.ButtonMap;
+import frc.robot.constants.JoystickMap.POVMap;
 import frc.robot.constants.RobotConst;
 
 /**
@@ -41,39 +42,67 @@ import frc.robot.constants.RobotConst;
  */
 public class OperatorController extends Controller {
 
-    private Joystick operator;
 
     public OperatorController(int port) {
         super(port);
-        operator = super.getJoystick();
     }
 
     public double getRightStickY() {
-        return operator.getRawAxis(JoystickMap.RIGHT_STICK_Y);
+        return getAxis(AxisMap.RIGHT_STICK_Y);
+    }
+    /**
+     * @return true if left trigger is pressed down passed at least RobotConst.ControllerConst.DEADZONE_INTAKE
+     */
+    public boolean isHoldingLeftTrigger() {
+        return getAxis(AxisMap.LEFT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_TRIGGER;
     }
 
     public double getRightTrigger() {
-        return operator.getRawAxis(JoystickMap.RIGHT_TRIGGER);
+        return getAxis(AxisMap.RIGHT_TRIGGER);
+    }
+    /**
+     * @return true if right trigger is pressed down passed at least RobotConst.ControllerConst.DEADZONE_INTAKE
+     */
+    public boolean isHoldingRightTrigger() {
+        return getAxis(AxisMap.RIGHT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_TRIGGER;
     }
 
     public boolean isPressingA() {
-        return operator.getRawButton(JoystickMap.BUTTON_A);
+        return getButton(ButtonMap.BUTTON_A);
+    }
+    /**
+     * @return true if Start is pressed
+     */
+    public boolean isResetIntakeLogic() {
+        return getButton(ButtonMap.BUTTON_START);
     }
 
     public boolean isPressingB() {
-        return operator.getRawButton(JoystickMap.BUTTON_B);
+        return getButton(ButtonMap.BUTTON_B);
     }
 
     public boolean isPressingY() {
-        return operator.getRawButton(JoystickMap.BUTTON_Y);
+        return getButton(ButtonMap.BUTTON_Y);
     }
 
     public boolean isPOVUp() {
-        return operator.getPOV() == JoystickMap.POV_NORTH;
+        return getPOV() == POVMap.POV_NORTH;
     }
 
     public boolean isPOVDown() {
-        return operator.getPOV() == JoystickMap.POV_SOUTH;
+        return getPOV() == POVMap.POV_SOUTH;
+    }
+
+    public boolean isFlyWheelRun() {
+        return getButton(ButtonMap.BUTTON_RIGHT_BUMPER);
+    }
+
+    public double getHoodRotation() {
+        return getAxis(AxisMap.RIGHT_STICK_Y);
+    }
+
+    public boolean isOutaking() {
+        return getButton(ButtonMap.BUTTON_LEFT_BUMPER);
     }
 
 }
