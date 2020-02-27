@@ -59,7 +59,7 @@ public class RevAbsoluteEncoder {
 
     /**
      * Returns the raw encoder position, or -1 if noting is connected.
-     * 
+     * * doesn't take into account artificial zero
      * @return
      */
     public int getRawEncoderPosition() {
