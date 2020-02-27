@@ -29,7 +29,7 @@ public class DefaultClimbCommand extends CommandBase {
         }
         double rightTrig = dc.getRightTrigger();
         double leftTrig = dc.getLeftTrigger();
-        s_climb.setClimbLevelSpeed((rightTrig - leftTrig)*0.4);
+        s_climb.setClimbLevelSpeed((leftTrig - rightTrig)*0.4);
     }
 
 }
