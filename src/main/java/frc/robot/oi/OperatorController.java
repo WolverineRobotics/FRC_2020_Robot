@@ -15,27 +15,29 @@ import frc.robot.constants.RobotConst;
  * Right Stick Y: Shooter Hood Rotation UP=CLOSE DOWN=OPEN
  * Right Stick Button: 
  * 
- * Left Bumper: Manual Outake through BOTTOM
- * Right Bumper: Fly Wheel Run
+ * Left Bumper: 
+ * Right Bumper:
  * 
  * Left Trigger: 
- * Right Trigger: Dumby-Proof Intake
+ * Right Trigger: Rev Fly Wheel
  * 
- * Button A:
- * Button B: 
+ * Button A: Articulate Arm
+ * Button B: Reset Intake Logic
  * Button X: 
- * Button Y: 
+ * Button Y: Outake Balls through Bottom
  * 
  * Button Select: 
- * Button Start: Reset IntakeSubsystem Logic
+ * Button Start:
  * 
- * POV 0: (POV Up) Outake balls from bottom
+ * POV 0: (POV Up) Move balls UP
  * POV 45:
  * POV 90: 
  * POV 135:
- * POV 180: (POV Down) Run all intake motors to spit out from top.
+ * POV 180: (POV Down) Dumby proof in-intake
  * POV 225:
  * POV 270:
+ * 
+ * 
  */
 public class OperatorController extends Controller {
 
@@ -46,55 +48,32 @@ public class OperatorController extends Controller {
         operator = super.getJoystick();
     }
 
-    /**
-     * @return true if left trigger is pressed down passed at least RobotConst.ControllerConst.DEADZONE_INTAKE
-     */
-    public boolean isHoldingLeftTrigger() {
-        return operator.getRawAxis(JoystickMap.LEFT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_TRIGGER;
+    public double getRightStickY() {
+        return operator.getRawAxis(JoystickMap.RIGHT_STICK_Y);
     }
 
-    /**
-     * @return true if right trigger is pressed down passed at least RobotConst.ControllerConst.DEADZONE_INTAKE
-     */
-    public boolean isHoldingRightTrigger() {
-        return operator.getRawAxis(JoystickMap.RIGHT_TRIGGER) > RobotConst.ControllerConst.DEADZONE_TRIGGER;
+    public double getRightTrigger() {
+        return operator.getRawAxis(JoystickMap.RIGHT_TRIGGER);
     }
 
-    /**
-     * @return true if Start is pressed
-     */
-    public boolean isResetIntakeLogic() {
-        return operator.getRawButton(JoystickMap.BUTTON_START);
+    public boolean isPressingA() {
+        return operator.getRawButton(JoystickMap.BUTTON_A);
     }
 
     public boolean isPressingB() {
         return operator.getRawButton(JoystickMap.BUTTON_B);
     }
 
-    /**
-     * @return true if pressing POV North
-     */
+    public boolean isPressingY() {
+        return operator.getRawButton(JoystickMap.BUTTON_Y);
+    }
+
     public boolean isPOVUp() {
         return operator.getPOV() == JoystickMap.POV_NORTH;
     }
 
-    /**
-     * @return true if pressing POV South
-     */
     public boolean isPOVDown() {
         return operator.getPOV() == JoystickMap.POV_SOUTH;
-    }
-
-    public boolean isFlyWheelRun() {
-        return operator.getRawButton(JoystickMap.BUTTON_RIGHT_BUMPER);
-    }
-
-    public double getHoodRotation() {
-        return operator.getRawAxis(JoystickMap.RIGHT_STICK_Y);
-    }
-
-    public boolean isOutaking() {
-        return operator.getRawButton(JoystickMap.BUTTON_LEFT_BUMPER);
     }
 
 }

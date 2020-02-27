@@ -93,7 +93,7 @@ public class IntakeSubsystem extends SubsystemBase {
                     }
                 }
 
-                if(isNewBall && !RobotContainer.getOperatorController().isOutaking()) {
+                if(isNewBall && !RobotContainer.getOperatorController().isPressingY()) {
                     Ball ball = new Ball(getNextEmptyPosition());
                     mag.add(ball);
                     if(mag.size() == 2) {

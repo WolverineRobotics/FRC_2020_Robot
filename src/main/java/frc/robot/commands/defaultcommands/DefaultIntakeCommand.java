@@ -27,11 +27,22 @@ public class DefaultIntakeCommand extends CommandBase {
         s_intake.setVerticalUpperSpeed(0);
     }
 
+    /**
+     * Dumby Proof Intake - POV DOWN
+     * Outake Balls through Top (Shoot) - POV UP
+     * Articulate Intake Arm - A
+     * Reset Intake Logic - B Button
+     * Outake Balls through Bottom - Y
+     * 
+     * Rev Fly Wheel - X
+     * Rotate Hood - Right Stick Y UP=Forward DOWN=Reverse
+     */
+
     @Override
     public void execute() {
-        if(oc.isHoldingRightTrigger()) { // if operator wants to dumby proof intake
+        if(oc.isPOVDown()) { // if operator wants to dumby proof intake
             s_intake.setMoveBalls(true);
-        } else if(oc.isResetIntakeLogic()) { // if operator wants to auto shoot
+        } else if(oc.isPressingB()) { // if operator wants to auto shoot
             /**
             * Operator presses one button and the robot will:
             * 1. Rotate to vision target, will cancel command if none found
@@ -42,7 +53,7 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.unfinishedDesto.clear();
             s_intake.ballsToRemove.clear();
             s_intake.currentPossessions.clear();
-        } else if(oc.isOutaking()) { //if operator wants to outake the balls from the bottom
+        } else if(oc.isPressingY()) { //if operator wants to outake the balls from the bottom
             s_intake.setEntrySpeed(-0.3);
             s_intake.setCurveSpeed(-0.5);
             s_intake.setVerticalLowerSpeed(-0.5);
@@ -52,7 +63,7 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setCurveSpeed(0.3);
             s_intake.setVerticalLowerSpeed(0.2);
             s_intake.setVerticalUpperSpeed(0.5);
-        } else if(oc.isPressingB()) { //move front piston
+        } else if(oc.isPressingA()) { //move front piston
             if(s_intake.isIntakeOpen()) {
                 s_intake.setIntakePiston(false);
             } else {
