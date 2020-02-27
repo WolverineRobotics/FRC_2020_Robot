@@ -23,7 +23,7 @@ public class DefaultClimbCommand extends CommandBase {
         if(dc.isPOVUp()) {
             s_climb.setClimbSpeed(-1);
         } else if(dc.isPOVDown()) {
-            s_climb.setClimbSpeed(1);
+            s_climb.setClimbSpeed(.5);
         } else {
             s_climb.setClimbSpeed(0);
         }
