@@ -58,7 +58,7 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setCurveSpeed(-0.5);
             s_intake.setVerticalLowerSpeed(-0.5);
             s_intake.setVerticalUpperSpeed(-0.5);
-        } else if(oc.isPOVDown()) { //if operator wants to move balls all to fly wheel
+        } else if(oc.isPOVUp()) { //if operator wants to move balls all to fly wheel
             s_intake.setEntrySpeed(0.1);
             s_intake.setCurveSpeed(0.3);
             s_intake.setVerticalLowerSpeed(0.2);
