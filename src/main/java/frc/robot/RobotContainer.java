@@ -19,8 +19,10 @@ import frc.robot.commands.defaultcommands.DefaultShooterCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.commands.groups.AutonomousGroup;
 import frc.robot.constants.RobotMap;
+import frc.robot.constants.JoystickMap.ButtonMap;
 import frc.robot.oi.DriverController;
 import frc.robot.oi.OperatorController;
+import frc.robot.oi.TestController;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -58,16 +60,18 @@ public class RobotContainer {
   private AutonomousGroup auto;
 
   // controllers
-  private static DriverController control_driver;
-  private static OperatorController control_operator;
+  private static DriverController joshuaAndrewCadavos;
+  private static OperatorController anthonyAttikian;
+  private static TestController ryanDick;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // CONTROLLERS
-    control_driver = new DriverController(RobotMap.Controller.DRIVER);
-    control_operator = new OperatorController(RobotMap.Controller.OPERATOR);
+    joshuaAndrewCadavos = new DriverController(RobotMap.Controller.DRIVER);
+    anthonyAttikian = new OperatorController(RobotMap.Controller.OPERATOR);
+    ryanDick = new TestController(RobotMap.Controller.TEST);
 
     // DRIVE
     s_drive = new DriveSubsystem();
@@ -109,8 +113,9 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    control_driver.getRotateVisionTargetButtonObj()
+    joshuaAndrewCadavos.getRotateVisionTargetButtonObj()
         .whileActiveContinuous(new RotateToVisionTargetCommand(s_camera, s_drive));
+    ryanDick.isPressingB().whenPressed(new SetIntakeArmCommand(true));
   }
 
   /**
@@ -130,10 +135,14 @@ public class RobotContainer {
   }
 
   public static DriverController getDriverController() {
-    return control_driver;
+    return joshuaAndrewCadavos;
   }
 
   public static OperatorController getOperatorController() {
-    return control_operator;
+    return anthonyAttikian;
+  }
+
+  public static TestController getTestController() {
+    return ryanDick;
   }
 }
