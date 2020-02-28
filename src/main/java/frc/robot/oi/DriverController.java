@@ -19,8 +19,8 @@ import frc.robot.constants.JoystickMap.AxisMap;
  * Left Bumper:
  * Right Bumper: Drive Fine Control
  * 
- * Left Trigger: Climb Level FORWARD
- * Right Trigger: Climb level BACKWARD
+ * Left Trigger: Climb DOWN
+ * Right Trigger: Climb UP
  * 
  * Button A:
  * Button B:
@@ -30,11 +30,11 @@ import frc.robot.constants.JoystickMap.AxisMap;
  * Button Select:
  * Button Start:
  * 
- * POV 0: (POV UP) Climb Up
+ * POV 0: 
  * POV 45:
- * POV 90:
+ * POV 90: Climb LEVEL Right
  * POV 135:
- * POV 180: (POV DOWN) Climb Down
+ * POV 180: Climb LEVEL Left
  * POV 225:
  * POV 270:
  */
@@ -83,12 +83,12 @@ public class DriverController extends Controller {
         return 0;
     }
 
-    public boolean isPOVUp() {
-        return driver.getPOV() == JoystickMap.POV_NORTH;
+    public boolean isPOVRight() {
+        return driver.getPOV() == JoystickMap.POV_EAST;
     }
 
-    public boolean isPOVDown() {
-        return driver.getPOV() == JoystickMap.POV_SOUTH;
+    public boolean isPOVLeft() {
+        return driver.getPOV() == JoystickMap.POV_WEST;
     }
 
 }

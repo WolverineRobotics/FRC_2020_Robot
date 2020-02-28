@@ -20,16 +20,23 @@ public class DefaultClimbCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if(dc.isPOVUp()) {
-            s_climb.setClimbSpeed(-1);
-        } else if(dc.isPOVDown()) {
-            s_climb.setClimbSpeed(1);
-        } else {
-            s_climb.setClimbSpeed(0);
+        double rollersSpeed = 0;
+        if(dc.isPOVLeft()) {
+            rollersSpeed = 0.4;
+        } else if(dc.isPOVRight()) {
+            rollersSpeed = -0.4;
         }
-        double rightTrig = dc.getRightTrigger();
-        double leftTrig = dc.getLeftTrigger();
-        s_climb.setClimbLevelSpeed((rightTrig - leftTrig)*0.4);
+        s_climb.setClimbLevelSpeed(rollersSpeed);
+
+        double rightTrig = dc.getRightTrigger(); //climb up speed
+        double leftTrig = dc.getLeftTrigger(); //climb down speed
+        if(Math.abs(rightTrig) < 0.1) {
+            rightTrig = 0;
+        }
+        if(Math.abs(leftTrig) < 0.1) {
+            leftTrig = 0;
+        }
+        s_climb.setClimbSpeed(leftTrig - rightTrig);
     }
 
 }
