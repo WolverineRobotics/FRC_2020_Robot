@@ -513,7 +513,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return true if intake is open
      */
     public boolean isIntakeOpen() {
-        return piston.get() == Value.kForward;
+        return false;
     }
 
     /**
