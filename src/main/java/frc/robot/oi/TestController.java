@@ -1,5 +1,6 @@
 package frc.robot.oi;
 
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.JoystickMap.ButtonMap;
 
 public class TestController extends Controller {
@@ -8,8 +9,8 @@ public class TestController extends Controller {
         super(port);
     }
 
-    public boolean isPressingB() {
-        return getButton(ButtonMap.BUTTON_B);
+    public JoystickButton isPressingB() {
+        return getButtonObject(ButtonMap.BUTTON_B);
     }
 
 }
