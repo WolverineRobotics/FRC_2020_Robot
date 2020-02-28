@@ -97,13 +97,15 @@ public class DriveSubsystem extends SubsystemBase {
         leftEncoder = new Encoder(Drive.DRIVE_LEFT_ENCODER_A, Drive.DRIVE_LEFT_ENCODER_B);
         rightEncoder = new Encoder(RobotMap.Drive.DRIVE_RIGHT_ENCODER_A, RobotMap.Drive.DRIVE_RIGHT_ENCODER_B);
 
+        rightEncoder.setReverseDirection(true);
+
         // leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
         // rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
 
         // gearShifter = new DoubleSolenoid(Pneumatic.DRIVE_HIGH_GEAR_ADDRESS, Pneumatic.DRIVE_LOW_GEAR_ADDRESS);
 
         navX = new AHRS(Port.kMXP);
-        pigeon = new PigeonIMU(Drive.DRIVE_PIGEON_IMU_ADDRESS);
+        pigeon = new PigeonIMU(RobotMap.DRIVE_PIGEON_IMU_ADDRESS);
 
         gyroPID = new GyroPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
 

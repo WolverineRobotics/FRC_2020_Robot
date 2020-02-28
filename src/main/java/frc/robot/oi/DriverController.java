@@ -84,14 +84,6 @@ public class DriverController extends Controller {
         return 0;
     }
 
-    public boolean isPOVRight() {
-        return getPOV() == POVMap.POV_EAST;
-    }
-
-    public boolean isPOVLeft() {
-        return getPOV() == POVMap.POV_WEST;
-    }
-
     public boolean isPOVLeft(){
         return getPOV() == POVMap.POV_WEST;
     }

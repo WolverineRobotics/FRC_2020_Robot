@@ -20,7 +20,6 @@ public class RobotMap{
         public static final int DRIVE_RIGHT_ENCODER_A                   = 12;
         public static final int DRIVE_RIGHT_ENCODER_B                   = 13;
     
-        public static final int DRIVE_PIGEON_IMU_ADDRESS                = -12;
     }
 
     public class Sensors {
