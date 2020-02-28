@@ -115,7 +115,12 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     joshuaAndrewCadavos.getRotateVisionTargetButtonObj()
-        .whileActiveContinuous(new RotateToVisionTargetCommand(s_camera, s_drive));
+        .whileActiveContinuous(new RotateToVisionTargetCommand(s_camera, s_drive){
+          @Override
+          public boolean isFinished() {
+            return false;
+          }
+        });
     ryanDick.isPressingB().whenPressed(new SetIntakeArmCommand(s_intake, true));
   }
 
