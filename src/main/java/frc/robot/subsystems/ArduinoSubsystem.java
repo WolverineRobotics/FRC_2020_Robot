@@ -93,18 +93,19 @@ public class ArduinoSubsystem extends SubsystemBase {
                 try {
                     distanceCm = Integer.parseInt(strArr[strArr.length - 2].trim());
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println(
-                            "[Arduino] Distance string array doesn't end with newline but only has 1 element, string: "
-                                    + strOutput);
+                    // System.out.println(
+                    //         "[Arduino] Distance string array doesn't end with newline but only has 1 element, string: "
+                    //                 + strOutput);
                     try{
                         distanceCm = Integer.parseInt(strArr[0].trim());
+                        // System.out.println(distanceCm);
                     }catch(Exception e2){
                         distanceCm = -1;
                     }
                 }
             }
 
-            System.out.println(distanceCm);
+            // System.out.println(distanceCm);
 
         }
     }

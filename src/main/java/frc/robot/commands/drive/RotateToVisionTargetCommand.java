@@ -1,6 +1,7 @@
 package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.exceptions.NTNullEntryException;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.CameraSubsystem.CameraMode;
@@ -35,7 +36,10 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
     private boolean finished = false;
 
+    private double kP;
+
     public RotateToVisionTargetCommand(CameraSubsystem cameraSubsystem, DriveSubsystem driveSubsystem) {
+        System.out.println("STARTING ROTATE TO VISION TARGET COMMAND =============================");
         s_camera = cameraSubsystem;
         s_drive = driveSubsystem;
         addRequirements(cameraSubsystem);
@@ -53,16 +57,16 @@ public class RotateToVisionTargetCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-
+        System.out.println("ROTATE TO VISION TARGET COMMAND");
         try {
             double xDegOff = s_camera.getXDegOff();
             double yDegOff = s_camera.getYDegOff();
 
             // Test if target is within acceptable y values. If not, mark and return.
-            if (yDegOff < Y_VALUE_CUTOFF) {
-                noValidTargetFound(true);
-                return;
-            }
+            // if (yDegOff < Y_VALUE_CUTOFF) {
+            //     noValidTargetFound(true);
+            //     return;
+            // }
 
             double xGyroHeading = Util.addGyroValues(xDegOff, s_drive.getPigeonHeading());
 
@@ -73,13 +77,23 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
             // Pass xMedian to gyro PID
 
-            s_drive.rotateGyroAngle(xMedian);
+            // s_drive.rotateGyroAngle(xMedian);
+            
+            double angleDifferance = Util.subtractGyroValues(xMedian, s_drive.getPigeonHeading());
+
+            double pGain = calculatePGain(angleDifferance) + 0.05;
+            pGain = MathUtil.clamp(pGain, -.4, .4);
+            s_drive.arcadeDrive(0, pGain, false);
 
         } catch (NTNullEntryException exception) {
             System.out.println(exception.getMessage());
             noValidTargetFound(false);
         }
 
+    }
+
+    private double calculatePGain(double gyroError){
+        return gyroError * kP;
     }
 
     public boolean isOnTarget() {
