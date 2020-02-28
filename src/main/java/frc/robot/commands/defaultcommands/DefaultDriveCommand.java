@@ -9,14 +9,14 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class DefaultDriveCommand extends CommandBase {
 
-    private final DriveSubsystem c_drive;
+    private final DriveSubsystem s_drive;
     private SlewRateLimiter slew;
 
     private final boolean USE_SLEW_LIMITER = true;
     private double slew_rate = 1.2;
 
     public DefaultDriveCommand(DriveSubsystem drive) {
-        c_drive = drive;
+        s_drive = drive;
         addRequirements(drive);
         slew = new SlewRateLimiter(slew_rate);
         SmartDashboard.putNumber("[Drive - Default] Slew Rate ", slew_rate);
@@ -25,7 +25,7 @@ public class DefaultDriveCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        c_drive.setForwardSpeed(0);
+        s_drive.setForwardSpeed(0);
     }
 
     public double getSlewRate(){
@@ -55,7 +55,10 @@ public class DefaultDriveCommand extends CommandBase {
         if (RobotContainer.getDriverController().getFineControl()) {
             // If fine control is active.
             speedReduction = DriveConst.DRIVE_SPEED_REDUCTION_RATIO_FINE;
-        } 
+            s_drive.setDeadband(0);
+        } else{
+            s_drive.setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
+        }
 
         arcadeDrive(throttle, turn, speedReduction, true);
 
@@ -90,7 +93,7 @@ public class DefaultDriveCommand extends CommandBase {
             throttle = calculateSlew(throttle);
         }
 
-        c_drive.arcadeDrive(throttle, turn);
+        s_drive.arcadeDrive(throttle, turn);
     }
 
     // Called once the command ends or is interrupted.

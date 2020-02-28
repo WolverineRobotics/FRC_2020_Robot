@@ -62,7 +62,7 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setEntrySpeed(0.1);
             s_intake.setCurveSpeed(0.3);
             s_intake.setVerticalLowerSpeed(0.2);
-            s_intake.setVerticalUpperSpeed(0.5);
+            s_intake.setVerticalUpperSpeed(1);
         } else if(oc.isPressingA()) { //move front piston
             if(s_intake.isIntakeOpen()) {
                 s_intake.setIntakePiston(false);

@@ -17,7 +17,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
     private final int MEDIAN_FILTER_ENTRIES = 10;
     private final int CYCLES_UNTIL_CHECK_FINISHED = 10;
-    private final double MIN_PERCENT_TARGETS_FOUND = 0.5;
+    private final double MIN_PERCENT_TARGETS_FOUND = 0.8;
     private final double MAX_IQR_X = 20;
 
     /**
@@ -28,7 +28,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
     // Any targets with y-values below this value will be treated as false
     // positives.
-    private final double Y_VALUE_CUTOFF = -10;
+    private final double Y_VALUE_CUTOFF = -20;
 
     private int totalCycles = 0;
     private int numFound = 0;

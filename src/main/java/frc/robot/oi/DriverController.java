@@ -92,6 +92,14 @@ public class DriverController extends Controller {
         return getPOV() == POVMap.POV_WEST;
     }
 
+    public boolean isPOVLeft(){
+        return getPOV() == POVMap.POV_WEST;
+    }
+    
+    public boolean isPOVRight(){
+        return getPOV() == POVMap.POV_EAST;
+    }
+
     public JoystickButton getRotateVisionTargetButtonObj(){
         return getButtonObject(ButtonMap.BUTTON_A);
     }

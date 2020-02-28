@@ -2,10 +2,10 @@ package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
+import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.constants.RobotConst.DriveConst.CharacterizationConst;
 import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.subsystems.DriveSubsystem;
@@ -67,7 +67,7 @@ public class RotateToHeadingProfiledCommand extends ProfiledPIDCommand {
         SmartDashboard.putNumber("kP", controller.getP());
         SmartDashboard.putNumber("kI", controller.getI());
         SmartDashboard.putNumber("kD", controller.getD());
-
+        s_drive.setDeadband(0);
     }
 
     private void updateSDashboard(){
@@ -81,6 +81,12 @@ public class RotateToHeadingProfiledCommand extends ProfiledPIDCommand {
         controller.setI(ki);
         controller.setD(kd);
 
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        super.end(interrupted);
+        s_drive.setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
     }
 
 }
