@@ -57,16 +57,16 @@ public class RobotContainer {
   private AutonomousGroup auto;
 
   // controllers
-  private static DriverController joshuaAndrewCadavos;
-  private static OperatorController anthonyAttikian;
+  private static DriverController control_driver;
+  private static OperatorController control_operator;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     //CONTROLLERS
-    joshuaAndrewCadavos = new DriverController(RobotMap.Controller.DRIVER);
-    anthonyAttikian = new OperatorController(RobotMap.Controller.OPERATOR);
+    control_driver = new DriverController(RobotMap.Controller.DRIVER);
+    control_operator = new OperatorController(RobotMap.Controller.OPERATOR);
 
     //DRIVE
     s_drive = new DriveSubsystem();
@@ -97,6 +97,17 @@ public class RobotContainer {
     s_arduino = new ArduinoSubsystem();
 
     compressor = new Compressor(3);
+
+    configureButtonBindings();
+  }
+
+  /**
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by instantiating a {@link GenericHID} or one of its subclasses
+   * ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then
+   * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   */
+  private void configureButtonBindings() {
   }
 
   /**
@@ -116,10 +127,10 @@ public class RobotContainer {
   }
 
   public static DriverController getDriverController() {
-    return joshuaAndrewCadavos;
+    return control_driver;
   }
 
   public static OperatorController getOperatorController() {
-    return anthonyAttikian;
+    return control_operator;
   }
 }

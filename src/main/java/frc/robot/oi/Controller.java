@@ -1,6 +1,7 @@
 package frc.robot.oi;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.JoystickMap.AxisMap;
 import frc.robot.constants.JoystickMap.ButtonMap;
 import frc.robot.constants.JoystickMap.POVMap;
@@ -28,6 +29,10 @@ public abstract class Controller {
 
     protected Joystick getJoystick() {
         return joystick;
+    }
+
+    protected JoystickButton getButtonObject(ButtonMap button){
+        return (new JoystickButton(joystick, button.getPortNum()));
     }
 
 }
