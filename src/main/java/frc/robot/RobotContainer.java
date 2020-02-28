@@ -18,6 +18,7 @@ import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
 import frc.robot.commands.defaultcommands.DefaultShooterCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.commands.groups.AutonomousGroup;
+import frc.robot.commands.intake.SetIntakeArmCommand;
 import frc.robot.constants.RobotMap;
 import frc.robot.constants.JoystickMap.ButtonMap;
 import frc.robot.oi.DriverController;
@@ -115,7 +116,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     joshuaAndrewCadavos.getRotateVisionTargetButtonObj()
         .whileActiveContinuous(new RotateToVisionTargetCommand(s_camera, s_drive));
-    ryanDick.isPressingB().whenPressed(new SetIntakeArmCommand(true));
+    ryanDick.isPressingB().whenPressed(new SetIntakeArmCommand(s_intake, true));
   }
 
   /**
