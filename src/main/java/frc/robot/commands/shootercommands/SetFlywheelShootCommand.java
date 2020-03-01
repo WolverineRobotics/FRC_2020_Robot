@@ -10,7 +10,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class SetFlywheelShootCommand extends CommandBase {
 
     // TODO: Change values
-    private final double FLYWHEEL_SHOOT_RPM = 4000;
+    private final double FLYWHEEL_SHOOT_RPM = 4600;
     private final double FLYWHEEL_SHOOT_RPM_TOLERANCE = 100;
 
     private final double FLYWHEEL_BASE_POWER = 0.7;

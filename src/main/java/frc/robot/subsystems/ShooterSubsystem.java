@@ -95,11 +95,11 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setFlywheelRPM(double rpmSetpoint, double basePower) {
-        setFlywheelRPM(rpmSetpoint, 0, FLYWHEEL_kP);
+        setFlywheelRPM(rpmSetpoint, basePower, FLYWHEEL_kP);
     }
 
     public void setFlywheelRPM(double rpmSetpoint, double basePower, double kP) {
-        double error = rpmSetpoint - getFlywheelRawSpeed();
+        double error = rpmSetpoint - getFlywheelSpeed();
         double proportional = error * kP;
         setFlywheelSpeed(proportional + basePower);
     }
