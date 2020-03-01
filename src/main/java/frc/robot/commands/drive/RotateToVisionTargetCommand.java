@@ -1,7 +1,9 @@
 package frc.robot.commands.drive;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.robot.constants.RobotConst.DriveConst;
 import frc.robot.exceptions.NTNullEntryException;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.CameraSubsystem.CameraMode;
@@ -36,7 +38,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
     private boolean finished = false;
 
-    private double kP;
+    private double kP = 0.04;
 
     public RotateToVisionTargetCommand(CameraSubsystem cameraSubsystem, DriveSubsystem driveSubsystem) {
         System.out.println("STARTING ROTATE TO VISION TARGET COMMAND =============================");
@@ -46,6 +48,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
         addRequirements(driveSubsystem);
         xMedianFilter = new MedianPercentileFilter(MEDIAN_FILTER_ENTRIES);
         yMedianFilter = new MedianPercentileFilter(MEDIAN_FILTER_ENTRIES);
+        s_drive.setDeadband(0);
     }
 
     @Override
@@ -68,22 +71,26 @@ public class RotateToVisionTargetCommand extends CommandBase {
             //     return;
             // }
 
-            double xGyroHeading = Util.addGyroValues(xDegOff, s_drive.getPigeonHeading());
+            // double xGyroHeading = Util.addGyroValues(xDegOff, s_drive.getPigeonHeading());
 
-            double xMedian, yMedian;
+            // double xMedian, yMedian;
 
-            xMedian = xMedianFilter.calculate(xGyroHeading);
-            yMedian = yMedianFilter.calculate(yDegOff);
+            // xMedian = xMedianFilter.calculate(xGyroHeading);
+            // yMedian = yMedianFilter.calculate(yDegOff);
+
+            // xMedian = xDegOff;
+            // yMedian = yDegOff;
 
             // Pass xMedian to gyro PID
 
             // s_drive.rotateGyroAngle(xMedian);
             
-            double angleDifferance = Util.subtractGyroValues(xMedian, s_drive.getPigeonHeading());
+            // double angleDifferance = Util.subtractGyroValues(xMedian, s_drive.getPigeonHeading());
+                double angleDifferance = xDegOff;
 
-            double pGain = calculatePGain(angleDifferance) + 0.05;
+            double pGain = calculatePGain(angleDifferance) + 0.04;
             pGain = MathUtil.clamp(pGain, -.4, .4);
-            s_drive.arcadeDrive(0, pGain, false);
+            s_drive.arcadeDrive(0, - pGain, false);
 
         } catch (NTNullEntryException exception) {
             System.out.println(exception.getMessage());
@@ -141,6 +148,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         s_drive.setForwardSpeed(0);
+        s_drive.setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
         s_camera.setLEDMode(LEDMode.OFF);
         s_camera.setCameraMode(CameraMode.DRIVER);
     }
@@ -160,5 +168,10 @@ public class RotateToVisionTargetCommand extends CommandBase {
             }
         }
         return finished;
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
     }
 }

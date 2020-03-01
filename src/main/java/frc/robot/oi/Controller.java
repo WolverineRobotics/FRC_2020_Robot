@@ -31,7 +31,7 @@ public abstract class Controller {
         return joystick;
     }
 
-    protected JoystickButton getButtonObject(ButtonMap button){
+    public JoystickButton getButtonObject(ButtonMap button){
         return (new JoystickButton(joystick, button.getPortNum()));
     }
 
