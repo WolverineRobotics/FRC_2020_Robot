@@ -37,9 +37,10 @@ public class DefaultClimbCommand extends CommandBase {
             s_climb.setClimbLevelSpeed(-0.8);
         }
 
-        boolean buttonB = dc.isPressingB();
-        if (buttonB){
-            s_climb.toggleLock();
+        if (dc.isPressingB()){
+            s_climb.setLock(false);
+        } else if(dc.isPressingY()) {
+            s_climb.setLock(true);
         }
     }
 

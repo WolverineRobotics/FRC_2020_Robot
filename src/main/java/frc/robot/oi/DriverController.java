@@ -100,4 +100,8 @@ public class DriverController extends Controller {
         return getButton(JoystickMap.ButtonMap.BUTTON_B);
     }
 
+    public boolean isPressingY() {
+        return getButton(ButtonMap.BUTTON_Y);
+    }
+
 }
