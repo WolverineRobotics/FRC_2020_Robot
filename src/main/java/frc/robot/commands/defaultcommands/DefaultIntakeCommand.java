@@ -64,11 +64,7 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setVerticalLowerSpeed(0.2);
             s_intake.setVerticalUpperSpeed(1);
         } else if(oc.isPressingA()) { //move front piston
-            if(s_intake.isIntakeOpen()) {
-                s_intake.setIntakePiston(false);
-            } else {
-                s_intake.setIntakePiston(true);
-            }
+            s_intake.toggleIntakePiston();
         } else {
             s_intake.setMoveBalls(false);
             s_intake.setSpeeds(0, 0, 0, 0);

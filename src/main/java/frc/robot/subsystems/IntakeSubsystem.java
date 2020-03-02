@@ -71,7 +71,8 @@ public class IntakeSubsystem extends SubsystemBase {
         verticalLower = new CANSparkMax(RobotMap.SpeedController.VERTICAL_LOWER, MotorType.kBrushless);
         verticalUpper = new CANSparkMax(RobotMap.SpeedController.VERTICAL_UPPER, MotorType.kBrushless);
 
-        piston = new DoubleSolenoid(RobotMap.Pneumatic.INTAKE_FORWARD, RobotMap.Pneumatic.INTAKE_BACKWARD);
+        piston = new DoubleSolenoid(3, RobotMap.Pneumatic.INTAKE_FORWARD, RobotMap.Pneumatic.INTAKE_BACKWARD);
+
 
         mag = new ArrayList<>();
         unfinishedDesto = new ArrayList<Ball>();
@@ -121,7 +122,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     private void updateDashboard() {
-        // display all sensor values
+        // displ        ay all sensor values
         boolean[] sen = getSensors();
         for (int i = 0; i < sen.length; i++) {
             SmartDashboard.putBoolean("Sensor " + (i + 1), sen[i]);
@@ -140,6 +141,7 @@ public class IntakeSubsystem extends SubsystemBase {
                 verticalUpper.getAppliedOutput() * verticalUpper.getBusVoltage());
         SmartDashboard.putNumber("[Intake] Upper Vertical Current",
                 verticalUpper.getOutputCurrent());
+        SmartDashboard.putBoolean("[Intake] Solenoid", this.isIntakeOpen());
 
     }
 
@@ -495,7 +497,6 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean isMagazineEmpty() {
         return mag.isEmpty();
     }
-
     /**
      * Returns a boolean array of all of the sensors Index range is 0-4 (size:5)
      * 
@@ -513,7 +514,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return true if intake is open
      */
     public boolean isIntakeOpen() {
-        return false;
+        return piston.get() == Value.kForward;
     }
 
     /**
@@ -525,6 +526,15 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public void setIntakePiston(boolean toOpen) {
         piston.set(toOpen ? Value.kForward : Value.kReverse);
+    }
+
+    public void toggleIntakePiston() {
+        DoubleSolenoid.Value val = piston.get();
+        if(val.equals(DoubleSolenoid.Value.kForward)) {
+            piston.set(Value.kReverse);
+        } else {
+            val.equals(DoubleSolenoid.Value.kForward);
+        }
     }
 
     /**
