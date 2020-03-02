@@ -27,13 +27,19 @@ public class DefaultClimbCommand extends CommandBase {
         // } else {
         //     s_climb.setClimbSpeed(0);
         // }
+
         double rightTrig = dc.getRightTrigger();
         double leftTrig = dc.getLeftTrigger();
-        s_climb.setClimbSpeed((rightTrig - leftTrig)*0.7);
+        s_climb.setClimbSpeed((leftTrig - rightTrig)*0.7);
         if(dc.isPOVRight()){
             s_climb.setClimbLevelSpeed(0.8);
         } else if(dc.isPOVLeft()){
             s_climb.setClimbLevelSpeed(-0.8);
+        }
+
+        boolean buttonB = dc.isPressingB();
+        if (buttonB){
+            s_climb.toggleLock();
         }
     }
 
