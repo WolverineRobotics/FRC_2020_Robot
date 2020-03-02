@@ -26,7 +26,7 @@ import frc.robot.constants.RobotConst;
  * Right Trigger: Climb UP
  * 
  * Button A:
- * Button B:
+ * Button B: Climb Lock Toggle
  * Button X:
  * Button Y:
  * 
@@ -94,6 +94,10 @@ public class DriverController extends Controller {
 
     public JoystickButton getRotateVisionTargetButtonObj(){
         return getButtonObject(ButtonMap.BUTTON_A);
+    }
+
+    public boolean isPressingB(){
+        return getButton(JoystickMap.ButtonMap.BUTTON_B);
     }
 
 }
