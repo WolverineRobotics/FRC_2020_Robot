@@ -72,7 +72,7 @@ public class RobotContainer {
     // CONTROLLERS
     joshuaAndrewCadavos = new DriverController(RobotMap.Controller.DRIVER);
     anthonyAttikian = new OperatorController(RobotMap.Controller.OPERATOR);
-    ryanDick = new TestController(RobotMap.Controller.TEST);
+    // ryanDick = new TestController(RobotMap.Controller.TEST);
 
     // DRIVE
     s_drive = new DriveSubsystem();
@@ -121,7 +121,7 @@ public class RobotContainer {
             return false;
           }
         });
-    ryanDick.isPressingB().whenPressed(new SetIntakeArmCommand(s_intake, true));
+    // ryanDick.isPressingB().whenPressed(new SetIntakeArmCommand(s_intake, true));
   }
 
   /**
