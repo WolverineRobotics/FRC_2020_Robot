@@ -19,7 +19,7 @@ public class DefaultCameraCommand extends CommandBase {
         // c_camera.setCameraMode(CameraSubsystem.CameraMode.DRIVER);
         
         // Testing / debug
-        c_camera.setLEDMode(CameraSubsystem.LEDMode.PIPELINE);
+        c_camera.setLEDMode(CameraSubsystem.LEDMode.OFF);
         c_camera.setCameraMode(CameraSubsystem.CameraMode.VISION);
         c_camera.setSnapshotMode(false);
     }

@@ -14,46 +14,14 @@ import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst.CharacterizationConst;
 import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.DriveSubsystem.DrivePower;
+import frc.robot.subsystems.DriveSubsystem.DriveVoltage;
 
 /**
  * Given a heading and a distance, drives there using a profiled PID.
  */
 public class DriveHeadingProfiledCommand extends CommandBase {
 
-    protected static class DrivePower {
-
-        public final double leftPower;
-        public final double rightPower;
-
-        public DrivePower(double leftPower, double rightPower) {
-            this.leftPower = leftPower;
-            this.rightPower = rightPower;
-        }
-    }
-
-    protected static class DriveVoltage {
-
-        public final double leftVoltage;
-        public final double rightVoltage;
-
-        public DriveVoltage(double leftVoltage, double rightVoltage) {
-            this.leftVoltage = leftVoltage;
-            this.rightVoltage = rightVoltage;
-        }
-
-        public static DriveVoltage addVoltage(DriveVoltage voltage1, DriveVoltage voltage2) {
-            double leftVoltage = voltage1.leftVoltage + voltage2.leftVoltage;
-            double rightVoltage = voltage1.rightVoltage + voltage2.rightVoltage;
-            return (new DriveVoltage(leftVoltage, rightVoltage));
-        }
-
-        public static DriveVoltage clampVoltage(DriveVoltage inputVoltage, double maxVoltage) {
-            double leftVoltage = MathUtil.clamp(inputVoltage.leftVoltage, -maxVoltage, maxVoltage);
-            double rightVoltage = MathUtil.clamp(inputVoltage.rightVoltage, -maxVoltage, maxVoltage);
-            return (new DriveVoltage(leftVoltage, rightVoltage));
-        }
-
-    }
 
     private static final double TIME_PERIOD = 0.02;
     protected static final double DEFAULT_MAX_VOLTAGE = 10;
