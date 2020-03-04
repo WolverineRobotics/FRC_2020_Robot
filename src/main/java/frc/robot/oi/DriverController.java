@@ -105,7 +105,7 @@ public class DriverController extends Controller {
     }
 
     public boolean isLimelightLed(){
-        return getButton(ButtonMap.BUTTON_X);
+        return getButton(ButtonMap.BUTTON_LEFT_BUMPER);
     }
 
 }
