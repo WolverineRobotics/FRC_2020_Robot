@@ -71,8 +71,7 @@ public class IntakeSubsystem extends SubsystemBase {
         verticalLower = new CANSparkMax(RobotMap.SpeedController.VERTICAL_LOWER, MotorType.kBrushless);
         verticalUpper = new CANSparkMax(RobotMap.SpeedController.VERTICAL_UPPER, MotorType.kBrushless);
 
-        piston = new DoubleSolenoid(3, RobotMap.Pneumatic.INTAKE_FORWARD, RobotMap.Pneumatic.INTAKE_BACKWARD);
-
+        piston = new DoubleSolenoid(RobotMap.Pneumatic.PCM, RobotMap.Pneumatic.INTAKE_FORWARD, RobotMap.Pneumatic.INTAKE_BACKWARD);
 
         mag = new ArrayList<>();
         unfinishedDesto = new ArrayList<Ball>();
@@ -87,16 +86,16 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (moveBalls) {
-            boolean intake = true;
+            // boolean intake = true;
             //if the magazine size is 5
             //or if the first ball is not at its destination,
             // > do not intake
-            if(mag.size() == 5 || (mag.size() == 1 && !mag.get(0).isAtDestination())) {
-                intake = false;
-            }
+            // if(mag.size() == 5 || (mag.size() == 1 && !mag.get(0).isAtDestination())) {
+            //     intake = false;
+            // }
 
             //if the magazine size is not 5, and intake is true
-            if(mag.size() != 5 && intake) {
+            if(mag.size() != 5 /*&& intake*/) {
                 setSpeeds(0.3, 0, 0, 0);
             }
             if (isSensorOneActivated()) {
@@ -131,128 +130,6 @@ public class IntakeSubsystem extends SubsystemBase {
         updateDashboard();
     }
 
-    private void updateDashboard() {
-        // displ        ay all sensor values
-        boolean[] sen = getSensors();
-        for (int i = 0; i < sen.length; i++) {
-            SmartDashboard.putBoolean("Sensor " + (i + 1), sen[i]);
-        }
-
-        // display all of the ball object data
-        for (int i = 0; i < mag.size(); i++) {
-            SmartDashboard.putString("Ball #" + (i + 1) + " Destination:", mag.get(i).getDestination().toString());
-            SmartDashboard.putString("Ball #" + (i + 1) + " Position:", mag.get(i).getCurrentPosition().toString());
-        }
-
-        // SmartDashboard.putString("Next Available Position",
-        // getNextEmptyPosition().toString());
-        SmartDashboard.putNumber("Magazine Amount", mag.size());
-        SmartDashboard.putNumber("[Intake] Upper Vertical Voltage",
-                verticalUpper.getAppliedOutput() * verticalUpper.getBusVoltage());
-        SmartDashboard.putNumber("[Intake] Upper Vertical Current",
-                verticalUpper.getOutputCurrent());
-        SmartDashboard.putBoolean("[Intake] Solenoid", this.isIntakeOpen());
-
-    }
-
-    /**
-     * Rough (not exactly how the code was written but roughly) Algorithm: 1. For
-     * every ball in the magazine (in top to bottom order - must loop in this
-     * fashion) 2. If the ball is already at destination, go onto next ball 3. Check
-     * if the ball's destination is clear **unclear of what this means 4. Check if
-     * this ball is ball #3 > If so, change ball #2's destination to Position.TWO >
-     * Set ball #3's destination to Position.ONE > Once they are both in that
-     * position, set ball #2's position to Position.FOUR and #3's to Position.THREE
-     * 5. Bring the ball to next empty position. Check if the ball's destination is
-     * negative motor power or positive motor power. 6. Check if the ball's current
-     * position is an integer > if it an integer, then check if that corresponding
-     * sensor has something. > if that corresponding sensor does not have something
-     * and the next one doesn't have something as well as no other ball has the next
-     * one's position, check if the motor speed was positive or negative > set that
-     * current motor possession speed to zero > if it was positive then the update
-     * position is +0.5, otherwise if it is negative -0.5
-     * 
-     */
-
-    private void executeMotors() {
-        for (Ball b : mag) {
-            if (!b.isAtDestination()) {
-                Position currentPos = b.getCurrentPosition();
-                Position desto = b.getDestination();
-                int direction = 1;
-                if (Position.isAfter(currentPos, desto)) {
-                    direction = 1;
-                } else {
-                    direction = -1;
-                }
-                // System.out.println("Direction: " + direction);
-                // run all of the motor possessions
-                Motor[] possessions = currentPos.getPossessions();
-                for (Motor possession : possessions) {
-                    if (!currentPossessions.contains(possession)) {
-                        switch (possession) {
-                            case ENTRY:
-                                setEntrySpeed(direction * 0.3);
-                                break;
-                            case CURVE:
-                                setCurveSpeed(direction * 0.5);
-                                break;
-                            case LOWER_VERTICAL:
-                                boolean[] sen = getSensors();
-                                if ((sen[3 - 1] && sen[4 - 1]) && mag.size() == 3) {
-                                    if (isPositionOccupied(Position.THREE) && isPositionOccupied(Position.TWO)) {
-                                        Ball ball2 = getBall(Position.THREE);
-                                        Ball ball3 = getBall(Position.TWO);
-                                        if (ball2 != null && ball3 != null) {
-                                            ball2.setPosition(Position.FOUR);
-                                            ball3.setPosition(Position.THREE);
-                                        }
-                                    }
-                                } else {
-                                    setVerticalLowerSpeed(direction * 0.15);
-                                }
-                                break;
-                            case UPPER_VERTICAL:
-                                setVerticalUpperSpeed(direction * 0.15);
-                                break;
-                        }
-                    }
-                }
-
-            }
-        }
-    }
-
-    /**
-     * Stops unused motor possessions
-     */
-    private void stopUnusedPossessions() {
-        for (Ball ball : mag) {
-            if (ball.isAtDestination() /* && !unfinishedDesto.contains(ball) */) {
-                for (Motor m : ball.getCurrentPosition().getPossessions()) {
-                    switch (m) {
-                        case ENTRY:
-                            setEntrySpeed(0);
-                            break;
-                        case CURVE:
-                            if (mag.size() >= 3 && ball.getCurrentPosition() == Position.THREE) {
-
-                            } else {
-                                setCurveSpeed(0);
-                            }
-                            break;
-                        case LOWER_VERTICAL:
-                            setVerticalLowerSpeed(0);
-                            break;
-                        case UPPER_VERTICAL:
-                            setVerticalUpperSpeed(0);
-                            break;
-                    }
-                }
-            }
-        }
-    }
-
     /**
      * Gets ball object with corresponding Position
      * 
@@ -266,66 +143,6 @@ public class IntakeSubsystem extends SubsystemBase {
             }
         }
         return null;
-    }
-
-    /**
-     * Updates Ball Position based on sensor logic
-     */
-    private void updateSensorPositions() {
-        for (Ball b : mag) {
-            if (!b.isAtDestination()) {
-                Position position = b.getCurrentPosition();
-                double positionId = position.getId();
-                boolean[] sen = getSensors();
-                if (Util.isInteger(positionId)) {
-                    int intPosId = (int) positionId;
-                    if (sen[intPosId - 1]) {
-
-                    } else {
-                        List<Position> occupied = getOccupiedPositions();
-                        boolean nextSensor = sen[intPosId];
-                        boolean nextPosNotOccupied = !occupied.contains(Position.getPosition(intPosId + 1));
-                        if (nextSensor && (nextPosNotOccupied)) {
-                            b.setPosition(Position.getPosition(intPosId + 1));
-                            // System.out.println("============================================================");
-                        }
-                        if (mag.size() == 3 && mag.get(1) == b) {
-                            Ball ball2 = b;
-                            Ball ball3 = mag.get(2);
-                            if (ball2.getCurrentPosition() == Position.FOUR) {
-                                ball3.setPosition(Position.THREE);
-                            }
-                        }
-                    }
-                }
-            } else if (unfinishedDesto.contains(b)) {
-                if (mag.size() == 3) {
-                    if (b.getCurrentPosition() == Position.THREE) {
-                        Ball ball3 = mag.get(2);
-                        if (ball3.getCurrentPosition() == Position.TWO) {
-                            b.setDestination(Position.FOUR);
-                            ball3.setDestination(Position.THREE);
-                            unfinishedDesto.remove(b);
-                            unfinishedDesto.remove(ball3);
-                        }
-
-                        // if(b.getCurrentPosition() == Position.FOUR && mag.size() == 3 && mag.get(1)
-                        // == b) {
-                        // Ball ball3 = mag.get(2);
-                        // ball3.setPosition(Position.THREE);
-                        // ball3.setDestination(Position.THREE);
-                        // }
-                    }
-                }
-            } else {
-                Position currentPos = b.getCurrentPosition();
-                Position destination = b.getDestination();
-                // if(Position.isAfter(currentPos, destination) && currentPos) {
-
-                // }
-
-            }
-        }
     }
 
     /**
@@ -550,11 +367,32 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    /**
+     * Simply sets the destination of each ball in the magazine
+     * to one sensor position above.
+     * 
+     * If the next int location does not exist, then the ball is unable to move anywhere
+     * which will then cause a jam. To stop this from happening, the balls are never re-evaluated.
+     */
     public void moveBallsOneStage() {
+        Map<Ball, Position> evaluated = new HashMap<>();
+        boolean willEvaluate = true;
         for(Ball b : mag) {
             Position currentPos = b.getCurrentPosition();
-            if(b.isAtDestination()) {
-                b.setDestination(Position.getIntLocationAfter(currentPos));
+            Position nextPos = Position.getIntLocationAfter(currentPos);
+            if(nextPos != null) {
+                evaluated.put(b, nextPos);
+            } else {
+                willEvaluate = false;
+                break;
+            }
+        }   
+        if(willEvaluate) {
+            for(Map.Entry<Ball, Position> entry : evaluated.entrySet()) {
+                Ball b = entry.getKey();
+                Position evaluatedPos = entry.getValue();
+                System.out.println("Moving Ball from " + b.getCurrentPosition().toString() + " to " + evaluatedPos.toString());
+                b.setDestination(evaluatedPos);
             }
         }
     }
@@ -578,7 +416,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * 
      * @return List<Position> of occupied positions by balls.
      */
-    private List<Position> getOccupiedPositions() {
+    public List<Position> getOccupiedPositions() {
         List<Position> pos = new ArrayList<Position>();
         for (Ball b : mag) {
             pos.add(b.getCurrentPosition());
@@ -745,6 +583,166 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public enum Motor {
         ENTRY, CURVE, LOWER_VERTICAL, UPPER_VERTICAL,;
+    }
+
+     /**
+     * Updates Ball Position based on sensor logic
+     */
+    private void updateSensorPositions() {
+        for (Ball b : mag) {
+            if (!b.isAtDestination()) {
+                Position position = b.getCurrentPosition();
+                double positionId = position.getId();
+                boolean[] sen = getSensors();
+                if (Util.isInteger(positionId)) {
+                    int intPosId = (int) positionId;
+                    if (sen[intPosId - 1]) {
+
+                    } else {
+                        List<Position> occupied = getOccupiedPositions();
+                        boolean nextSensor = sen[intPosId];
+                        boolean nextPosNotOccupied = !occupied.contains(Position.getPosition(intPosId + 1));
+                        if (nextSensor && (nextPosNotOccupied)) {
+                            b.setPosition(Position.getPosition(intPosId + 1));
+                            // System.out.println("============================================================");
+                        }
+                        if (mag.size() == 3 && mag.get(1) == b) {
+                            Ball ball2 = b;
+                            Ball ball3 = mag.get(2);
+                            if (ball2.getCurrentPosition() == Position.FOUR) {
+                                ball3.setPosition(Position.THREE);
+                            }
+                        }
+                    }
+                }
+            } else if (unfinishedDesto.contains(b)) {
+                if (mag.size() == 3) {
+                    if (b.getCurrentPosition() == Position.THREE) {
+                        Ball ball3 = mag.get(2);
+                        if (ball3.getCurrentPosition() == Position.TWO) {
+                            b.setDestination(Position.FOUR);
+                            ball3.setDestination(Position.THREE);
+                            unfinishedDesto.remove(b);
+                            unfinishedDesto.remove(ball3);
+                        }
+
+                        // if(b.getCurrentPosition() == Position.FOUR && mag.size() == 3 && mag.get(1)
+                        // == b) {
+                        // Ball ball3 = mag.get(2);
+                        // ball3.setPosition(Position.THREE);
+                        // ball3.setDestination(Position.THREE);
+                        // }
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateDashboard() {
+        // displ        ay all sensor values
+        boolean[] sen = getSensors();
+        for (int i = 0; i < sen.length; i++) {
+            SmartDashboard.putBoolean("Sensor " + (i + 1), sen[i]);
+        }
+
+        // display all of the ball object data
+        for (int i = 0; i < mag.size(); i++) {
+            SmartDashboard.putString("Ball #" + (i + 1) + " Destination:", mag.get(i).getDestination().toString());
+            SmartDashboard.putString("Ball #" + (i + 1) + " Position:", mag.get(i).getCurrentPosition().toString());
+        }
+
+        // SmartDashboard.putString("Next Available Position",
+        // getNextEmptyPosition().toString());
+        SmartDashboard.putNumber("Magazine Amount", mag.size());
+        SmartDashboard.putNumber("[Intake] Upper Vertical Voltage",
+                verticalUpper.getAppliedOutput() * verticalUpper.getBusVoltage());
+        SmartDashboard.putNumber("[Intake] Upper Vertical Current",
+                verticalUpper.getOutputCurrent());
+        SmartDashboard.putBoolean("[Intake] Solenoid", this.isIntakeOpen());
+
+    }
+
+    /**
+     * Will execute all possessions possessed by Ball(s).
+     * Will also re-evaluate destinations if needed.
+     */
+    private void executeMotors() {
+        for (Ball b : mag) {
+            if (!b.isAtDestination()) {
+                Position currentPos = b.getCurrentPosition();
+                Position desto = b.getDestination();
+                int direction = 1;
+                if (Position.isAfter(currentPos, desto)) {
+                    direction = 1;
+                } else {
+                    direction = -1;
+                }
+                // System.out.println("Direction: " + direction);
+                // run all of the motor possessions
+                Motor[] possessions = currentPos.getPossessions();
+                for (Motor possession : possessions) {
+                    if (!currentPossessions.contains(possession)) {
+                        switch (possession) {
+                            case ENTRY:
+                                setEntrySpeed(direction * 0.3);
+                                break;
+                            case CURVE:
+                                setCurveSpeed(direction * 0.5);
+                                break;
+                            case LOWER_VERTICAL:
+                                boolean[] sen = getSensors();
+                                if ((sen[3 - 1] && sen[4 - 1]) && mag.size() == 3) {
+                                    if (isPositionOccupied(Position.THREE) && isPositionOccupied(Position.TWO)) {
+                                        Ball ball2 = getBall(Position.THREE);
+                                        Ball ball3 = getBall(Position.TWO);
+                                        if (ball2 != null && ball3 != null) {
+                                            ball2.setPosition(Position.FOUR);
+                                            ball3.setPosition(Position.THREE);
+                                        }
+                                    }
+                                } else {
+                                    setVerticalLowerSpeed(direction * 0.15);
+                                }
+                                break;
+                            case UPPER_VERTICAL:
+                                setVerticalUpperSpeed(direction * 0.15);
+                                break;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    /**
+     * Stops unused motor possessions
+     */
+    private void stopUnusedPossessions() {
+        for (Ball ball : mag) {
+            if (ball.isAtDestination() /* && !unfinishedDesto.contains(ball) */) {
+                for (Motor m : ball.getCurrentPosition().getPossessions()) {
+                    switch (m) {
+                        case ENTRY:
+                            setEntrySpeed(0);
+                            break;
+                        case CURVE:
+                            if (mag.size() >= 3 && ball.getCurrentPosition() == Position.THREE) {
+
+                            } else {
+                                setCurveSpeed(0);
+                            }
+                            break;
+                        case LOWER_VERTICAL:
+                            setVerticalLowerSpeed(0);
+                            break;
+                        case UPPER_VERTICAL:
+                            setVerticalUpperSpeed(0);
+                            break;
+                    }
+                }
+            }
+        }
     }
 
 }
