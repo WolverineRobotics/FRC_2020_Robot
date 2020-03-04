@@ -87,8 +87,18 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (moveBalls) {
-            if (mag.size() != 5)
+            boolean intake = true;
+            //if the magazine size is 5
+            //or if the first ball is not at its destination,
+            // > do not intake
+            if(mag.size() == 5 || (mag.size() == 1 && !mag.get(0).isAtDestination())) {
+                intake = false;
+            }
+
+            //if the magazine size is not 5, and intake is true
+            if(mag.size() != 5 && intake) {
                 setSpeeds(0.3, 0, 0, 0);
+            }
             if (isSensorOneActivated()) {
                 boolean isNewBall = true;
                 for (Ball b : mag) {
@@ -217,29 +227,6 @@ public class IntakeSubsystem extends SubsystemBase {
      * Stops unused motor possessions
      */
     private void stopUnusedPossessions() {
-        // for(Ball ball : mag) {
-        // if(ball.isAtDestination()) {
-        // for(Motor m : ball.getCurrentPosition().getPossessions()) {
-        // // if(ball.getCurrentPosition().getPossessions()[0] == ) {
-        // switch(m) {
-        // case ENTRY:
-        // setEntrySpeed(0);
-        // break;
-        // case CURVE:
-        // setCurveSpeed(0);
-        // break;
-        // case LOWER_VERTICAL:
-        // // setVerticalLowerSpeed(0);
-        // break;
-        // case UPPER_VERTICAL:
-        // setVerticalUpperSpeed(0);
-        // break;
-        // }
-        // currentPossessions.remove(m);
-        // // }
-        // }
-        // }
-        // }
         for (Ball ball : mag) {
             if (ball.isAtDestination() /* && !unfinishedDesto.contains(ball) */) {
                 for (Motor m : ball.getCurrentPosition().getPossessions()) {
@@ -297,9 +284,9 @@ public class IntakeSubsystem extends SubsystemBase {
                     } else {
                         List<Position> occupied = getOccupiedPositions();
                         boolean nextSensor = sen[intPosId];
-                        boolean nextPosNotOccupied = !occupied.contains(getPosition(intPosId + 1));
+                        boolean nextPosNotOccupied = !occupied.contains(Position.getPosition(intPosId + 1));
                         if (nextSensor && (nextPosNotOccupied)) {
-                            b.setPosition(getPosition(intPosId + 1));
+                            b.setPosition(Position.getPosition(intPosId + 1));
                             // System.out.println("============================================================");
                         }
                         if (mag.size() == 3 && mag.get(1) == b) {
@@ -563,6 +550,15 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    public void moveBallsOneStage() {
+        for(Ball b : mag) {
+            Position currentPos = b.getCurrentPosition();
+            if(b.isAtDestination()) {
+                b.setDestination(Position.getIntLocationAfter(currentPos));
+            }
+        }
+    }
+
     /**
      * Check whether a ball is taking up a position
      * 
@@ -726,6 +722,21 @@ public class IntakeSubsystem extends SubsystemBase {
             double checkPosId = checkPos.getId();
             return checkPosId > posId;
         }
+
+        /**
+         * Gets the position by ID (1 - 5.5)
+         * 
+         * @param id (double) position ID
+         * @return the position. Can return null if position with id is not found.
+         */
+        public static Position getPosition(double id) {
+            for (Position pos : Position.values()) {
+                if (pos.getId() == id) {
+                    return pos;
+                }
+            }
+            return null;
+        }
     }
 
     /**
@@ -734,21 +745,6 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public enum Motor {
         ENTRY, CURVE, LOWER_VERTICAL, UPPER_VERTICAL,;
-    }
-
-    /**
-     * Gets the position by ID (1 - 5.5)
-     * 
-     * @param id (double) position ID
-     * @return the position. Can return null if position with id is not found.
-     */
-    private Position getPosition(double id) {
-        for (Position pos : Position.values()) {
-            if (pos.getId() == id) {
-                return pos;
-            }
-        }
-        return null;
     }
 
 }

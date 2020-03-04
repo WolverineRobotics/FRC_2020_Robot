@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.oi.OperatorController;
 import frc.robot.subsystems.IntakeSubsystem;
+import java.util.List;
+import frc.robot.subsystems.IntakeSubsystem.Ball;
 import frc.robot.constants.RobotConst.IntakeConst;
 
 public class DefaultIntakeCommand extends CommandBase {
@@ -65,6 +67,13 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setVerticalUpperSpeed(1);
         } else if(oc.isPressingA()) { //move front piston
             s_intake.toggleIntakePiston();
+        } else if(oc.isPOVRight()) {
+            List<Ball> mag = s_intake.mag;
+            if(mag.size() > 1) {
+                mag.remove(0);
+                s_intake.moveBallsOneStage();
+            }
+            
         } else {
             s_intake.setMoveBalls(false);
             s_intake.setSpeeds(0, 0, 0, 0);

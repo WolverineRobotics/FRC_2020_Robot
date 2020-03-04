@@ -86,6 +86,10 @@ public class OperatorController extends Controller {
         return getPOV() == POVMap.POV_SOUTH;
     }
 
+    public boolean isPOVRight() {
+        return getPOV() == POVMap.POV_WEST;
+    }
+
     public boolean isFlyWheelRun() {
         return getButton(ButtonMap.BUTTON_RIGHT_BUMPER);
     }
