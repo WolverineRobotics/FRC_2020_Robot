@@ -89,7 +89,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
             double angleDifferance = xDegOff;
 
             double pGain = calculatePGain(angleDifferance);
-            pGain += 0.04 * Math.signum(pGain);
+            pGain += 0.068 * Math.signum(pGain);
             pGain = MathUtil.clamp(pGain, -.4, .4);
 
             s_drive.arcadeDrive(0, - pGain, false);

@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.RobotConst;
 import frc.robot.exceptions.NTNullEntryException;
@@ -268,7 +269,7 @@ public class CameraSubsystem extends SubsystemBase {
             if (hasValidTargets()) {
                 double angleOfElevation = getYDegOff() + LIMELIGHT_ANGLE_ELEVATION_DEG;
                 double heightDifference = VISION_TARGET_MIDDLE_HIGHT_IN - LIMELIGHT_HEIGHT_IN;
-                double distance = heightDifference / Math.tan(Math.toRadians(LIMELIGHT_ANGLE_ELEVATION_DEG));
+                double distance = heightDifference / Math.tan(Math.toRadians(angleOfElevation));
                 return distance;
             }
             return -1;
@@ -282,7 +283,7 @@ public class CameraSubsystem extends SubsystemBase {
         if (distanceInches == -1) {
             return -1;
         }
-        return distanceInches;
+        return Units.inchesToMeters(distanceInches) * 100;
     }
 
     // ========================================================================
@@ -436,6 +437,8 @@ public class CameraSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("[Camera] Distance Inches", getDistanceInches());
         SmartDashboard.putNumber("[Camera] Distance CM", getDistanceCM());
     }
+
+
 
     @Override
     public void periodic() {

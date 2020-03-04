@@ -26,7 +26,7 @@ public class MoveBallsToShootCommand extends CommandBase {
             if (flywheelReady) {
                 // Flywheel ready, shoot balls
                 s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED,
-                        IntakeConst.UPPER_VERTICAL_SHOOT_SPEED);
+                        0.8);
             } else {
                 s_intake.setSpeeds(0, 0, 0, 0);
             }

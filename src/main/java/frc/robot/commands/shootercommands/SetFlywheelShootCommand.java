@@ -10,7 +10,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class SetFlywheelShootCommand extends CommandBase {
 
     // TODO: Change values
-    private final double FLYWHEEL_SHOOT_RPM = 4600;
+    private final double FLYWHEEL_SHOOT_RPM = 4700;
     private final double FLYWHEEL_SHOOT_RPM_TOLERANCE = 100;
 
     private final double FLYWHEEL_BASE_POWER = 0.7;
@@ -25,7 +25,10 @@ public class SetFlywheelShootCommand extends CommandBase {
 
     @Override
     public void execute() {
-        s_shooter.setFlywheelRPM(FLYWHEEL_SHOOT_RPM, FLYWHEEL_BASE_POWER);
+
+        // System.out.println("SET FLYWHEEL SHOOT COMMAND 11 VOLTS");
+        // s_shooter.setFlywheelRPM(FLYWHEEL_SHOOT_RPM, FLYWHEEL_BASE_POWER);
+        s_shooter.setFlywheelVoltage(11);
     }
 
     @Override
@@ -43,7 +46,8 @@ public class SetFlywheelShootCommand extends CommandBase {
     }
 
     public boolean isFlywheelAtSpeed() {
-        double error = s_shooter.getFlywheelSpeed() - FLYWHEEL_SHOOT_RPM;
-        return (Math.abs(error) <= FLYWHEEL_SHOOT_RPM_TOLERANCE);
+        // double error = s_shooter.getFlywheelSpeed() - FLYWHEEL_SHOOT_RPM;
+        // return (Math.abs(error) <= FLYWHEEL_SHOOT_RPM_TOLERANCE);
+        return s_shooter.getFlywheelSpeed() >= FLYWHEEL_SHOOT_RPM;
     }
 }

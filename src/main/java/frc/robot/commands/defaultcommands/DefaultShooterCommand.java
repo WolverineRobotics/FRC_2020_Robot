@@ -22,7 +22,14 @@ public class DefaultShooterCommand extends CommandBase {
         double rev = oc.getRightTrigger();
         if(Math.abs(rev) > 0.15) {
             s_shooter.setFlywheelSpeed(rev);
-        } else {
+        // } else {
+        //     s_shooter.setFlywheelSpeed(0);
+        // }
+        }else
+
+        if(oc.isFlywheelSetVoltage()){
+            s_shooter.setFlywheelVoltage(11);
+        }else{
             s_shooter.setFlywheelSpeed(0);
         }
 
