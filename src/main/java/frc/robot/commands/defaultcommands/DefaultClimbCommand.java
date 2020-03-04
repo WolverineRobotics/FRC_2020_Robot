@@ -30,7 +30,7 @@ public class DefaultClimbCommand extends CommandBase {
 
         double rightTrig = dc.getRightTrigger();
         double leftTrig = dc.getLeftTrigger();
-        s_climb.setClimbSpeed((leftTrig - rightTrig)*0.7);
+        s_climb.setClimbSpeed((leftTrig - rightTrig)*0.75);
         if(dc.isPOVRight()){
             s_climb.setClimbLevelSpeed(0.8);
         } else if(dc.isPOVLeft()){
