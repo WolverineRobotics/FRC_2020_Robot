@@ -21,6 +21,7 @@ public class SetFlywheelShootCommand extends CommandBase {
     public SetFlywheelShootCommand(ShooterSubsystem subsystem) {
         super();
         s_shooter = subsystem;
+        addRequirements(s_shooter);
     }
 
     @Override
