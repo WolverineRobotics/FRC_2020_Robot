@@ -35,6 +35,8 @@ public class DefaultClimbCommand extends CommandBase {
             s_climb.setClimbLevelSpeed(0.8);
         } else if(dc.isPOVLeft()){
             s_climb.setClimbLevelSpeed(-0.8);
+        } else {
+            s_climb.setClimbLevelSpeed(0);
         }
 
         if (dc.isPressingB()){
@@ -42,6 +44,12 @@ public class DefaultClimbCommand extends CommandBase {
         } else if(dc.isPressingY()) {
             s_climb.setLock(true);
         }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        s_climb.setClimbLevelSpeed(0);
+        s_climb.setClimbSpeed(0);
     }
 
 }

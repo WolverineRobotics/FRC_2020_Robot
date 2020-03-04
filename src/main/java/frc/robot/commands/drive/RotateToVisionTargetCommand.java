@@ -9,19 +9,18 @@ import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.CameraSubsystem.CameraMode;
 import frc.robot.subsystems.CameraSubsystem.LEDMode;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.util.MedianPercentileFilter;
-import frc.robot.util.Util;
 
 public class RotateToVisionTargetCommand extends CommandBase {
     private final CameraSubsystem s_camera;
     private final DriveSubsystem s_drive;
-    private final MedianPercentileFilter xMedianFilter;
-    private final MedianPercentileFilter yMedianFilter;
+    // private final MedianPercentileFilter xMedianFilter;
+    // private final MedianPercentileFilter yMedianFilter;
 
-    private final int MEDIAN_FILTER_ENTRIES = 10;
+
+    // private final int MEDIAN_FILTER_ENTRIES = 10;
     private final int CYCLES_UNTIL_CHECK_FINISHED = 10;
     private final double MIN_PERCENT_TARGETS_FOUND = 0.8;
-    private final double MAX_IQR_X = 20;
+    // private final double MAX_IQR_X = 20;
 
     /**
      * The max acceptable error, in degree. If the error is below this, it will be
@@ -31,7 +30,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
     // Any targets with y-values below this value will be treated as false
     // positives.
-    private final double Y_VALUE_CUTOFF = -20;
+    // private final double Y_VALUE_CUTOFF = -20;
 
     private int totalCycles = 0;
     private int numFound = 0;
@@ -41,13 +40,14 @@ public class RotateToVisionTargetCommand extends CommandBase {
     private double kP = 0.04;
 
     public RotateToVisionTargetCommand(CameraSubsystem cameraSubsystem, DriveSubsystem driveSubsystem) {
-        System.out.println("STARTING ROTATE TO VISION TARGET COMMAND =============================");
+        // System.out.println("STARTING ROTATE TO VISION TARGET COMMAND =============================");
         s_camera = cameraSubsystem;
         s_drive = driveSubsystem;
         addRequirements(cameraSubsystem);
         addRequirements(driveSubsystem);
-        xMedianFilter = new MedianPercentileFilter(MEDIAN_FILTER_ENTRIES);
-        yMedianFilter = new MedianPercentileFilter(MEDIAN_FILTER_ENTRIES);
+        
+        // xMedianFilter = new MedianPercentileFilter(MEDIAN_FILTER_ENTRIES);
+        // yMedianFilter = new MedianPercentileFilter(MEDIAN_FILTER_ENTRIES);
         s_drive.setDeadband(0);
     }
 
@@ -60,7 +60,7 @@ public class RotateToVisionTargetCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        System.out.println("ROTATE TO VISION TARGET COMMAND");
+        // System.out.println("ROTATE TO VISION TARGET COMMAND");
         try {
             double xDegOff = s_camera.getXDegOff();
             double yDegOff = s_camera.getYDegOff();
@@ -86,10 +86,12 @@ public class RotateToVisionTargetCommand extends CommandBase {
             // s_drive.rotateGyroAngle(xMedian);
             
             // double angleDifferance = Util.subtractGyroValues(xMedian, s_drive.getPigeonHeading());
-                double angleDifferance = xDegOff;
+            double angleDifferance = xDegOff;
 
-            double pGain = calculatePGain(angleDifferance) + 0.04;
+            double pGain = calculatePGain(angleDifferance);
+            pGain += 0.068 * Math.signum(pGain);
             pGain = MathUtil.clamp(pGain, -.4, .4);
+
             s_drive.arcadeDrive(0, - pGain, false);
 
         } catch (NTNullEntryException exception) {
@@ -163,9 +165,9 @@ public class RotateToVisionTargetCommand extends CommandBase {
                 return true;
             }
             // Ends if IQR is above a certain range
-            if (xMedianFilter.getInterquartileRange() > MAX_IQR_X) {
-                return true;
-            }
+            // if (xMedianFilter.getInterquartileRange() > MAX_IQR_X) {
+            //     return true;
+            // }
         }
         return finished;
     }

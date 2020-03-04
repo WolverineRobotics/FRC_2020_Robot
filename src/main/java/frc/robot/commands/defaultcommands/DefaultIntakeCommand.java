@@ -64,7 +64,7 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setEntrySpeed(0.1);
             s_intake.setCurveSpeed(0.3);
             s_intake.setVerticalLowerSpeed(0.2);
-            s_intake.setVerticalUpperSpeed(1);
+            // s_intake.setVerticalUpperSpeed(1);
         } else if(oc.isPressingA()) { //move front piston
             s_intake.toggleIntakePiston();
         } else if(oc.isPOVRight()) {
@@ -73,7 +73,8 @@ public class DefaultIntakeCommand extends CommandBase {
                 mag.remove(0);
                 s_intake.moveBallsOneStage();
             }
-            
+        } else if(oc.isIntakeShootTopStageOnly()){
+            s_intake.setVerticalUpperSpeed(0.8);
         } else {
             s_intake.setMoveBalls(false);
             s_intake.setSpeeds(0, 0, 0, 0);

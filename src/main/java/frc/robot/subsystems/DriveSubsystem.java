@@ -41,6 +41,42 @@ import frc.robot.util.Util;
 
 public class DriveSubsystem extends SubsystemBase {
 
+
+    public static class DrivePower {
+
+        public final double leftPower;
+        public final double rightPower;
+
+        public DrivePower(double leftPower, double rightPower) {
+            this.leftPower = leftPower;
+            this.rightPower = rightPower;
+        }
+    }
+
+    public static class DriveVoltage {
+
+        public final double leftVoltage;
+        public final double rightVoltage;
+
+        public DriveVoltage(double leftVoltage, double rightVoltage) {
+            this.leftVoltage = leftVoltage;
+            this.rightVoltage = rightVoltage;
+        }
+
+        public static DriveVoltage addVoltage(DriveVoltage voltage1, DriveVoltage voltage2) {
+            double leftVoltage = voltage1.leftVoltage + voltage2.leftVoltage;
+            double rightVoltage = voltage1.rightVoltage + voltage2.rightVoltage;
+            return (new DriveVoltage(leftVoltage, rightVoltage));
+        }
+
+        public static DriveVoltage clampVoltage(DriveVoltage inputVoltage, double maxVoltage) {
+            double leftVoltage = MathUtil.clamp(inputVoltage.leftVoltage, -maxVoltage, maxVoltage);
+            double rightVoltage = MathUtil.clamp(inputVoltage.rightVoltage, -maxVoltage, maxVoltage);
+            return (new DriveVoltage(leftVoltage, rightVoltage));
+        }
+
+    }
+
     private CANSparkMax leftMaster, leftSlave1, leftSlave2, rightMaster, rightSlave1, rightSlave2;
     private Encoder leftEncoder, rightEncoder;
 

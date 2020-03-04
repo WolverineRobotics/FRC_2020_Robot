@@ -520,7 +520,7 @@ public class IntakeSubsystem extends SubsystemBase {
         if(val.equals(DoubleSolenoid.Value.kForward)) {
             piston.set(Value.kReverse);
         } else {
-            val.equals(DoubleSolenoid.Value.kForward);
+            piston.set(Value.kForward);
         }
     }
 

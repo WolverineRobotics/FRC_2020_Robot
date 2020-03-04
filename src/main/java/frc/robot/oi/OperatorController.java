@@ -98,8 +98,12 @@ public class OperatorController extends Controller {
         return getAxis(AxisMap.RIGHT_STICK_Y);
     }
 
-    public boolean isOutaking() {
+    public boolean isFlywheelSetVoltage() {
         return getButton(ButtonMap.BUTTON_LEFT_BUMPER);
+    }
+
+    public boolean isIntakeShootTopStageOnly(){
+        return getPOV() == POVMap.POV_WEST;
     }
 
 }
