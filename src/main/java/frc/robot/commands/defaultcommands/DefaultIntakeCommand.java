@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.oi.OperatorController;
+import frc.robot.oi.TestController;
 import frc.robot.subsystems.IntakeSubsystem;
 import java.util.List;
 import frc.robot.subsystems.IntakeSubsystem.Ball;
@@ -14,11 +15,13 @@ public class DefaultIntakeCommand extends CommandBase {
 
     private final IntakeSubsystem s_intake;
     private final OperatorController oc;
+    private final TestController tc;
 
     public DefaultIntakeCommand(final IntakeSubsystem s_intake) {
         this.s_intake = s_intake;
         addRequirements(s_intake);
         oc = RobotContainer.getOperatorController();
+        tc = RobotContainer.getTestController();
     }
 
     @Override
@@ -78,6 +81,23 @@ public class DefaultIntakeCommand extends CommandBase {
         } else {
             s_intake.setMoveBalls(false);
             s_intake.setSpeeds(0, 0, 0, 0);
+        }
+
+        boolean inverted;
+        if(tc.isInvert()) { //if holding right bumper to invert speeds
+            inverted = true;
+        } else {
+            inverted = false;
+        }
+
+        if(tc.isFront()) {
+            s_intake.setEntrySpeed(inverted ? -.3 : .3);
+        } else if(tc.isCurve()) {
+            s_intake.setCurveSpeed(inverted ? -.3 : .3);
+        } else if(tc.isLowerVertical()) {
+            s_intake.setVerticalLowerSpeed(inverted ? -.3 : .3);
+        } else if(tc.isUpperVertical()) {
+            s_intake.setVerticalUpperSpeed(inverted ? -.3 : .3);
         }
     }
 
