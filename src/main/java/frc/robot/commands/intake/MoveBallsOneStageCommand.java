@@ -12,7 +12,7 @@ public class MoveBallsOneStageCommand extends CommandBase {
 
     public MoveBallsOneStageCommand(IntakeSubsystem s_intake) {
         this.s_intake = s_intake;
-        addRequirements(s_intake);
+        addRequirements(this.s_intake);
     }
 
     @Override
