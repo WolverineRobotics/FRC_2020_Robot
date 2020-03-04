@@ -25,7 +25,7 @@ public class ClimbSubsystem extends SubsystemBase {
         climb = new CANSparkMax(RobotMap.SpeedController.CLIMB, MotorType.kBrushless);
         encoder = new RevAbsoluteEncoder(7);
         climb_level = new TalonSRX(RobotMap.SpeedController.CLIMB_LEVEL);
-        piston = new DoubleSolenoid(3, RobotMap.Pneumatic.CLIMB_LOCK_FORWARD, RobotMap.Pneumatic.CLIMB_LOCK_REVERSE);
+        piston = new DoubleSolenoid(RobotMap.Pneumatic.PCM, RobotMap.Pneumatic.CLIMB_LOCK_FORWARD, RobotMap.Pneumatic.CLIMB_LOCK_REVERSE);
     }
 
     public void setClimbSpeed(double speed) {

@@ -48,11 +48,10 @@ public class RobotMap{
     }
 
     public class Pneumatic {
+        public static final int PCM = 3;
 
-
-
-        public static final int INTAKE_FORWARD = 0;
-        public static final int INTAKE_BACKWARD = 1;
+        public static final int INTAKE_FORWARD = 2;
+        public static final int INTAKE_BACKWARD = 3;
 
         public static final int CLIMB_LOCK_FORWARD = 4;
         public static final int CLIMB_LOCK_REVERSE = 5;
