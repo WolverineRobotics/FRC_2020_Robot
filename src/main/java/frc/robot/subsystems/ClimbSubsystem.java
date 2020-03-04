@@ -12,17 +12,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotMap;
+import frc.robot.util.RevAbsoluteEncoder;
 
 public class ClimbSubsystem extends SubsystemBase {
 
     private CANSparkMax climb;
-    private CANEncoder encoder;
+    private RevAbsoluteEncoder encoder;
     private TalonSRX climb_level;
     private DoubleSolenoid piston;
 
     public ClimbSubsystem() {
         climb = new CANSparkMax(RobotMap.SpeedController.CLIMB, MotorType.kBrushless);
-        encoder = new CANEncoder(climb);
+        encoder = new RevAbsoluteEncoder(7);
         climb_level = new TalonSRX(RobotMap.SpeedController.CLIMB_LEVEL);
         piston = new DoubleSolenoid(3, RobotMap.Pneumatic.CLIMB_LOCK_FORWARD, RobotMap.Pneumatic.CLIMB_LOCK_REVERSE);
     }
@@ -47,10 +48,6 @@ public class ClimbSubsystem extends SubsystemBase {
         return climb.getOutputCurrent();
     }
 
-    public double getClimbEncoder() {
-        return encoder.getPosition();
-    }
-
     public void toggleLock() {
         if(piston.get().equals(DoubleSolenoid.Value.kForward)) {
             piston.set(DoubleSolenoid.Value.kReverse);
@@ -67,16 +64,20 @@ public class ClimbSubsystem extends SubsystemBase {
         }
     }
 
+    public int getClimbEncoderPosition() {
+        return encoder.getEncoderPosition();
+    }
+
     @Override
     public void periodic() {
         updateSDashboard();
-        SmartDashboard.putNumber("Climb LEVEL Speed", getClimbLevelSpeed());
-        SmartDashboard.putNumber("Climb Speed", getClimbSpeed());
     }
 
     private void updateSDashboard(){
+        SmartDashboard.putNumber("Climb LEVEL Speed", getClimbLevelSpeed());
+        SmartDashboard.putNumber("Climb Speed", getClimbSpeed());
         SmartDashboard.putNumber("[Climb] Climb Current", getClimbCurrent());
-        SmartDashboard.putNumber("[Climb] Climb Neo Encoder", getClimbEncoder());
+        SmartDashboard.putNumber("[Climb] Climb Encoder", getClimbEncoderPosition());
     }
 
 }
