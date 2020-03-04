@@ -74,7 +74,7 @@ public class RobotContainer {
     // CONTROLLERS
     joshuaAndrewCadavos = new DriverController(RobotMap.Controller.DRIVER);
     anthonyAttikian = new OperatorController(RobotMap.Controller.OPERATOR);
-    // ryanDick = new TestController(RobotMap.Controller.TEST);
+    ryanDick = new TestController(RobotMap.Controller.TEST);
 
     // DRIVE
     s_drive = new DriveSubsystem();

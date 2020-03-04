@@ -3,6 +3,7 @@ package frc.robot.oi;
 import frc.robot.constants.JoystickMap.AxisMap;
 import frc.robot.constants.JoystickMap.ButtonMap;
 import frc.robot.constants.JoystickMap.POVMap;
+import frc.robot.constants.JoystickMap;
 import frc.robot.constants.RobotConst;
 
 /**
@@ -58,7 +59,7 @@ public class OperatorController extends Controller {
     }
 
     public boolean isPressingA() {
-        return getButton(ButtonMap.BUTTON_A);
+        return getButtonPressed(ButtonMap.BUTTON_A);
     }
 
     /**
@@ -87,7 +88,7 @@ public class OperatorController extends Controller {
     }
 
     public boolean isPOVRight() {
-        return getPOV() == POVMap.POV_WEST;
+        return getPOV() == POVMap.POV_EAST;
     }
 
     public boolean isFlyWheelRun() {

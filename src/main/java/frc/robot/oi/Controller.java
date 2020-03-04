@@ -18,6 +18,10 @@ public abstract class Controller {
         return joystick.getRawButton(button.getPortNum());
     }
 
+    public boolean getButtonPressed(ButtonMap button) {
+        return joystick.getRawButtonPressed(button.getPortNum());
+    }
+
     public double getAxis(AxisMap axis) {
         return joystick.getRawAxis(axis.getPort());
     }
