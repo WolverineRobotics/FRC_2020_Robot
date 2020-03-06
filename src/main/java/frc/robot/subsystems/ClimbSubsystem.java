@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,13 +18,13 @@ import frc.robot.util.RevAbsoluteEncoder;
 public class ClimbSubsystem extends SubsystemBase {
 
     private CANSparkMax climb;
-    private RevAbsoluteEncoder encoder;
+    private DutyCycleEncoder encoder;
     private TalonSRX climb_level;
     private DoubleSolenoid piston;
 
     public ClimbSubsystem() {
         climb = new CANSparkMax(RobotMap.SpeedController.CLIMB, MotorType.kBrushless);
-        encoder = new RevAbsoluteEncoder(7);
+        encoder = new DutyCycleEncoder(7);
         climb_level = new TalonSRX(RobotMap.SpeedController.CLIMB_LEVEL);
         piston = new DoubleSolenoid(RobotMap.Pneumatic.PCM, RobotMap.Pneumatic.CLIMB_LOCK_FORWARD, RobotMap.Pneumatic.CLIMB_LOCK_REVERSE);
     }
@@ -64,20 +65,26 @@ public class ClimbSubsystem extends SubsystemBase {
         }
     }
 
-    public int getClimbEncoderPosition() {
-        return encoder.getEncoderPosition();
+    public double getClimbEncoderPosition() {
+        return encoder.get();
+    }
+
+    public double getClimbEncoderDistance() {
+        return encoder.getDistance();
     }
 
     @Override
     public void periodic() {
         updateSDashboard();
+
     }
 
     private void updateSDashboard(){
         SmartDashboard.putNumber("Climb LEVEL Speed", getClimbLevelSpeed());
         SmartDashboard.putNumber("Climb Speed", getClimbSpeed());
         SmartDashboard.putNumber("[Climb] Climb Current", getClimbCurrent());
-        SmartDashboard.putNumber("[Climb] Climb Encoder", getClimbEncoderPosition());
+        SmartDashboard.putNumber("[Climb] Climb Encoder Position", getClimbEncoderPosition());
+        SmartDashboard.putNumber("[Climb] Climb Encoder Distance", getClimbEncoderDistance());
     }
 
 }
