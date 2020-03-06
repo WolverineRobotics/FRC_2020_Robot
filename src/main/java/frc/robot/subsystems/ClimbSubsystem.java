@@ -22,14 +22,32 @@ public class ClimbSubsystem extends SubsystemBase {
     private TalonSRX climb_level;
     private DoubleSolenoid piston;
 
+    private double CLIMB_ENCODER_MAX = 4;
+    private double CLIMB_UPPER_SOFT_LIMIT = 3.6;
+    private double CLIMB_LOCK_ENCODER_COUNT = 0.8;
+    private double CLIMB_ENCODER_SOFT_MIN = 0.7;
+    private double CLIMB_ENCODER_MIN = 0.43;
+    private double SPEED_SOFT_REDUCTION = 0.5;
+    // private double GREATER_THAN_ENABLE_COUNT 
+
     public ClimbSubsystem() {
         climb = new CANSparkMax(RobotMap.SpeedController.CLIMB, MotorType.kBrushless);
-        encoder = new DutyCycleEncoder(7);
+        encoder = new DutyCycleEncoder(6);
         climb_level = new TalonSRX(RobotMap.SpeedController.CLIMB_LEVEL);
         piston = new DoubleSolenoid(RobotMap.Pneumatic.PCM, RobotMap.Pneumatic.CLIMB_LOCK_FORWARD, RobotMap.Pneumatic.CLIMB_LOCK_REVERSE);
     }
 
     public void setClimbSpeed(double speed) {
+        if(encoder.get() >= 4 && speed < 0){
+            speed = 0;
+        }else if(encoder.get() <= CLIMB_ENCODER_MIN && speed >=0){
+            speed = 0;
+        }else if(encoder.get() >= CLIMB_UPPER_SOFT_LIMIT && speed < 0){
+            speed *= SPEED_SOFT_REDUCTION;
+        }else if(encoder.get() <= CLIMB_ENCODER_SOFT_MIN && speed >=0){
+            speed *= SPEED_SOFT_REDUCTION;
+        }
+        
         climb.set(MathUtil.clamp(speed, -1, 1));
     }
 

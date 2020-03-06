@@ -60,6 +60,8 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
 
         SendableRegistry.add(pid_turn, "[Drive] - Command", "Rotate To Heading Profiled PID");
 
+        pid_turn.setGoal(headingGoal);
+
         // SendableRegistry.addLW(getController(), "Rotate to Heading Profiled PID");
     }
 
@@ -127,10 +129,12 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
 
     private DriveVoltage calculateFeedForwardVoltage(DifferentialDriveWheelSpeeds wheelSpeeds) {
 
-        double leftAcceleration = (wheelSpeeds.leftMetersPerSecond - previousWheelSpeeds.leftMetersPerSecond)
-                * TIME_PERIOD;
-        double rightAcceleration = (wheelSpeeds.rightMetersPerSecond - previousWheelSpeeds.rightMetersPerSecond)
-                * TIME_PERIOD;
+        // double leftAcceleration = (wheelSpeeds.leftMetersPerSecond - previousWheelSpeeds.leftMetersPerSecond)
+        //         * TIME_PERIOD;
+        // double rightAcceleration = (wheelSpeeds.rightMetersPerSecond - previousWheelSpeeds.rightMetersPerSecond)
+        //         * TIME_PERIOD;
+        double leftAcceleration= 0;
+        double rightAcceleration = 0;
 
         double leftFFVoltage = ff_drive.calculate(wheelSpeeds.leftMetersPerSecond, leftAcceleration);
         double rightFFVoltage = ff_drive.calculate(wheelSpeeds.rightMetersPerSecond, rightAcceleration);
@@ -169,7 +173,7 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
         updateSDashboard();
 
         System.out.println("Current Heading " + getCurrentAngle());
-        System.out.println("Current Goal " + getGoal());
+        System.out.println("Current Goal " + getGoal().position);
 
         System.out.println("Turn Setpoint Position " + turnSetpoint.position);
         System.out.println("Turn Setpoint Velocity " + turnSetpoint.velocity);

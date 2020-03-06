@@ -55,7 +55,7 @@ public class DefaultDriveCommand extends CommandBase {
         if (RobotContainer.getDriverController().getFineControl()) {
             // If fine control is active.
             speedReduction = DriveConst.DRIVE_SPEED_REDUCTION_RATIO_FINE;
-            s_drive.setDeadband(0);
+            s_drive.setDeadband(0.05);
         } else{
             s_drive.setDeadband(DriveConst.DRIVE_THORTTLE_TRIGGER_VALUE);
         }
