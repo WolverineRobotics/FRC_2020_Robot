@@ -8,29 +8,29 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.defaultcommands.DefaultCameraCommand;
 import frc.robot.commands.defaultcommands.DefaultClimbCommand;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
 import frc.robot.commands.defaultcommands.DefaultShooterCommand;
+import frc.robot.commands.drive.RotateToHeadingProfiledCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.commands.groups.AutonomousGroup;
 import frc.robot.commands.groups.ShootBallsCommand;
-import frc.robot.commands.intake.SetIntakeArmCommand;
-import frc.robot.commands.shootercommands.SetFlywheelShootCommand;
-import frc.robot.constants.RobotMap;
 import frc.robot.constants.JoystickMap.ButtonMap;
+import frc.robot.constants.RobotMap;
 import frc.robot.oi.DriverController;
 import frc.robot.oi.OperatorController;
 import frc.robot.oi.TestController;
+import frc.robot.subsystems.ArduinoSubsystem;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ArduinoSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
@@ -142,14 +142,20 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Placeholder command that finishes immediately
-    return new CommandBase() {
-      @Override
-      public boolean isFinished() {
-        return true;
-      }
+    // return new CommandBase() {
+    //   @Override
+    //   public boolean isFinished() {
+    //     return true;
+    //   }
+    return new RotateToHeadingProfiledCommand(s_drive, 180){
+        @Override
+        public boolean isFinished() {
+          return false;
+        }
+      };
     };
 
-  }
+
 
   public static DriverController getDriverController() {
     return joshuaAndrewCadavos;

@@ -29,10 +29,13 @@ public class DefaultShooterCommand extends CommandBase {
 
         if(oc.isFlywheelSetVoltage()){
             s_shooter.setFlywheelVoltage(11);
-        }else{
+        }
+        else if(oc.isShooter10V()){
+            s_shooter.setFlywheelVoltage(10);
+        }
+        else{
             s_shooter.setFlywheelSpeed(0);
         }
-
         double hood = oc.getRightStickY();
         if(Math.abs(hood) > 0.15) {
             s_shooter.setHoodSpeed(hood*0.2);

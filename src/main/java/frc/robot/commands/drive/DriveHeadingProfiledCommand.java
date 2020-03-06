@@ -179,10 +179,13 @@ public class DriveHeadingProfiledCommand extends CommandBase {
 
     private DriveVoltage calculateFeedForwardVoltage(DifferentialDriveWheelSpeeds wheelSpeeds) {
 
-        double leftAcceleration = (wheelSpeeds.leftMetersPerSecond - previousWheelSpeeds.leftMetersPerSecond)
-                * TIME_PERIOD;
-        double rightAcceleration = (wheelSpeeds.rightMetersPerSecond - previousWheelSpeeds.rightMetersPerSecond)
-                * TIME_PERIOD;
+        // double leftAcceleration = (wheelSpeeds.leftMetersPerSecond - previousWheelSpeeds.leftMetersPerSecond)
+        //         * TIME_PERIOD;
+        // double rightAcceleration = (wheelSpeeds.rightMetersPerSecond - previousWheelSpeeds.rightMetersPerSecond)
+        //         * TIME_PERIOD;
+
+        double leftAcceleration = 0;
+        double rightAcceleration = 0;
 
         double leftFFVoltage = ff_drive.calculate(wheelSpeeds.leftMetersPerSecond, leftAcceleration);
         double rightFFVoltage = ff_drive.calculate(wheelSpeeds.rightMetersPerSecond, rightAcceleration);
@@ -227,6 +230,15 @@ public class DriveHeadingProfiledCommand extends CommandBase {
         previousTurnLeftVelocity = m_kinematics.toWheelSpeeds(
                 new ChassisSpeeds(0, 0, Units.degreesToRadians(turnSetpoint.velocity))).leftMetersPerSecond;
         previousWheelSpeeds = wheelSpeeds;
+
+        System.out.println("Turn Power:"  +  turnPower);
+        System.out.println("Straight Power:"  +  straightPower);
+        System.out.println("Left PID Voltage" + pidVoltage.leftVoltage);
+        System.out.println("Right PID Voltage" + pidVoltage.rightVoltage);
+        System.out.println("Left FF Voltage" + ffVoltage.leftVoltage);
+        System.out.println("Right FF Voltage" + ffVoltage.rightVoltage);
+
+
 
         updateSDashboard();
     }
