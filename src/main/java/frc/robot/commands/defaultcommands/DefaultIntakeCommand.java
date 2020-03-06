@@ -83,24 +83,24 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setSpeeds(0, 0, 0, 0);
         }
 
-        boolean inverted;
-        if(tc.isInvert()) { //if holding right bumper to invert speeds
-            inverted = true;
-        } else {
-            inverted = false;
-        }
+        // boolean inverted;
+        // if(tc.isInvert()) { //if holding right bumper to invert speeds
+        //     inverted = true;
+        // } else {
+        //     inverted = false;
+        // }
 
-        if(tc.isFront()) {
-            s_intake.setEntrySpeed(inverted ? -.3 : .3);
-        } else if(tc.isCurve()) {
-            s_intake.setCurveSpeed(inverted ? -.3 : .3);
-        } else if(tc.isLowerVertical()) {
-            s_intake.setVerticalLowerSpeed(inverted ? -.3 : .3);
-        } else if(tc.isUpperVertical()) {
-            s_intake.setVerticalUpperSpeed(inverted ? -.3 : .3);
-        } else {
-            s_intake.setSpeeds(0, 0, 0, 0);
-        }
+        // if(tc.isFront()) {
+        //     s_intake.setEntrySpeed(inverted ? -.3 : .3);
+        // } else if(tc.isCurve()) {
+        //     s_intake.setCurveSpeed(inverted ? -.3 : .3);
+        // } else if(tc.isLowerVertical()) {
+        //     s_intake.setVerticalLowerSpeed(inverted ? -.3 : .3);
+        // } else if(tc.isUpperVertical()) {
+        //     s_intake.setVerticalUpperSpeed(inverted ? -.3 : .3);
+        // } else {
+        //     s_intake.setSpeeds(0, 0, 0, 0);
+        // }
     }
 
     /**
