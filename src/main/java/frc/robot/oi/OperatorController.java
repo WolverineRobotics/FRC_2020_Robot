@@ -108,7 +108,7 @@ public class OperatorController extends Controller {
     }
 
     public boolean isShooter10V(){
-        return getButton(ButtonMap.BUTTON_X);
+        return Math.abs(getAxis(AxisMap.LEFT_TRIGGER)) > 0.3;
     }
 
 }
