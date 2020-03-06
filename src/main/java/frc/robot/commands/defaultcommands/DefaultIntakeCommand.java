@@ -77,7 +77,7 @@ public class DefaultIntakeCommand extends CommandBase {
                 s_intake.moveBallsOneStage();
             }
         } else if(oc.isIntakeShootTopStageOnly()){
-            s_intake.setVerticalUpperSpeed(0.8);
+            s_intake.setVerticalUpperSpeed(0.95);
         } else {
             s_intake.setMoveBalls(false);
             s_intake.setSpeeds(0, 0, 0, 0);

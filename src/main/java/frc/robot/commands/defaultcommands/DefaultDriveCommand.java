@@ -92,7 +92,7 @@ public class DefaultDriveCommand extends CommandBase {
         if(USE_SLEW_LIMITER){
             throttle = calculateSlew(throttle);
         }
-
+// turn += .05;
         s_drive.arcadeDrive(throttle, turn);
     }
 

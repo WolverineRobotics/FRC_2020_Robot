@@ -29,7 +29,7 @@ public class SetFlywheelShootCommand extends CommandBase {
 
         // System.out.println("SET FLYWHEEL SHOOT COMMAND 11 VOLTS");
         // s_shooter.setFlywheelRPM(FLYWHEEL_SHOOT_RPM, FLYWHEEL_BASE_POWER);
-        s_shooter.setFlywheelVoltage(11);
+        s_shooter.setFlywheelVoltage(10.6);
     }
 
     @Override

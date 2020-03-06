@@ -73,11 +73,11 @@ public class RobotConst {
         public static final double DRIVE_FF_KD = 0;
 
         public static final double DRIVE_STRAIGHT_KP = 0.001;
-        public static final double DRIVE_STRAIGHT_KI = 0.0001;
+        public static final double DRIVE_STRAIGHT_KI = 0.00004;
         public static final double DRIVE_STRAIGHT_KD = 0.005;
 
         public static final double DRIVE_TURN_KP = 0.001;
-        public static final double DRIVE_TURN_KI = 0.0001;
+        public static final double DRIVE_TURN_KI = 0.00004;
         public static final double DRIVE_TURN_KD = 0.005;
 
         public static final double DRIVE_TURN_TOLERANCE_DEG = 0.4;

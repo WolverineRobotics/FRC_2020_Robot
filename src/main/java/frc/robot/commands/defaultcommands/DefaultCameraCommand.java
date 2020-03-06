@@ -34,6 +34,7 @@ public class DefaultCameraCommand extends CommandBase {
 
         if(dc.isLimelightLed()){
             c_camera.setLEDMode(CameraSubsystem.LEDMode.PIPELINE);
+
         } else {
             c_camera.setLEDMode(CameraSubsystem.LEDMode.OFF);
         }
