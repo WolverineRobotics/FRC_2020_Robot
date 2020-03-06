@@ -107,4 +107,8 @@ public class OperatorController extends Controller {
         return getPOV() == POVMap.POV_WEST;
     }
 
+    public boolean isShooter10V(){
+        return getButton(ButtonMap.BUTTON_X);
+    }
+
 }

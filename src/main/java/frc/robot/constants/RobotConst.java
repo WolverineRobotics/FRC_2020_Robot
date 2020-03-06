@@ -18,23 +18,23 @@ public class RobotConst {
         public static final double DRIVE_THORTTLE_TRIGGER_VALUE = 0.2;
 
         public class CharacterizationConst {
-            public static final double KS_VOLTS = 0;
-            public static final double KV_VOLT_SECONDS_PER_METER = 0;
-            public static final double KA_VOLT_SECONDS_SQUARED_PER_METER = 0;
+            public static final double KS_VOLTS = 0.16;
+            public static final double KV_VOLT_SECONDS_PER_METER = 2.16;
+            public static final double KA_VOLT_SECONDS_SQUARED_PER_METER = 0.319;
 
             public static final double K_P_DRIVE_VELOCITY = 0;
             /**
              * The distance between the two sets of wheels on the drivetrain, in meters.
              */
-            public static final double K_TRACKWIDTH_METERS = 0.7;
+            public static final double K_TRACKWIDTH_METERS = 1.297;
 
-            public static final double K_MAX_SPEED_METERS_PER_SECOND = 0;
-            public static final double K_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 0;
-            public static final double DRIVEPID_MAX_ERR_VELOCITY = 1;
-            public static final double DRIVEPID_MAX_ERR_ACCELERATION = 1;
+            public static final double K_MAX_SPEED_METERS_PER_SECOND = 4;
+            public static final double K_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 15;
+            public static final double DRIVEPID_MAX_ERR_VELOCITY = 0.06;
+            public static final double DRIVEPID_MAX_ERR_ACCELERATION = 0.2;
 
-            public static final double K_MAX_TURN_DEG_PER_SECOND = 0;
-            public static final double K_MAX_TURN_ACCEL_DEG_PER_SECOND_SQUARED = 0;
+            public static final double K_MAX_TURN_DEG_PER_SECOND = K_MAX_SPEED_METERS_PER_SECOND / (K_TRACKWIDTH_METERS/2*Math.PI)*360;
+            public static final double K_MAX_TURN_ACCEL_DEG_PER_SECOND_SQUARED = K_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED / (K_TRACKWIDTH_METERS/2*Math.PI)*360;
 
                 // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
             public static final double K_RAMSETE_B = 2;
@@ -72,13 +72,13 @@ public class RobotConst {
         public static final double DRIVE_FF_KI = 0;
         public static final double DRIVE_FF_KD = 0;
 
-        public static final double DRIVE_STRAIGHT_KP = 0;
-        public static final double DRIVE_STRAIGHT_KI = 0;
-        public static final double DRIVE_STRAIGHT_KD = 0;
+        public static final double DRIVE_STRAIGHT_KP = 0.001;
+        public static final double DRIVE_STRAIGHT_KI = 0.0001;
+        public static final double DRIVE_STRAIGHT_KD = 0.005;
 
-        public static final double DRIVE_TURN_KP = 0;
-        public static final double DRIVE_TURN_KI = 0;
-        public static final double DRIVE_TURN_KD = 0;
+        public static final double DRIVE_TURN_KP = 0.001;
+        public static final double DRIVE_TURN_KI = 0.0001;
+        public static final double DRIVE_TURN_KD = 0.005;
 
         public static final double DRIVE_TURN_TOLERANCE_DEG = 0.4;
         public static final double DRIVE_TURN_TOLERANCE_DEG_PER_SECOND = 0.4;

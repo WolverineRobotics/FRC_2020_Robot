@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArduinoSubsystem extends SubsystemBase {
@@ -53,6 +54,14 @@ public class ArduinoSubsystem extends SubsystemBase {
 
     public int getInvalidMeasurementCount() {
         return invalidMeasurementCounter;
+    }
+
+    public double getDistanceIN(){
+        int distanceCM = getDistanceCM();
+        if(distanceCM == -1){
+            return -1;
+        }
+        return Units.metersToInches(distanceCM/100);
     }
 
     @Override
@@ -118,6 +127,8 @@ public class ArduinoSubsystem extends SubsystemBase {
 
     private void updateDashboard() {
         SmartDashboard.putNumber("[Arduino] Lidar Distance Cm", distanceCm);
+        SmartDashboard.putNumber("[Arduino] Lidar Distance In", getDistanceIN());
+
         // SmartDashboard.putString("[Arduino] Raw", raw);
     }
 

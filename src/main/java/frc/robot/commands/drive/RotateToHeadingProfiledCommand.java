@@ -33,7 +33,7 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
     private double kI = PIDConst.DRIVE_TURN_KI;
     private double kD = PIDConst.DRIVE_TURN_KD;
 
-    private double maxVoltage = 10;
+    private double maxVoltage = 9;
 
     private TrapezoidProfile.Constraints constraints;
 
@@ -167,6 +167,17 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
 
         // SmartDashboard.putData(getController());
         updateSDashboard();
+
+        System.out.println("Current Heading " + getCurrentAngle());
+        System.out.println("Current Goal " + getGoal());
+
+        System.out.println("Turn Setpoint Position " + turnSetpoint.position);
+        System.out.println("Turn Setpoint Velocity " + turnSetpoint.velocity);
+        System.out.println("Left PID Voltage " + pidVoltage.leftVoltage);
+        System.out.println("Left FF Voltage " + ffVoltage.leftVoltage);
+        System.out.println("Left Wheel Speeds (m/s) " + wheelSpeeds.leftMetersPerSecond);
+
+
     }
 
     @Override
