@@ -375,24 +375,12 @@ public class IntakeSubsystem extends SubsystemBase {
      * which will then cause a jam. To stop this from happening, the balls are never re-evaluated.
      */
     public void moveBallsOneStage() {
-        Map<Ball, Position> evaluated = new HashMap<>();
-        boolean willEvaluate = true;
         for(Ball b : mag) {
             Position currentPos = b.getCurrentPosition();
             Position nextPos = Position.getIntLocationAfter(currentPos);
             if(nextPos != null) {
-                evaluated.put(b, nextPos);
-            } else {
-                willEvaluate = false;
-                break;
-            }
-        }   
-        if(willEvaluate) {
-            for(Map.Entry<Ball, Position> entry : evaluated.entrySet()) {
-                Ball b = entry.getKey();
-                Position evaluatedPos = entry.getValue();
-                System.out.println("Moving Ball from " + b.getCurrentPosition().toString() + " to " + evaluatedPos.toString());
-                b.setDestination(evaluatedPos);
+                System.out.println("Moving Ball from " + b.getCurrentPosition().toString() + " to " + nextPos.toString());
+                b.setDestination(nextPos);
             }
         }
     }

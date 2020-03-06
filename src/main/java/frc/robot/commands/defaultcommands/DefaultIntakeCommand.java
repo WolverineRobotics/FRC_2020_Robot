@@ -98,6 +98,8 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setVerticalLowerSpeed(inverted ? -.3 : .3);
         } else if(tc.isUpperVertical()) {
             s_intake.setVerticalUpperSpeed(inverted ? -.3 : .3);
+        } else {
+            s_intake.setSpeeds(0, 0, 0, 0);
         }
     }
 
