@@ -78,7 +78,7 @@ public class OperatorController extends Controller {
     }
 
     public boolean isPOVUp() {
-        var currentPov = getPOV();
+        POVMap currentPov = getPOV();
         return (currentPov == POVMap.POV_NORTH || currentPov == POVMap.POV_NORTH_EAST
                 || currentPov == POVMap.POV_NORTH_WEST);
     }
