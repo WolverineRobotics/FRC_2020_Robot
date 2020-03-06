@@ -51,6 +51,8 @@ public class CameraSubsystem extends SubsystemBase {
 
         pipelineLatency = nt.getEntry("tl"); // The pipeline’s latency contribution (ms) Add at least 11ms for image
                                              // capture latency.
+        
+        setLEDMode(LEDMode.OFF);                                     
     }
 
     // ========================================================================
