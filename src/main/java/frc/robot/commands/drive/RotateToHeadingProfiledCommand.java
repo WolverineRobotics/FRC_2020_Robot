@@ -63,7 +63,7 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
 
         SendableRegistry.add(pid_turn, "[Drive] - Command", "Rotate To Heading Profiled PID");
 
-        // pid_turn.setGoal(headingGoal);
+        pid_turn.setSetpoint(headingGoal);
         // pid_turn.reset(new State(getCurrentAngle(), 0));
 
         // SendableRegistry.addLW(getController(), "Rotate to Heading Profiled PID");

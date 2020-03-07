@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
@@ -39,6 +40,8 @@ public class ShooterSubsystem extends SubsystemBase {
         hood = new TalonSRX(RobotMap.SHOOTER_HOOD_MOTOR_ADDRESS);
         hoodEncoder = new RevAbsoluteEncoder(RobotMap.SHOOTER_HOOD_ENCODER_ADDRESS,
                 ShooterConst.HOOD_ENCODER_ZERO_POSITION);
+                
+        flywheel.setIdleMode(IdleMode.kCoast);
 
     }
 

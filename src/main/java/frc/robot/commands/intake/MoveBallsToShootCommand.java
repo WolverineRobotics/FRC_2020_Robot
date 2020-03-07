@@ -3,6 +3,9 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.RobotConst.IntakeConst;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeSubsystem.Position;
+import frc.robot.subsystems.IntakeSubsystem.Ball;
+
 
 public class MoveBallsToShootCommand extends CommandBase {
 
@@ -14,6 +17,8 @@ public class MoveBallsToShootCommand extends CommandBase {
         super();
         s_intake = subsystem;
         addRequirements(subsystem);
+        s_intake.initAuto();
+
     }
 
     @Override
@@ -52,7 +57,9 @@ public class MoveBallsToShootCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        System.out.println("NUM OF BALLS: " + s_intake.getAmountOfBalls());
         return (s_intake.getAmountOfBalls() == 0);
+        // return false;
     }
 
     @Override

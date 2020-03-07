@@ -243,6 +243,21 @@ public class IntakeSubsystem extends SubsystemBase {
                 .clamp(verticalUpperSpeed * RobotConst.IntakeConst.UPPER_VERTICAL_SPEED_REDUCTION_RATIO, -1, 1));
     }
 
+    public void initAuto() {
+        Ball ball1 = new Ball(Position.FIVE);
+        ball1.setPosition(ball1.getDestination());
+
+        Ball ball2 = new Ball(Position.FOUR);
+        ball2.setPosition(ball2.getDestination());
+
+        Ball ball3 = new Ball(Position.THREE);
+        ball3.setPosition(ball3.getDestination());
+
+        mag.add(ball1);
+        mag.add(ball2);
+        mag.add(ball3);
+    }
+    
     /**
      * @return true if sensor 1 is activated (entry sensor of the entry intake)
      */

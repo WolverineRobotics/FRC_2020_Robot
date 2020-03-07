@@ -22,6 +22,7 @@ public class SetFlywheelShootCommand extends CommandBase {
         super();
         s_shooter = subsystem;
         addRequirements(s_shooter);
+        
     }
 
     @Override
@@ -34,6 +35,12 @@ public class SetFlywheelShootCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        System.out.print("SET FLYWHEEL SHOOT FINISHED: ");
+        if(finished){
+            System.out.println("True");
+        }else{
+            System.out.println("False");
+        }
         return finished;
     }
 

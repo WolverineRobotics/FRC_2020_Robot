@@ -156,6 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
         rightPid = new DriveFeedForwardPID();
 
         pigeon.setYaw(0);
+        pigeon.setFusedHeading(0);
 
         gyroToRotate = new GyroToRotate(CharacterizationConst.K_TRACKWIDTH_METERS);
 
