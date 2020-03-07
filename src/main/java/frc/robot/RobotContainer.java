@@ -22,6 +22,7 @@ import frc.robot.commands.drive.DriveFowardCommand;
 import frc.robot.commands.drive.RotateToHeadingProfiledCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.commands.groups.AutonomousGroup;
+import frc.robot.commands.groups.RightAutoGroup;
 import frc.robot.commands.groups.ShootBallsCommand;
 import frc.robot.constants.JoystickMap.ButtonMap;
 import frc.robot.constants.RobotMap;
@@ -150,9 +151,7 @@ public class RobotContainer {
     // return true;
     // }
 
-    return new SequentialCommandGroup(new RotateToHeadingProfiledCommand(s_drive, 30),
-        new ShootBallsCommand(s_intake, s_shooter), new RotateToHeadingProfiledCommand(s_drive, 180),
-        new DriveFowardCommand(s_drive, 0.4, 1));
+    return new RightAutoGroup(s_drive, s_intake, s_shooter);
 
         // return new RotateToHeadingProfiledCommand(s_drive, 330-180);
 
