@@ -35,6 +35,8 @@ public class ClimbSubsystem extends SubsystemBase {
         encoder = new DutyCycleEncoder(RobotMap.CLIMB_ENCODER);
         climb_level = new TalonSRX(RobotMap.SpeedController.CLIMB_LEVEL);
         piston = new DoubleSolenoid(RobotMap.Pneumatic.PCM, RobotMap.Pneumatic.CLIMB_LOCK_FORWARD, RobotMap.Pneumatic.CLIMB_LOCK_REVERSE);
+
+        setLock(false);
     }
 
     public void setClimbSpeed(double speed) {
@@ -49,12 +51,15 @@ public class ClimbSubsystem extends SubsystemBase {
             speed *= SPEED_SOFT_REDUCTION;
         }
 
-        // UNCOMMENT WHEN READY TO TEST 
-        // if(speed >= 0 && encoderPos <= CLIMB_LOCK_ENCODER_COUNT) { //if speed go down and encoder at lock 
-        //     setLock(true);
-        // }
+        if(speed > 0 && encoderPos <= CLIMB_LOCK_ENCODER_COUNT) { //if speed go down and encoder at lock 
+            setLock(true);
+        }
         
-        climb.set(MathUtil.clamp(speed, -1, 1));
+        if(!isClimbLockEngaged()) {
+            climb.set(MathUtil.clamp(speed, -1, 1));
+        } else {
+            climb.set(0);
+        }
     }
 
     public double getClimbSpeed() {
@@ -71,6 +76,14 @@ public class ClimbSubsystem extends SubsystemBase {
 
     public double getClimbCurrent(){
         return climb.getOutputCurrent();
+    }
+
+    public boolean isClimbLockEngaged() {
+        DoubleSolenoid.Value val = piston.get();
+        if(val == Value.kForward) {
+            return true;
+        }
+        return false;
     }
 
     public void toggleLock() {

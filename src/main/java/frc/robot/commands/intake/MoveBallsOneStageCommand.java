@@ -22,6 +22,7 @@ public class MoveBallsOneStageCommand extends CommandBase {
 
     @Override
     public void execute() {
+
         s_intake.setMoveBalls(true);
     }
 

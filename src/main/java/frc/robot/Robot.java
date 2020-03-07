@@ -95,6 +95,8 @@ public class Robot extends TimedRobot {
     if (c_autonomous != null) {
       c_autonomous.cancel();
     }
+
+    robotContainer.getClimbSubsystem().setLock(false);
   }
 
   /**

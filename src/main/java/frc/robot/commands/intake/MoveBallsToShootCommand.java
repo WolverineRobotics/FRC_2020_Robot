@@ -11,39 +11,25 @@ public class MoveBallsToShootCommand extends CommandBase {
 
     private IntakeSubsystem s_intake;
     private boolean flywheelReady = false;
-    private boolean previous = false;
 
-    public MoveBallsToShootCommand(IntakeSubsystem subsystem) {
+    public MoveBallsToShootCommand(IntakeSubsystem s_intake) {
         super();
-        s_intake = subsystem;
-        addRequirements(subsystem);
+        this.s_intake = s_intake;
+        addRequirements(s_intake);
         s_intake.initAuto();
-
     }
 
     @Override
     public void execute() {
-        if (!s_intake.isSensorFiveActivated()) {
+        if (isBallAtPositionFive()) {
             // No ball in top position
             s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED,
                     IntakeConst.UPPER_VERTICAL_SPEED);
-            flywheelReady = false;    
-            // if(previous){
-            //     List<Ball> mag = s_intake.mag;
-            //     if(mag.size() > 1) {
-            //         mag.remove(0);
-            //         s_intake.moveBallsOneStage();
-            //     }
-            //     previous = false;
-            // } 
-            // s_intake.moveBallsOneStage();   
+            flywheelReady = false; 
         } else {
-            previous = true;
             // Ball in top position,
             if (flywheelReady) {
-                // // Flywheel ready, shoot balls
-                // s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED,
-                //         0.8);
+                // Flywheel ready, shoot balls
                 s_intake.setSpeeds(0, 0, 0, 0.9);
             } else {
                 s_intake.setSpeeds(0, 0, 0, 0);
@@ -65,5 +51,14 @@ public class MoveBallsToShootCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         s_intake.setSpeeds(0, 0, 0, 0);
+    }
+
+    private boolean isBallAtPositionFive() {
+        for(Ball b : s_intake.mag) {
+            if(b.getCurrentPosition() == Position.FIVE) {
+                return true;
+            }
+        }
+        return false;
     }
 }

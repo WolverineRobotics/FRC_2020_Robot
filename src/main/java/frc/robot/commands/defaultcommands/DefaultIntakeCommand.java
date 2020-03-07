@@ -2,8 +2,10 @@ package frc.robot.commands.defaultcommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
+import frc.robot.commands.intake.MoveBallsOneStageCommand;
 import frc.robot.oi.OperatorController;
 import frc.robot.oi.TestController;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -70,8 +72,8 @@ public class DefaultIntakeCommand extends CommandBase {
             s_intake.setVerticalUpperSpeed(1);
         } else if(oc.isPressingA()) { //move front piston
             s_intake.toggleIntakePiston();
-        } else if(oc.isPressingX()) {
-            
+        // } else if(oc.isPressingX()) {
+
         } else {
             s_intake.setMoveBalls(false);
             s_intake.setSpeeds(0, 0, 0, 0);
