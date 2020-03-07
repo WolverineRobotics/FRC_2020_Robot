@@ -36,12 +36,6 @@ public class DefaultShooterCommand extends CommandBase {
         else{
             s_shooter.setFlywheelSpeed(0);
         }
-        double hood = oc.getRightStickY();
-        if(Math.abs(hood) > 0.15) {
-            s_shooter.setHoodSpeed(hood*0.2);
-        } else {
-            s_shooter.setHoodSpeed(0);
-        }
     }
 
     @Override
