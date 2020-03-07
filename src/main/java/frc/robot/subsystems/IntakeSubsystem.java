@@ -664,6 +664,7 @@ public class IntakeSubsystem extends SubsystemBase {
         for (int i = 0; i < sen.length; i++) {
             SmartDashboard.putBoolean("Sensor " + (i + 1), sen[i]);
         }
+        SmartDashboard.putBoolean("Sensor 6", isSensorSixActivated());
 
         // display all of the ball object data
         for (int i = 0; i < mag.size(); i++) {
