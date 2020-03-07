@@ -247,7 +247,7 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
     }
 
     // private ProfiledPIDController getController() {
-        private PIDController getController() {
+        protected PIDController getController() {
 
         return this.pid_turn;
     }
