@@ -11,12 +11,15 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.defaultcommands.DefaultCameraCommand;
 import frc.robot.commands.defaultcommands.DefaultClimbCommand;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
 import frc.robot.commands.defaultcommands.DefaultShooterCommand;
+import frc.robot.commands.drive.DriveFowardCommand;
 import frc.robot.commands.drive.RotateToHeadingProfiledCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.commands.groups.AutonomousGroup;
@@ -127,7 +130,7 @@ public class RobotContainer {
     // joshuaAndrewCadavos.getButtonObject(ButtonMap.BUTTON_LEFT_BUMPER)
     // .whileActiveContinuous(new SetFlywheelShootCommand(s_shooter));
     anthonyAttikian.getButtonObject(ButtonMap.BUTTON_RIGHT_BUMPER)
-        .whileActiveContinuous(new ShootBallsCommand(s_intake, s_shooter){
+        .whileActiveContinuous(new ShootBallsCommand(s_intake, s_shooter) {
           @Override
           public boolean isFinished() {
             return false;
@@ -143,19 +146,25 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // Placeholder command that finishes immediately
     // return new CommandBase() {
-    //   @Override
-    //   public boolean isFinished() {
-    //     return true;
-    //   }
-    return new RotateToHeadingProfiledCommand(s_drive, 180){
-        @Override
-        public boolean isFinished() {
-          return false;
-        }
-      };
-    };
+    // @Override
+    // public boolean isFinished() {
+    // return true;
+    // }
 
+    // return new SequentialCommandGroup(new RotateToHeadingProfiledCommand(s_drive, 180));
+        // new ShootBallsCommand(s_intake, s_shooter), new RotateToHeadingProfiledCommand(s_drive, 180),
+        // new DriveFowardCommand(s_drive, 0.4, 3));
 
+        return new RotateToHeadingProfiledCommand(s_drive, 180);
+
+    // return new CommandBase(){
+    // @Override
+    // public boolean isFinished() {
+    // // TODO Auto-generated method stub
+    // return super.isFinished();
+    // }
+    // };
+  }
 
   public static DriverController getDriverController() {
     return joshuaAndrewCadavos;

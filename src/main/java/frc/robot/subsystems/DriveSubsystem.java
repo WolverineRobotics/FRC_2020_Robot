@@ -135,8 +135,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         rightEncoder.setReverseDirection(true);
 
-        // leftEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
-        // rightEncoder.setDistancePerPulse(DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
+        leftEncoder.setDistancePerPulse(1/DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
+        rightEncoder.setDistancePerPulse(1/DriveConst.DRIVE_ENCODER_COUNTS_PER_METER);
 
         // gearShifter = new DoubleSolenoid(Pneumatic.DRIVE_HIGH_GEAR_ADDRESS, Pneumatic.DRIVE_LOW_GEAR_ADDRESS);
 
@@ -154,6 +154,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         leftPid = new DriveFeedForwardPID();
         rightPid = new DriveFeedForwardPID();
+
+        pigeon.setYaw(0);
 
         gyroToRotate = new GyroToRotate(CharacterizationConst.K_TRACKWIDTH_METERS);
 
@@ -174,7 +176,7 @@ public class DriveSubsystem extends SubsystemBase {
     // }
 
     public void setLeftSpeed(double speed) {
-        leftGroup.set(speed);
+        leftGroup.set(-speed);
     }
 
     public void setRightSpeed(double speed) {
@@ -198,7 +200,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void setRightVoltage(double volts) {
         volts = MathUtil.clamp(volts, -DriveConst.DRIVE_MAX_VOLTAGE, DriveConst.DRIVE_MAX_VOLTAGE);
-        rightGroup.setVoltage(volts);
+        rightGroup.setVoltage(-volts);
     }
 
     public void setVoltage(double leftVolts, double rightVolts) {
