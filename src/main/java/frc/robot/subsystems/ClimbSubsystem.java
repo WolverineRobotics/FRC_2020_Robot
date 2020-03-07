@@ -38,15 +38,21 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public void setClimbSpeed(double speed) {
-        if(encoder.get() >= CLIMB_ENCODER_MAX && speed < 0) { // if climb go up and encoder is over soft limit
+        double encoderPos = getClimbEncoderPosition();
+        if(encoderPos >= CLIMB_ENCODER_MAX && speed < 0) { // if climb go up and encoder is over soft limit
             speed = 0;
-        } else if(encoder.get() <= CLIMB_ENCODER_MIN && speed >=0){ // if climb go down and encoder is below soft limit
+        } else if(encoderPos <= CLIMB_ENCODER_MIN && speed >=0){ // if climb go down and encoder is below soft limit
             speed = 0;
-        } else if(encoder.get() >= CLIMB_UPPER_SOFT_LIMIT && speed < 0){ //if climb encoder above soft limit and speed is down
+        } else if(encoderPos >= CLIMB_UPPER_SOFT_LIMIT && speed < 0){ // if climb encoder above soft limit and speed is down
             speed *= SPEED_SOFT_REDUCTION;
-        } else if(encoder.get() <= CLIMB_ENCODER_SOFT_MIN && speed >=0){ //if climb encoder below soft limit and speed is up
+        } else if(encoderPos <= CLIMB_ENCODER_SOFT_MIN && speed >=0){ // if climb encoder below soft limit and speed is up
             speed *= SPEED_SOFT_REDUCTION;
         }
+
+        // UNCOMMENT WHEN READY TO TEST 
+        // if(speed >= 0 && encoderPos <= CLIMB_LOCK_ENCODER_COUNT) { //if speed go down and encoder at lock 
+        //     setLock(true);
+        // }
         
         climb.set(MathUtil.clamp(speed, -1, 1));
     }
