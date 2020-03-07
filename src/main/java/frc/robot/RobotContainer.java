@@ -153,7 +153,7 @@ public class RobotContainer {
     // return true;
     // }
 
-    return new RightAutoGroup(s_drive, s_intake, s_shooter);
+    return new RightAutoGroup(s_drive, s_intake, s_shooter, s_camera);
 
         // return new RotateToHeadingProfiledCommand(s_drive, 330-180);
 

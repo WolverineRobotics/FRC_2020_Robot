@@ -249,11 +249,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double getLeftVoltage() {
-        return (leftMaster.getAppliedOutput() * leftMaster.getBusVoltage());
+        return (leftMaster.getAppliedOutput() * leftMaster.getBusVoltage()) +  (leftSlave1.getAppliedOutput()*leftSlave1.getBusVoltage()) + (leftSlave2.getAppliedOutput()*leftSlave2.getBusVoltage());
     }
 
     public double getRightVoltage() {
-        return (rightMaster.getAppliedOutput() * rightMaster.getBusVoltage());
+        return (rightMaster.getAppliedOutput() * rightMaster.getBusVoltage() + (rightSlave1.getAppliedOutput()*rightSlave1.getBusVoltage()) + (rightSlave2.getAppliedOutput()*rightSlave2.getBusVoltage()));
     }
 
     /**
@@ -261,7 +261,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the average current of the 3 motors on the left side
      */
     public double getLeftCurent() {
-        return (leftMaster.getOutputCurrent() + leftSlave1.getOutputCurrent() + leftSlave2.getOutputCurrent()) / 3;
+        return (leftMaster.getOutputCurrent() + leftSlave1.getOutputCurrent() + leftSlave2.getOutputCurrent());
     }
 
     /**
@@ -269,7 +269,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the average current of the 3 motors on the right side.
      */
     public double getRightCurent() {
-        return (rightMaster.getOutputCurrent() + rightSlave1.getOutputCurrent() + rightSlave2.getOutputCurrent()) / 3;
+        return (rightMaster.getOutputCurrent() + rightSlave1.getOutputCurrent() + rightSlave2.getOutputCurrent());
     }
 
     /**
