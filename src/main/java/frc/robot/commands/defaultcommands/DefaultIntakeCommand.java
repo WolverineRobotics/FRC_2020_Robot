@@ -71,13 +71,7 @@ public class DefaultIntakeCommand extends CommandBase {
         } else if(oc.isPressingA()) { //move front piston
             s_intake.toggleIntakePiston();
         } else if(oc.isPressingX()) {
-            // List<Ball> mag = s_intake.mag;
-            // if(mag.size() > 1) {
-            //     mag.remove(0);
-            //     s_intake.moveBallsOneStage();
-            // }
-        } else if(oc.isIntakeShootTopStageOnly()){
-            // s_intake.setVerticalUpperSpeed(0.8);
+            
         } else {
             s_intake.setMoveBalls(false);
             s_intake.setSpeeds(0, 0, 0, 0);
