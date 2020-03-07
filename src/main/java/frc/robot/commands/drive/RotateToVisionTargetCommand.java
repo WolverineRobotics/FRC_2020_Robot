@@ -4,17 +4,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotConst.DriveConst;
+import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.exceptions.NTNullEntryException;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.CameraSubsystem.CameraMode;
 import frc.robot.subsystems.CameraSubsystem.LEDMode;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class RotateToVisionTargetCommand extends CommandBase {
+public class RotateToVisionTargetCommand extends RotateToHeadingProfiledCommand {
     private final CameraSubsystem s_camera;
     private final DriveSubsystem s_drive;
     // private final MedianPercentileFilter xMedianFilter;
     // private final MedianPercentileFilter yMedianFilter;
+
+    private double kP = PIDConst.DRIVE_TURN_KP;
+    private double kI = PIDConst.DRIVE_TURN_KI;
+    private double kD = PIDConst.DRIVE_TURN_KD;
 
 
     // private final int MEDIAN_FILTER_ENTRIES = 10;
@@ -37,14 +42,14 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
     private boolean finished = false;
 
-    private double kP = 0.04;
 
     public RotateToVisionTargetCommand(CameraSubsystem cameraSubsystem, DriveSubsystem driveSubsystem) {
         // System.out.println("STARTING ROTATE TO VISION TARGET COMMAND =============================");
+        super(driveSubsystem, 0);
         s_camera = cameraSubsystem;
         s_drive = driveSubsystem;
         addRequirements(cameraSubsystem);
-        addRequirements(driveSubsystem);
+        // addRequirements(driveSubsystem);
         
         // xMedianFilter = new MedianPercentileFilter(MEDIAN_FILTER_ENTRIES);
         // yMedianFilter = new MedianPercentileFilter(MEDIAN_FILTER_ENTRIES);
@@ -53,52 +58,65 @@ public class RotateToVisionTargetCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        super.initialize();
         s_camera.setLEDMode(LEDMode.ON);
         s_camera.setCameraMode(CameraMode.VISION);
+        getController().setSetpoint(0);
+        getController().setPID(kP, kI, kD);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-        // System.out.println("ROTATE TO VISION TARGET COMMAND");
-        try {
-            double xDegOff = s_camera.getXDegOff();
-            double yDegOff = s_camera.getYDegOff();
+    // @Override
+    // public void execute() {
+    //     // System.out.println("ROTATE TO VISION TARGET COMMAND");
+    //     try {
+    //         double xDegOff = s_camera.getXDegOff();
+    //         // double yDegOff = s_camera.getYDegOff();
 
-            // Test if target is within acceptable y values. If not, mark and return.
-            // if (yDegOff < Y_VALUE_CUTOFF) {
-            //     noValidTargetFound(true);
-            //     return;
-            // }
+    //         // Test if target is within acceptable y values. If not, mark and return.
+    //         // if (yDegOff < Y_VALUE_CUTOFF) {
+    //         //     noValidTargetFound(true);
+    //         //     return;
+    //         // }
 
-            // double xGyroHeading = Util.addGyroValues(xDegOff, s_drive.getPigeonHeading());
+    //         // double xGyroHeading = Util.addGyroValues(xDegOff, s_drive.getPigeonHeading());
 
-            // double xMedian, yMedian;
+    //         // double xMedian, yMedian;
 
-            // xMedian = xMedianFilter.calculate(xGyroHeading);
-            // yMedian = yMedianFilter.calculate(yDegOff);
+    //         // xMedian = xMedianFilter.calculate(xGyroHeading);
+    //         // yMedian = yMedianFilter.calculate(yDegOff);
 
-            // xMedian = xDegOff;
-            // yMedian = yDegOff;
+    //         // xMedian = xDegOff;
+    //         // yMedian = yDegOff;
 
-            // Pass xMedian to gyro PID
+    //         // Pass xMedian to gyro PID
 
-            // s_drive.rotateGyroAngle(xMedian);
+    //         // s_drive.rotateGyroAngle(xMedian);
             
-            // double angleDifferance = Util.subtractGyroValues(xMedian, s_drive.getPigeonHeading());
-            double angleDifferance = xDegOff;
+    //         // double angleDifferance = Util.subtractGyroValues(xMedian, s_drive.getPigeonHeading());
+    //         double angleDifferance = xDegOff;
 
-            double pGain = calculatePGain(angleDifferance);
-            pGain += 0.068 * Math.signum(pGain);
-            pGain = MathUtil.clamp(pGain, -.4, .4);
+    //         // double pGain = calculatePGain(angleDifferance);
+    //         // pGain += 0.068 * Math.signum(pGain);
+    //         // pGain = MathUtil.clamp(pGain, -.4, .4);
 
-            s_drive.arcadeDrive(0, - pGain, false);
+    //         // s_drive.arcadeDrive(0, - pGain, false);
 
-        } catch (NTNullEntryException exception) {
-            System.out.println(exception.getMessage());
-            noValidTargetFound(false);
+    //     } catch (NTNullEntryException exception) {
+    //         System.out.println(exception.getMessage());
+    //         noValidTargetFound(false);
+    //     }
+
+    // }
+
+    @Override
+    public double getCurrentAngle() {
+        try{
+            return s_camera.getXDegOff();
+        }catch(Exception e){
+            System.err.println("No Vision Target Found");
+            return 0;
         }
-
     }
 
     private double calculatePGain(double gyroError){
