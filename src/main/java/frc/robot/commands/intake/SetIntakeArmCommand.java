@@ -22,13 +22,8 @@ public class SetIntakeArmCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
-        s_intake.setIntakePiston(toOpen);
-    }
-
-    @Override
     public boolean isFinished() {
-        boolean isDone = (toOpen && s_intake.isIntakeOpen()) || (!toOpen && !s_intake.isIntakeOpen());
+        boolean isDone = (toOpen && s_intake.isIntakeUp()) || (!toOpen && !s_intake.isIntakeUp());
         //done if command was set to open and intake is open or if the command was set to close and is closed
         return isDone;
     }
