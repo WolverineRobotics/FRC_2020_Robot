@@ -21,6 +21,11 @@ public class MoveBallsOneStageCommand extends CommandBase {
     }
 
     @Override
+    public void execute() {
+        s_intake.setMoveBalls(true);
+    }
+
+    @Override
     public boolean isFinished() {
         List<Ball> mag = s_intake.mag;
         for(Ball b : mag) {
