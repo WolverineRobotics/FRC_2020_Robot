@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -121,6 +122,14 @@ public class DriveSubsystem extends SubsystemBase {
 
         rightSlave1.follow(rightMaster);
         rightSlave2.follow(rightMaster);
+
+        leftMaster.setIdleMode(IdleMode.kBrake);
+        leftSlave1.setIdleMode(IdleMode.kBrake);
+        leftSlave2.setIdleMode(IdleMode.kBrake);
+
+        rightMaster.setIdleMode(IdleMode.kBrake);
+        rightSlave1.setIdleMode(IdleMode.kBrake);
+        rightSlave2.setIdleMode(IdleMode.kBrake);
 
         leftGroup = new SpeedControllerGroup(leftMaster);
         rightGroup = new SpeedControllerGroup(rightMaster);

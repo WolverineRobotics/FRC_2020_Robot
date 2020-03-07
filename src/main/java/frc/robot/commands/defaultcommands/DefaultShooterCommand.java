@@ -31,7 +31,7 @@ public class DefaultShooterCommand extends CommandBase {
             s_shooter.setFlywheelVoltage(11);
         }
         else if(oc.isShooter10V()){
-            s_shooter.setFlywheelVoltage(10.5);
+            s_shooter.setFlywheelVoltage(9.7);
         }
         else{
             s_shooter.setFlywheelSpeed(0);
