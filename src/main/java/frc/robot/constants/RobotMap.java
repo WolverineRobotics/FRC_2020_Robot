@@ -82,4 +82,6 @@ public class RobotMap{
     public static final int SHOOTER_HOOD_ENCODER_ADDRESS            = 0; //DIO
     public static final SerialPort.Port LIDAR_PORT = Port.kMXP;
 
+    public static final int CLIMB_ENCODER = 6;
+
 }
