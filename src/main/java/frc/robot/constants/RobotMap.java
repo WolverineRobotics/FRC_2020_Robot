@@ -23,6 +23,7 @@ public class RobotMap{
     }
 
     public class Sensors {
+        public static final int BALL_SENSOR_6 = 7;
         public static final int BALL_SENSOR_1 = 5;
         public static final int BALL_SENSOR_2 = 4;
         public static final int BALL_SENSOR_3 = 3;

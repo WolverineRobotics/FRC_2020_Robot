@@ -24,7 +24,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     public ClimbSubsystem() {
         climb = new CANSparkMax(RobotMap.SpeedController.CLIMB, MotorType.kBrushless);
-        encoder = new DutyCycleEncoder(7);
+        encoder = new DutyCycleEncoder(6);
         climb_level = new TalonSRX(RobotMap.SpeedController.CLIMB_LEVEL);
         piston = new DoubleSolenoid(RobotMap.Pneumatic.PCM, RobotMap.Pneumatic.CLIMB_LOCK_FORWARD, RobotMap.Pneumatic.CLIMB_LOCK_REVERSE);
     }

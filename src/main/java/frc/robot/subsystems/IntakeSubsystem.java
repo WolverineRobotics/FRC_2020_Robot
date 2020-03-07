@@ -31,6 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private DigitalInput sensor3; // sensor located at bottom of vertical conveyor (ball3 location)
     private DigitalInput sensor4; // sensor located at middle of vertical conveyor (ball2 location)
     private DigitalInput sensor5; // sensor located at top of vertical conveyor (ball1 location)
+    private DigitalInput sensor6; // sensor located when a ball is shot
 
     /**
      * Motors control certain conveyor systems.
@@ -53,6 +54,7 @@ public class IntakeSubsystem extends SubsystemBase {
                                      // Balls put in here are balls that were shot out by the Shooter Subsystem
     public List<Motor> currentPossessions;
     public boolean moveBalls;
+    private boolean sensor6WasOn;
 
     // initializes all of the components within the subsystem
     public IntakeSubsystem() {
@@ -62,6 +64,7 @@ public class IntakeSubsystem extends SubsystemBase {
         sensor3 = new DigitalInput(RobotMap.Sensors.BALL_SENSOR_3);
         sensor4 = new DigitalInput(RobotMap.Sensors.BALL_SENSOR_4);
         sensor5 = new DigitalInput(RobotMap.Sensors.BALL_SENSOR_5);
+        sensor6 = new DigitalInput(RobotMap.Sensors.BALL_SENSOR_6);
 
         entry = new CANSparkMax(RobotMap.SpeedController.ENTRY, MotorType.kBrushless);
         curve = new CANSparkMax(RobotMap.SpeedController.CURVE, MotorType.kBrushless);
@@ -280,6 +283,10 @@ public class IntakeSubsystem extends SubsystemBase {
      */
     public boolean isSensorFiveActivated() {
         return !sensor5.get();
+    }
+
+    public boolean isSensorSixActivated() {
+        return !sensor6.get();
     }
 
     /**
@@ -622,6 +629,16 @@ public class IntakeSubsystem extends SubsystemBase {
                         // }
                     }
                 }
+            }
+        }
+        if(isSensorSixActivated()) {
+            if(mag.size() >= 1 && !sensor6WasOn) {
+                mag.remove(0);
+                sensor6WasOn = true;
+            }
+        } else {
+            if(sensor6WasOn) {
+                sensor6WasOn = false;
             }
         }
     }
