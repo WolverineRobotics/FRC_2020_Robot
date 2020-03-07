@@ -89,16 +89,7 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (moveBalls) {
-            // boolean intake = true;
-            //if the magazine size is 5
-            //or if the first ball is not at its destination,
-            // > do not intake
-            // if(mag.size() == 5 || (mag.size() == 1 && !mag.get(0).isAtDestination())) {
-            //     intake = false;
-            // }
-
-            //if the magazine size is not 5, and intake is true
-            if(mag.size() != 5 /*&& intake*/) {
+            if(mag.size() != 5) {
                 setSpeeds(0.3, 0, 0, 0);
             }
             if (isSensorOneActivated()) {
@@ -163,7 +154,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @param speed -1 to 1
      */
     public void setEntrySpeed(double speed) {
-        entry.set(speed);
+        if(!isIntakeUp()) entry.set(speed);
     }
 
     /**
@@ -265,7 +256,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * @return true if sensor 1 is activated (entry sensor of the entry intake)
      */
     public boolean isSensorOneActivated() {
-        if (isIntakeOpen()) {
+        if (isIntakeUp()) {
             return false;
         } else {
             return !sensor1.get();
@@ -339,7 +330,7 @@ public class IntakeSubsystem extends SubsystemBase {
      * 
      * @return true if intake is open
      */
-    public boolean isIntakeOpen() {
+    public boolean isIntakeUp() {
         return piston.get() == Value.kForward;
     }
 
@@ -679,7 +670,7 @@ public class IntakeSubsystem extends SubsystemBase {
                 verticalUpper.getAppliedOutput() * verticalUpper.getBusVoltage());
         SmartDashboard.putNumber("[Intake] Upper Vertical Current",
                 verticalUpper.getOutputCurrent());
-        SmartDashboard.putBoolean("[Intake] Solenoid", this.isIntakeOpen());
+        SmartDashboard.putBoolean("[Intake] Solenoid", this.isIntakeUp());
 
     }
 
