@@ -27,8 +27,8 @@ public class AlignAndShootGroup extends ParallelRaceGroup {
         c_shoot = new ShootBallsGroup(intake, shooter);
         s_camera = camera;
 
-        addCommands(c_rotate, c_shoot);
-        addCommands(new WaitCommand(0.3));
+        addCommands(c_rotate);
+        addCommands(c_shoot);
     }
 
     @Override

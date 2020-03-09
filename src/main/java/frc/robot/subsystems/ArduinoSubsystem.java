@@ -57,7 +57,7 @@ public class ArduinoSubsystem extends SubsystemBase {
     }
 
     public double getDistanceIN(){
-        int distanceCM = getDistanceCM();
+        double distanceCM = getDistanceCM();
         if(distanceCM == -1){
             return -1;
         }

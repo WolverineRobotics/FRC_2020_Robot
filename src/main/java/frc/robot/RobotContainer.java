@@ -161,6 +161,10 @@ public class RobotContainer {
     return s_intake;
   }
 
+  public DriveSubsystem getDriveSubsystem(){
+    return s_drive;
+  }
+
   public static DriverController getDriverController() {
     return joshuaAndrewCadavos;
   }

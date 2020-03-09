@@ -21,9 +21,4 @@ public class DriveAndIntakeGroup extends ParallelRaceGroup{
         );
     }
 
-    public DriveAndIntakeGroup(DriveSubsystem drive, IntakeSubsystem intake, double speed, double distanceMeters, double timeOut){
-        this(drive, intake, speed, distanceMeters);
-        addCommands(new WaitCommand(timeOut));
-    }
-
 }

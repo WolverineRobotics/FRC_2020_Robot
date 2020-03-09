@@ -76,7 +76,9 @@ public class Robot extends TimedRobot {
     // schedule the autonomous command (example)
     if (c_autonomous != null) {
       c_autonomous.schedule();
+      robotContainer.getIntakeSubsystem().initAuto();
     }
+    robotContainer.getDriveSubsystem().resetPigeonHeading();
   }
 
   /**

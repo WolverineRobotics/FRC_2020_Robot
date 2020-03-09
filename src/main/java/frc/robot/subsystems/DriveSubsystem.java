@@ -469,6 +469,11 @@ public class DriveSubsystem extends SubsystemBase {
     public void rotateGyroAngle(double goal) {
         rotateGyroAngle(getPigeonHeading(), goal);
     }
+    
+    public void resetPigeonHeading(){
+        pigeon.setFusedHeading(0);
+        pigeon.setYaw(0);
+    }
 
     @Override
     public void initSendable(SendableBuilder builder) {
@@ -505,7 +510,6 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("[Drive] Right Velocity", this.getRightVelocity());
 
     }
-
 
 
 }

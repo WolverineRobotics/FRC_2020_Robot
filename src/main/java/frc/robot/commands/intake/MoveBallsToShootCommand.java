@@ -16,7 +16,6 @@ public class MoveBallsToShootCommand extends CommandBase {
         super();
         this.s_intake = s_intake;
         addRequirements(s_intake);
-        s_intake.initAuto();
     }
 
     @Override
