@@ -63,6 +63,7 @@ public class RotateToVisionTargetCommand extends RotateToHeadingProfiledCommand 
         s_camera.setCameraMode(CameraMode.VISION);
         getController().setSetpoint(0);
         getController().setPID(kP, kI, kD);
+        getController().setTolerance(0.6, 0.2);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

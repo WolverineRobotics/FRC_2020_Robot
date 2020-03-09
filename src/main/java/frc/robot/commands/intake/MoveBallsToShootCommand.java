@@ -21,7 +21,7 @@ public class MoveBallsToShootCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (isBallAtPositionFive()) {
+        if (!s_intake.isSensorFiveActivated()) {
             // No ball in top position
             s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED,
                     IntakeConst.UPPER_VERTICAL_SPEED);
@@ -35,6 +35,7 @@ public class MoveBallsToShootCommand extends CommandBase {
                 s_intake.setSpeeds(0, 0, 0, 0);
             }
         }
+        s_intake.updateSensorPositions();
     }
 
     public void setFlywheelReady(boolean ready) {

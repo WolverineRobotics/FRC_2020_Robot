@@ -1,9 +1,6 @@
 package frc.robot.commands.groups;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.drive.DriveFowardCommand;
-import frc.robot.commands.drive.RotateToHeadingProfiledCommand;
-import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -30,9 +27,12 @@ public class RightAutoGroup extends SequentialCommandGroup{
                 }
             },
 
-            new ShootBallsCommand(s_intake, s_shooter), 
+            new ShootBallsCommand(s_intake, s_shooter),
+            new WaitCommand(), 
             new RotateToHeadingProfiledCommand(s_drive, 180),
             new DriveFowardCommand(s_drive, 0.4, 1)
+            
         );
+]
     }
 }

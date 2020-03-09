@@ -238,6 +238,9 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void initAuto() {
+
+        mag.clear();
+
         Ball ball1 = new Ball(Position.FIVE);
         ball1.setPosition(ball1.getDestination());
 
@@ -589,7 +592,7 @@ public class IntakeSubsystem extends SubsystemBase {
      /**
      * Updates Ball Position based on sensor logic
      */
-    private void updateSensorPositions() {
+    public void updateSensorPositions() {
         for (Ball b : mag) {
             if (!b.isAtDestination()) {
                 Position position = b.getCurrentPosition();
