@@ -80,7 +80,7 @@ public class RobotConst {
         public static final double DRIVE_TURN_KI = 0.00005;
         public static final double DRIVE_TURN_KD = 0.00001;
 
-        public static final double DRIVE_TURN_TOLERANCE_DEG = 2.8;
+        public static final double DRIVE_TURN_TOLERANCE_DEG = 1.5;
         public static final double DRIVE_TURN_TOLERANCE_DEG_PER_SECOND = 1.4;
 
     }

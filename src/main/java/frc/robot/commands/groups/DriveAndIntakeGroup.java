@@ -16,7 +16,12 @@ public class DriveAndIntakeGroup extends ParallelRaceGroup{
         s_drive = drive;
         s_intake = intake;
         addCommands(
-            new IntakeBallsUntilMagazine(s_intake, 3),
+            new IntakeBallsUntilMagazine(s_intake, 3){
+                @Override
+                public boolean isFinished() {
+                    return false;
+                }
+            },
             new DriveFowardCommand(s_drive, speed, distanceMeters)
         );
     }

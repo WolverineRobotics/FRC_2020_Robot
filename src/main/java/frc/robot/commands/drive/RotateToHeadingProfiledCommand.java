@@ -181,8 +181,7 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
 
         // Sets the voltage
         // s_drive.setVoltage(totalVoltage.leftVoltage, totalVoltage.rightVoltage);
-        s_drive.setVoltage(pidVoltage.leftVoltage, pidVoltage.rightVoltage);
-
+    setVoltages(pidVoltage);
 
         // previousWheelSpeeds = wheelSpeeds;
 
@@ -208,6 +207,10 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
         // System.out.println("Left Wheel Speeds (m/s) " + wheelSpeeds.leftMetersPerSecond);
 
 
+    }
+
+    protected void setVoltages(DriveVoltage voltage){
+        s_drive.setVoltage(voltage.leftVoltage, voltage.rightVoltage);
     }
 
     @Override

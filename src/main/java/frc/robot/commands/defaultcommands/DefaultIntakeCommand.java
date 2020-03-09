@@ -63,12 +63,12 @@ public class DefaultIntakeCommand extends CommandBase {
         } else if(oc.isPressingY()) { //if operator wants to outake the balls from the bottom
             s_intake.setEntrySpeed(-0.9);
             s_intake.setCurveSpeed(-0.7);
-            s_intake.setVerticalLowerSpeed(-0.5);
+            s_intake.setVerticalLowerSpeed(-0.4);
             s_intake.setVerticalUpperSpeed(-0.3);
         } else if(oc.isPOVUp()) { //if operator wants to move balls all to fly wheel
             s_intake.setEntrySpeed(0.1);
             s_intake.setCurveSpeed(0.25);
-            s_intake.setVerticalLowerSpeed(0.3);
+            s_intake.setVerticalLowerSpeed(0.45);
             s_intake.setVerticalUpperSpeed(1);
         } else if(oc.isPressingA()) { //move front piston
             s_intake.toggleIntakePiston();

@@ -31,6 +31,12 @@ public class AlignAndShootGroup extends ParallelRaceGroup {
         addCommands(c_shoot);
     }
 
+    public AlignAndShootGroup(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter,
+    CameraSubsystem camera, double flywheelRPM) {
+        this(drive, intake, shooter, camera);
+        c_shoot.c_setFlywheelShoot.setSetpointRPM(flywheelRPM);
+    }
+
     @Override
     public void initialize() {
         super.initialize();
