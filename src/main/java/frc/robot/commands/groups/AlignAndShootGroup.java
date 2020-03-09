@@ -1,6 +1,7 @@
 package frc.robot.commands.groups;
 
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -11,6 +12,7 @@ public class AlignAndShootGroup extends ParallelRaceGroup {
 
     private final RotateToVisionTargetCommand c_rotate;
     private final ShootBallsCommand c_shoot;
+    private final CameraSubsystem s_camera;
 
     public AlignAndShootGroup(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter,
             CameraSubsystem camera) {
@@ -23,7 +25,10 @@ public class AlignAndShootGroup extends ParallelRaceGroup {
         };
 
         c_shoot = new ShootBallsCommand(intake, shooter);
+        s_camera = camera;
+
         addCommands(c_rotate, c_shoot);
+        addCommands(new WaitCommand(0.3));
     }
 
     @Override
@@ -36,6 +41,6 @@ public class AlignAndShootGroup extends ParallelRaceGroup {
     @Override
     public void execute() {
         super.execute();
-        c_shoot.setShootReady(c_rotate.isOnTarget());
+        c_shoot.setShootReady(c_rotate.isOnTarget() && s_camera.hasValidTargets());
     }
 }

@@ -21,9 +21,8 @@ public class RotateToVisionTargetCommand extends RotateToHeadingProfiledCommand 
     private double kI = PIDConst.DRIVE_TURN_KI*6*6;
     private double kD = PIDConst.DRIVE_TURN_KD*3*2;
 
-    private double a = 0;
     // private final int MEDIAN_FILTER_ENTRIES = 10;
-    private final int CYCLES_UNTIL_CHECK_FINISHED = 10;
+    protected final int CYCLES_UNTIL_CHECK_FINISHED = 10;
     private final double MIN_PERCENT_TARGETS_FOUND = 0.8;
     // private final double MAX_IQR_X = 20;
 
@@ -37,8 +36,8 @@ public class RotateToVisionTargetCommand extends RotateToHeadingProfiledCommand 
     // positives.
     // private final double Y_VALUE_CUTOFF = -20;
 
-    private int totalCycles = 0;
-    private int numFound = 0;
+    protected int totalCycles = 0;
+    protected int numFound = 0;
 
     private boolean finished = false;
 
