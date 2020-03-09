@@ -12,16 +12,12 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.defaultcommands.DefaultCameraCommand;
 import frc.robot.commands.defaultcommands.DefaultClimbCommand;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
 import frc.robot.commands.defaultcommands.DefaultShooterCommand;
-import frc.robot.commands.drive.DriveFowardCommand;
-import frc.robot.commands.drive.RotateToHeadingProfiledCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
-import frc.robot.commands.groups.AutonomousGroup;
 import frc.robot.commands.groups.RightAutoGroup;
 import frc.robot.commands.groups.ShootBallsGroup;
 import frc.robot.commands.intake.MoveBallsOneStageCommand;
@@ -63,8 +59,6 @@ public class RobotContainer {
 
   private Compressor compressor;
 
-  // autonomous command
-  private AutonomousGroup auto;
 
   // controllers
   private static DriverController joshuaAndrewCadavos;
@@ -157,13 +151,6 @@ public class RobotContainer {
 
         // return new RotateToHeadingProfiledCommand(s_drive, 330-180);
 
-    // return new CommandBase(){
-    // @Override
-    // public boolean isFinished() {
-    // // TODO Auto-generated method stub
-    // return super.isFinished();
-    // }
-    // };
   }
 
   public ClimbSubsystem getClimbSubsystem() {
