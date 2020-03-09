@@ -2,7 +2,7 @@ package frc.robot.pid;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 
-public class LocationPID extends GyroPID {
+public class LocationPID extends PIDController {
 
     private LocationCalculatorCurved locationCalc;
     

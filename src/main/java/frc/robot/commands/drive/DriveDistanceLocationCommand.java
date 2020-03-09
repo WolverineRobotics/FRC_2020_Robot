@@ -4,27 +4,29 @@ import frc.robot.constants.RobotConst.PIDConst;
 import frc.robot.pid.LocationPID;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DriveDistanceLocationCommand extends DriveDistanceCommand {
+public class DriveDistanceLocationCommand extends DriveDirectionCommand {
 
+    private final DriveSubsystem s_drive;
     private double previousEncoderDistance;
     private LocationPID gyroPID;
+    private double heading;
+    private double power;
 
-    private final double DISTANCE_END = 0.2;
+    private final double DISTANCE_END = 0.02;
 
-    public DriveDistanceLocationCommand(DriveSubsystem subsystem, double power, double distance, double heading,
-            boolean brakeWhenFinished) {
-        super(subsystem, power, distance, heading, brakeWhenFinished);
-        this.power = power;
+    public DriveDistanceLocationCommand(DriveSubsystem drive, double speed, double heading, double distanceMeters) {
+        super(drive, speed *11, heading, distanceMeters);
+        this.s_drive = drive;
         this.gyroPID = new LocationPID(PIDConst.GYRO_KP, PIDConst.GYRO_KI, PIDConst.GYRO_KD);
-
+        this.heading = heading;
     }
 
     @Override
     public void initialize() {
         super.initialize();
         gyroPID.initialize(this.distance, this.heading);
-        c_drive.resetEncoders();
-        this.previousEncoderDistance = c_drive.getDistance();
+        s_drive.resetEncoders();
+        this.previousEncoderDistance = s_drive.getDistance();
     }
 
     @Override
@@ -36,24 +38,18 @@ public class DriveDistanceLocationCommand extends DriveDistanceCommand {
 
     @Override
     public void execute() {
-        double leftSpeed, rightSpeed;
         double steering;
 
-        double currentDistance = c_drive.getDistance();
+        double currentDistance = s_drive.getDistance();
         double distanceChanged = currentDistance - this.previousEncoderDistance;
 
-        steering = gyroPID.calculate(c_drive.getPigeonHeading(), distanceChanged);
+        steering = gyroPID.calculate(s_drive.getPigeonHeading(), distanceChanged);
 
         // if (speed > Math.abs(power)) {
         // speed = power;
         // }
 
-        speed = this.power;
-
-        leftSpeed = -(speed - steering);
-        rightSpeed = speed + steering;
-
-        c_drive.setSpeed(leftSpeed, rightSpeed);
+        s_drive.arcadeDrive(power, steering, false);
 
         this.previousEncoderDistance = currentDistance;
     }

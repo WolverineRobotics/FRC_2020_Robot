@@ -1,73 +1,48 @@
 package frc.robot.commands.drive;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.constants.JoystickMap;
-import frc.robot.pid.GyroPID;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.DriveSubsystem.DriveVoltage;
 
-public class DriveDirectionCommand extends CommandBase {
-    protected double power, heading, speed;
+public class DriveDirectionCommand extends RotateToHeadingProfiledCommand {
 
-    protected GyroPID gyroPID;
+    private double driveVoltage;
+    protected double distance;
+    private final double startingDistance;
+    private double maxVoltage;
 
-    protected DriveSubsystem c_drive;
+    public DriveDirectionCommand(DriveSubsystem drive, double voltage, double heading, double distanceMeters) {
+        super(drive, heading);
+        driveVoltage = voltage;
+        startingDistance = s_drive.getDistance();
 
-    public DriveDirectionCommand(DriveSubsystem subsystem, double power, double heading) {
-        c_drive = subsystem;
-        System.out.println("Requires Drivesubsytem " + c_drive);
-        addRequirements(c_drive);
-
-        gyroPID = c_drive.getGyroPID();
-
-        this.power = power;
-        this.heading = heading;
-        this.speed = 0;
+        maxTurnVoltage = 6;
     }
 
-    @Override
-    public void initialize() {
-        gyroPID.setSetpoint(heading);
-        gyroPID.setEnabled(true);
-    }
 
     @Override
-    public void execute() {
-        double leftSpeed, rightSpeed;
-        double steering;
-
-        steering = gyroPID.calculate(c_drive.getPigeonHeading());
-
-        // if(speed > Math.abs(power)){
-        // speed = power;
-        // }
-
-        speed = power;
-
-        leftSpeed = -(speed - steering);
-        rightSpeed = speed + steering;
-
-        c_drive.setSpeed(leftSpeed, rightSpeed);
+    protected void setVoltages(DriveVoltage turnVoltage) {
+        System.out.println("Left Turn Voltage 1: " + turnVoltage.leftVoltage);
+        System.out.println("Right Turn Voltage 1: " + turnVoltage.rightVoltage);
+        turnVoltage = DriveVoltage.clampVoltage(turnVoltage, maxVoltage);
+        DriveVoltage forwardVoltage = new DriveVoltage(driveVoltage, driveVoltage);
+        DriveVoltage totalVoltage = DriveVoltage.addVoltage(forwardVoltage, turnVoltage);
+        totalVoltage = DriveVoltage.clampVoltage(totalVoltage, maxVoltage);
+        System.out.println("Left Voltage 1: " + totalVoltage.leftVoltage);
+        System.out.println("Right Voltage 1: " + totalVoltage.rightVoltage);
+        s_drive.setVoltage(totalVoltage.leftVoltage, totalVoltage.rightVoltage);
     }
 
     @Override
     public boolean isFinished() {
-        return RobotContainer.getDriverController().getButton(JoystickMap.ButtonMap.BUTTON_SELECT);
-        // return false;
+        return super.isFinished() && s_drive.getDistance() >= distance + startingDistance;
     }
 
     @Override
     public void end(boolean interrupted) {
-        c_drive.setForwardSpeed(0);
-        gyroPID.setEnabled(false);
+        super.end(interrupted);
     }
 
-    public void setSpeed(double speed) {
-        this.speed = speed;
-    }
-
-    public void setHeading(double heading) {
-        c_drive.getGyroPID().setSetpoint(heading);
-        this.heading = heading;
+    public void setDriveVoltage(double voltage) {
+        this.driveVoltage = voltage;
     }
 }

@@ -17,6 +17,7 @@ import frc.robot.commands.defaultcommands.DefaultClimbCommand;
 import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
 import frc.robot.commands.defaultcommands.DefaultShooterCommand;
+import frc.robot.commands.drive.DriveDirectionCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.commands.groups.RightAutoGroup;
 import frc.robot.commands.groups.ShootBallsGroup;
@@ -147,8 +148,13 @@ public class RobotContainer {
     // return true;
     // }
 
-    return new RightAutoGroup(s_drive, s_intake, s_shooter, s_camera);
-
+    // return new RightAutoGroup(s_drive, s_intake, s_shooter, s_camera);
+      return new DriveDirectionCommand(s_drive, 6, 180, 3){
+        @Override
+        public boolean isFinished() {
+          return false;
+        }
+      };
         // return new RotateToHeadingProfiledCommand(s_drive, 330-180);
 
   }

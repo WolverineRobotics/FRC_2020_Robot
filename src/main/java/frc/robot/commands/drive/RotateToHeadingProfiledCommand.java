@@ -23,7 +23,7 @@ import frc.robot.subsystems.DriveSubsystem.DriveVoltage;
 
 public class RotateToHeadingProfiledCommand extends CommandBase {
 
-    private final DriveSubsystem s_drive;
+    protected final DriveSubsystem s_drive;
     private final DifferentialDriveKinematics m_kinematics;
     private final SimpleMotorFeedforward ff_drive;
     private final double TIME_PERIOD = 0.02;
@@ -33,7 +33,7 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
     private double kI = PIDConst.DRIVE_TURN_KI;
     private double kD = PIDConst.DRIVE_TURN_KD;
 
-    private double maxVoltage = 9;
+    protected double maxTurnVoltage = 9;
 
     private TrapezoidProfile.Constraints constraints;
 
@@ -137,8 +137,8 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
     }
 
     private DriveVoltage powerToVoltage(DrivePower power) {
-        double leftVoltage = power.leftPower * maxVoltage;
-        double rightVoltage = power.rightPower * maxVoltage;
+        double leftVoltage = power.leftPower * maxTurnVoltage;
+        double rightVoltage = power.rightPower * maxTurnVoltage;
         return (new DriveVoltage(leftVoltage, rightVoltage));
     }
 
@@ -181,7 +181,7 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
 
         // Sets the voltage
         // s_drive.setVoltage(totalVoltage.leftVoltage, totalVoltage.rightVoltage);
-    setVoltages(pidVoltage);
+        setVoltages(pidVoltage);
 
         // previousWheelSpeeds = wheelSpeeds;
 
