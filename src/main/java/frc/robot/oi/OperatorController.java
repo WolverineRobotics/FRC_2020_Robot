@@ -101,6 +101,7 @@ public class OperatorController extends Controller {
 
     public boolean isFlywheelSetVoltage() {
         return getButton(ButtonMap.BUTTON_LEFT_BUMPER);
+        // return false;
     }
 
     public boolean isIntakeShootTopStageOnly(){

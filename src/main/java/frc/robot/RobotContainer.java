@@ -18,10 +18,12 @@ import frc.robot.commands.defaultcommands.DefaultDriveCommand;
 import frc.robot.commands.defaultcommands.DefaultIntakeCommand;
 import frc.robot.commands.defaultcommands.DefaultShooterCommand;
 import frc.robot.commands.drive.DriveDirectionCommand;
+import frc.robot.commands.drive.DriveDistanceLocationCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.commands.groups.RightAutoGroup;
 import frc.robot.commands.groups.ShootBallsGroup;
 import frc.robot.commands.intake.MoveBallsOneStageCommand;
+import frc.robot.commands.shootercommands.SetFlywheelShootCommand;
 import frc.robot.constants.JoystickMap.ButtonMap;
 import frc.robot.constants.RobotMap;
 import frc.robot.oi.DriverController;
@@ -59,7 +61,6 @@ public class RobotContainer {
   private DefaultClimbCommand dc_climb;
 
   private Compressor compressor;
-
 
   // controllers
   private static DriverController joshuaAndrewCadavos;
@@ -133,6 +134,8 @@ public class RobotContainer {
           }
         });
     anthonyAttikian.getButtonObject(ButtonMap.BUTTON_X).whenPressed(new MoveBallsOneStageCommand(s_intake));
+    // anthonyAttikian.getButtonObject(ButtonMap.BUTTON_LEFT_BUMPER)
+    //     .whileActiveOnce(new ShootBallsGroup(s_intake, s_shooter));
   }
 
   /**
@@ -141,21 +144,16 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Placeholder command that finishes immediately
-    // return new CommandBase() {
-    // @Override
-    // public boolean isFinished() {
-    // return true;
-    // }
 
-    // return new RightAutoGroup(s_drive, s_intake, s_shooter, s_camera);
-      return new DriveDirectionCommand(s_drive, 6, 180, 3){
-        @Override
-        public boolean isFinished() {
-          return false;
-        }
-      };
-        // return new RotateToHeadingProfiledCommand(s_drive, 330-180);
+    return new RightAutoGroup(s_drive, s_intake, s_shooter, s_camera);
+
+    // return new DriveDistanceLocationCommand(s_drive, 0.3, 180, 5){
+    //   @Override
+    //   public boolean isFinished() {
+    //     return false;
+    //   }
+    // };
+    // return new RotateToHeadingProfiledCommand(s_drive, 330-180);
 
   }
 
@@ -163,11 +161,11 @@ public class RobotContainer {
     return s_climb;
   }
 
-  public IntakeSubsystem getIntakeSubsystem(){
+  public IntakeSubsystem getIntakeSubsystem() {
     return s_intake;
   }
 
-  public DriveSubsystem getDriveSubsystem(){
+  public DriveSubsystem getDriveSubsystem() {
     return s_drive;
   }
 
