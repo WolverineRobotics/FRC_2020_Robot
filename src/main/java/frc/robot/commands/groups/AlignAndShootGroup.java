@@ -11,20 +11,20 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class AlignAndShootGroup extends ParallelRaceGroup {
 
     private final RotateToVisionTargetCommand c_rotate;
-    private final ShootBallsCommand c_shoot;
+    private final ShootBallsGroup c_shoot;
     private final CameraSubsystem s_camera;
 
     public AlignAndShootGroup(DriveSubsystem drive, IntakeSubsystem intake, ShooterSubsystem shooter,
             CameraSubsystem camera) {
 
-        c_rotate = new RotateToVisionTargetCommand(camera, drive){
+        c_rotate = new RotateToVisionTargetCommand(camera, drive) {
             @Override
             public boolean isFinished() {
                 return false;
             }
         };
 
-        c_shoot = new ShootBallsCommand(intake, shooter);
+        c_shoot = new ShootBallsGroup(intake, shooter);
         s_camera = camera;
 
         addCommands(c_rotate, c_shoot);
@@ -33,7 +33,6 @@ public class AlignAndShootGroup extends ParallelRaceGroup {
 
     @Override
     public void initialize() {
-        // TODO Auto-generated method stub
         super.initialize();
         c_shoot.setShootReady(false);
     }

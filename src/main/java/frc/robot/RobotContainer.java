@@ -23,7 +23,7 @@ import frc.robot.commands.drive.RotateToHeadingProfiledCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.commands.groups.AutonomousGroup;
 import frc.robot.commands.groups.RightAutoGroup;
-import frc.robot.commands.groups.ShootBallsCommand;
+import frc.robot.commands.groups.ShootBallsGroup;
 import frc.robot.commands.intake.MoveBallsOneStageCommand;
 import frc.robot.constants.JoystickMap.ButtonMap;
 import frc.robot.constants.RobotMap;
@@ -131,7 +131,7 @@ public class RobotContainer {
     // joshuaAndrewCadavos.getButtonObject(ButtonMap.BUTTON_LEFT_BUMPER)
     // .whileActiveContinuous(new SetFlywheelShootCommand(s_shooter));
     anthonyAttikian.getButtonObject(ButtonMap.BUTTON_RIGHT_BUMPER)
-        .whileActiveContinuous(new ShootBallsCommand(s_intake, s_shooter) {
+        .whileActiveContinuous(new ShootBallsGroup(s_intake, s_shooter) {
           @Override
           public boolean isFinished() {
             return false;

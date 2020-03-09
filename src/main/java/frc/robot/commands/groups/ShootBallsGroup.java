@@ -7,20 +7,25 @@ import frc.robot.commands.shootercommands.SetFlywheelShootCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class ShootBallsCommand extends ParallelRaceGroup {
+public class ShootBallsGroup extends ParallelRaceGroup {
 
-    private MoveBallsToShootCommand c_moveBallsToShoot;
-    private SetFlywheelShootCommand c_setFlywheelShoot;
+    protected final MoveBallsToShootCommand c_moveBallsToShoot;
+    protected final SetFlywheelShootCommand c_setFlywheelShoot;
     private boolean shootReady = true;
 
-    public ShootBallsCommand(IntakeSubsystem intake, ShooterSubsystem shooter) {
+    public ShootBallsGroup(IntakeSubsystem intake, ShooterSubsystem shooter, double rpm) {
+        this(intake, shooter);
+        c_setFlywheelShoot.setSetpointRPM(rpm);
+    }
+
+    public ShootBallsGroup(IntakeSubsystem intake, ShooterSubsystem shooter) {
         c_moveBallsToShoot = new MoveBallsToShootCommand(intake);
         c_setFlywheelShoot = new SetFlywheelShootCommand(shooter);
         addCommands(c_moveBallsToShoot);
         addCommands(c_setFlywheelShoot);
     }
 
-    public void setShootReady(boolean shoot){
+    public void setShootReady(boolean shoot) {
         this.shootReady = shoot;
     }
 
@@ -30,8 +35,12 @@ public class ShootBallsCommand extends ParallelRaceGroup {
 
         // Passes if the flywheel is at speed from c_setFlywheelShoot to
         // c_moveBallsToShoot
-        boolean flywheelAtSpeed = c_setFlywheelShoot.isFlywheelAtSpeed();
+        boolean flywheelAtSpeed = checkFlywheelAtSpeed();
         c_moveBallsToShoot.setFlywheelReady(flywheelAtSpeed && shootReady);
+    }
+
+    protected boolean checkFlywheelAtSpeed() {
+        return c_setFlywheelShoot.isFlywheelAtSpeed();
     }
 
 }
