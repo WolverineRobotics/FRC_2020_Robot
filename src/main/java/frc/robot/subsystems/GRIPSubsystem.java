@@ -29,24 +29,38 @@ public class GRIPSubsystem extends SubsystemBase {
         updateSDashboard();
     }
 
-    public double getArea() {
-        double currentLargest = 0;
+    public double getLargestAreaIdx(){
+        int currentLargestIndex = -1;
+        double currentLargestArea = -1;
         double[] array = area.getDoubleArray((double[]) null);
-        if(array == null) {
-            return VisionConst.ERROR;
+        if(isArrayNull(array) || array.length == 0) {
+            return -1;
         }
-        for(double d : array) {
-            if(currentLargest > d) {
-                currentLargest = d;
+        for(int i = 0; i<array.length;i++ ) {
+            double d = array[i];
+            if(currentLargestArea > d) {
+                currentLargestArea = d;
+                currentLargestIndex = -1;
             }
         }
-        return currentLargest;
+        return currentLargestIndex;
+    }
+
+    public double getArea(int idx) {
+        try{
+            return area.getDoubleArray((double[])null)[idx];
+        }catch (Exception e) {
+            return -1;
+        }
     }
 
     public double getCenterX(int idx) {
-        double[] centerXArr = centerX.getDoubleArray((double[]) null);
-        return centerXArr[0];
-    }
+        try{
+            return centerX.getDoubleArray((double[])null)[idx];
+        }catch (Exception e) {
+            return -1;
+        }    }
+
 
     private void updateSDashboard() {
 

@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.defaultcommands.DefaultCameraCommand;
@@ -145,9 +146,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    return new RightAutoGroup(s_drive, s_intake, s_shooter, s_camera);
+    // return new RightAutoGroup(s_drive, s_intake, s_shooter, s_camera);
 
-    // return new DriveDistanceLocationCommand(s_drive, 0.3, 180, 5){
+    return new DriveDistanceLocationCommand(s_drive, 0.3, 270, Units.feetToMeters(12));
     //   @Override
     //   public boolean isFinished() {
     //     return false;

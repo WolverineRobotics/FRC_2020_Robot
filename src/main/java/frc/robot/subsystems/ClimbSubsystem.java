@@ -2,18 +2,16 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.constants.RobotMap;
-import frc.robot.util.RevAbsoluteEncoder;
 
 public class ClimbSubsystem extends SubsystemBase {
 
@@ -22,11 +20,15 @@ public class ClimbSubsystem extends SubsystemBase {
     private TalonSRX climb_level;
     private DoubleSolenoid piston;
 
+    private boolean climbLockFlag = false;
+
     private double CLIMB_ENCODER_MAX = 4;
     private double CLIMB_UPPER_SOFT_LIMIT = 3.6;
     private double CLIMB_LOCK_ENCODER_COUNT = 0.8;
     private double CLIMB_ENCODER_SOFT_MIN = 0.7;
     private double CLIMB_ENCODER_MIN = 0.43;
+
+    private double CLIMB_LOCK_ENCODER_FLAG = 1.5;
 
     private double SPEED_SOFT_REDUCTION = 0.5;
 
@@ -51,7 +53,7 @@ public class ClimbSubsystem extends SubsystemBase {
             speed *= SPEED_SOFT_REDUCTION;
         }
 
-        if(speed > 0 && encoderPos <= CLIMB_LOCK_ENCODER_COUNT) { //if speed go down and encoder at lock 
+        if(speed > 0 && encoderPos <= CLIMB_LOCK_ENCODER_COUNT && climbLockFlag) { //if speed go down and encoder at lock 
             setLock(true);
         }
         
@@ -89,6 +91,7 @@ public class ClimbSubsystem extends SubsystemBase {
     public void toggleLock() {
         if(piston.get().equals(DoubleSolenoid.Value.kForward)) {
             piston.set(DoubleSolenoid.Value.kReverse);
+            climbLockFlag = false;
         } else {
             piston.set(DoubleSolenoid.Value.kForward);
         }
@@ -99,6 +102,7 @@ public class ClimbSubsystem extends SubsystemBase {
             piston.set(Value.kForward);
         } else {
             piston.set(Value.kReverse);
+            climbLockFlag = false;
         }
     }
 
@@ -112,6 +116,11 @@ public class ClimbSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        if(getClimbEncoderPosition()> CLIMB_LOCK_ENCODER_FLAG ){
+            this.climbLockFlag = true;
+        }
+
         updateSDashboard();
 
     }
