@@ -146,9 +146,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
 
-    // return new RightAutoGroup(s_drive, s_intake, s_shooter, s_camera);
+    return new RightAutoGroup(s_drive, s_intake, s_shooter, s_camera);
 
-    return new DriveDistanceLocationCommand(s_drive, 0.3, 270, Units.feetToMeters(12));
+    // return new DriveDistanceLocationCommand(s_drive, 0.3, 270, Units.feetToMeters(12));
     //   @Override
     //   public boolean isFinished() {
     //     return false;

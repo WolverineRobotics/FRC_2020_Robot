@@ -9,6 +9,8 @@ import frc.robot.constants.RobotConst.VisionConst;
 
 public class GRIPSubsystem extends SubsystemBase {
 
+    // private final int WIDTH_PIXELS
+
     private NetworkTable table;
 
     private NetworkTableEntry area, centerX, centerY, width, height, solidity;
@@ -45,6 +47,8 @@ public class GRIPSubsystem extends SubsystemBase {
         }
         return currentLargestIndex;
     }
+
+
 
     public double getArea(int idx) {
         try{
