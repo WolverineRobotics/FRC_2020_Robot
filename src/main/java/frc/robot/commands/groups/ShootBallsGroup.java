@@ -12,17 +12,19 @@ public class ShootBallsGroup extends ParallelRaceGroup {
     protected final MoveBallsToShootCommand c_moveBallsToShoot;
     protected final SetFlywheelShootCommand c_setFlywheelShoot;
     private boolean shootReady = true;
+    protected double rpmSetpoint;
+    private static final double DEFAULT_RPM = 4600;
 
     public ShootBallsGroup(IntakeSubsystem intake, ShooterSubsystem shooter, double rpm) {
-        this(intake, shooter);
-        c_setFlywheelShoot.setSetpointRPM(rpm);
-    }
-
-    public ShootBallsGroup(IntakeSubsystem intake, ShooterSubsystem shooter) {
         c_moveBallsToShoot = new MoveBallsToShootCommand(intake);
         c_setFlywheelShoot = new SetFlywheelShootCommand(shooter);
         addCommands(c_moveBallsToShoot);
-        addCommands(c_setFlywheelShoot);
+        addCommands(c_setFlywheelShoot);    
+        this.rpmSetpoint = rpm;
+    }
+
+    public ShootBallsGroup(IntakeSubsystem intake, ShooterSubsystem shooter) {
+        this(intake, shooter, DEFAULT_RPM);
     }
 
     public void setShootReady(boolean shoot) {
@@ -30,13 +32,20 @@ public class ShootBallsGroup extends ParallelRaceGroup {
     }
 
     @Override
-    public void execute() {
-        super.execute();
+    public void initialize() {
+        super.initialize();
+        c_setFlywheelShoot.setSetpointRPM(rpmSetpoint);
+    }
 
+    @Override
+    public void execute() {
         // Passes if the flywheel is at speed from c_setFlywheelShoot to
         // c_moveBallsToShoot
         boolean flywheelAtSpeed = checkFlywheelAtSpeed();
         c_moveBallsToShoot.setFlywheelReady(flywheelAtSpeed && shootReady);
+
+
+        super.execute();
     }
 
     protected boolean checkFlywheelAtSpeed() {
