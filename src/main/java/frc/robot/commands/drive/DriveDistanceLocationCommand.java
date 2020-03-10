@@ -25,6 +25,7 @@ public class DriveDistanceLocationCommand extends CommandBase {
         this.gyroPID = new LocationPID(PIDConst.DRIVE_TURN_KP, PIDConst.DRIVE_TURN_KI, PIDConst.DRIVE_TURN_KD);
         this.heading = heading;
         this.distance = distanceMeters;
+        this.power = speed;
     }
 
     @Override
@@ -56,9 +57,11 @@ public class DriveDistanceLocationCommand extends CommandBase {
         // speed = power;
         // }
 
+        System.out.println("Distance: " + currentDistance);
+        System.out.println("Power: " + power);
         System.out.println("Steering: " + steering);
 
-        s_drive.arcadeDrive(power, steering, false);
+        s_drive.arcadeDrive(-power, steering, false);
 
         this.previousEncoderDistance = currentDistance;
     }
