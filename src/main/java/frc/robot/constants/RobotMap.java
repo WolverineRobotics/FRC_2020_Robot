@@ -67,13 +67,6 @@ public class RobotMap{
     public static final int DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS_1        = 16;
     public static final int DRIVE_RIGHT_MOTOR_SLAVE_ADDRESS_2        = 17;
 
-
-    public static final int DRIVE_LEFT_ENCODER_A                    = 6;
-    public static final int DRIVE_LEFT_ENCODER_B                    = 7;
-
-    public static final int DRIVE_RIGHT_ENCODER_A                   = 8;
-    public static final int DRIVE_RIGHT_ENCODER_B                   = 9;
-
     public static final int DRIVE_PIGEON_IMU_ADDRESS                = 6;
 
 
