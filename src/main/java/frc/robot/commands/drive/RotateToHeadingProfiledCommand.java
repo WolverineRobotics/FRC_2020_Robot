@@ -188,13 +188,13 @@ public class RotateToHeadingProfiledCommand extends CommandBase {
         // SmartDashboard.putData(getController());
         updateSDashboard();
 
-        System.out.println("Current Heading " + getCurrentAngle());
-        System.out.println("Current Goal " + getGoal());
+        // System.out.println("Current Heading " + getCurrentAngle());
+        // System.out.println("Current Goal " + getGoal());
 
         // System.out.println("Turn Setpoint Position " + turnSetpoint.position);
         // System.out.println("Turn Setpoint Velocity " + turnSetpoint.velocity);
-        System.out.println("Left PID Voltage " + pidVoltage.leftVoltage);
-        System.out.println("Right PID Voltage " + pidVoltage.rightVoltage);
+        // System.out.println("Left PID Voltage " + pidVoltage.leftVoltage);
+        // System.out.println("Right PID Voltage " + pidVoltage.rightVoltage);
 
         // System.out.println("Left FF Voltage " + ffVoltage.leftVoltage);
         // System.out.println("Right FF Voltage " + ffVoltage.rightVoltage);

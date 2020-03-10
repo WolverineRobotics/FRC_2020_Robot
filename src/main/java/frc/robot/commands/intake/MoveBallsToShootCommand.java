@@ -22,19 +22,19 @@ public class MoveBallsToShootCommand extends CommandBase {
     public void execute() {
         if (!s_intake.isSensorFiveActivated()) {
             // No ball in top position
-            s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED,
-                    IntakeConst.UPPER_VERTICAL_SPEED);
+            s_intake.setSpeeds(0.1, 0.25, 0.25,
+                    0.25);
             flywheelReady = false; 
-            System.out.println("Sensor 5 not activated, moving balls up");
+            // System.out.println("Sensor 5 not activated, moving balls up");
         } else {
             // Ball in top position,
             if (flywheelReady) {
                 // Flywheel ready, shoot balls
                 s_intake.setSpeeds(0, 0, 0, 0.9);
-                System.out.println("Flywheel ready, shoot balls");
+                // System.out.println("Flywheel ready, shoot balls");
             } else {
                 s_intake.setSpeeds(0, 0, 0, 0);
-                System.out.println("Flywheel not ready, holding");
+                // System.out.println("Flywheel not ready, holding");
             }
         }
         s_intake.updateSensorPositions();
@@ -46,13 +46,14 @@ public class MoveBallsToShootCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        System.out.println("NUM OF BALLS: " + s_intake.getAmountOfBalls());
+        // System.out.println("NUM OF BALLS: " + s_intake.getAmountOfBalls());
         return (s_intake.getAmountOfBalls() == 0);
         // return false;
     }
 
     @Override
     public void end(boolean interrupted) {
+        // System.out.println("MOVE BALLS TO SHOOT FINISHING");
         s_intake.setSpeeds(0, 0, 0, 0);
     }
 
