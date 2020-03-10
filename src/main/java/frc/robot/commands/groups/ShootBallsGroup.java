@@ -28,6 +28,12 @@ public class ShootBallsGroup extends ParallelRaceGroup {
     }
 
     public void setShootReady(boolean shoot) {
+        System.out.print("SHOOT BALLS - Set Shoot Ready: ");
+        if(shoot){
+            System.out.println("True");
+        }else{
+            System.out.println("False");
+        }
         this.shootReady = shoot;
     }
 
@@ -44,6 +50,12 @@ public class ShootBallsGroup extends ParallelRaceGroup {
         boolean flywheelAtSpeed = checkFlywheelAtSpeed();
         c_moveBallsToShoot.setFlywheelReady(flywheelAtSpeed && shootReady);
 
+        System.out.print("Command Group: Flywheel At Speed: ");
+        if(flywheelAtSpeed && shootReady){
+            System.out.println("True");
+        }else{
+            System.out.println("False");
+        }
 
         super.execute();
     }

@@ -25,13 +25,16 @@ public class MoveBallsToShootCommand extends CommandBase {
             s_intake.setSpeeds(IntakeConst.ENTRY_SPEED, IntakeConst.CURVE_SPEED, IntakeConst.LOWER_VERTICAL_SPEED,
                     IntakeConst.UPPER_VERTICAL_SPEED);
             flywheelReady = false; 
+            System.out.println("Sensor 5 not activated, moving balls up");
         } else {
             // Ball in top position,
             if (flywheelReady) {
                 // Flywheel ready, shoot balls
                 s_intake.setSpeeds(0, 0, 0, 0.9);
+                System.out.println("Flywheel ready, shoot balls");
             } else {
                 s_intake.setSpeeds(0, 0, 0, 0);
+                System.out.println("Flywheel not ready, holding");
             }
         }
         s_intake.updateSensorPositions();
