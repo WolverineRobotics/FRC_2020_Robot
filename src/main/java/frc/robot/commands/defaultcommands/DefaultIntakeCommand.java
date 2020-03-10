@@ -49,6 +49,7 @@ public class DefaultIntakeCommand extends CommandBase {
     public void execute() {
         if(oc.isPOVDown()) { // if operator wants to dumby proof intake
             s_intake.setMoveBalls(true);
+            RobotContainer.getDriverController().setDriveRumble(true);
         } else if(oc.isPressingB()) { // if operator wants to auto shoot
             /**
             * Operator presses one button and the robot will:
@@ -86,6 +87,7 @@ public class DefaultIntakeCommand extends CommandBase {
             } else {
                 s_intake.setSpeeds(0, 0, 0, 0);
                 s_intake.setMoveBalls(false);
+                RobotContainer.getDriverController().setDriveRumble(false);
             }
         }
     }
