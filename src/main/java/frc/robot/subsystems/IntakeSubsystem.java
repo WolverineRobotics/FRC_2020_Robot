@@ -716,7 +716,7 @@ public class IntakeSubsystem extends SubsystemBase {
                                         }
                                     }
                                 } else {
-                                    setVerticalLowerSpeed(mag.size() == 1 ? direction * 0.8 : direction * 0.25);
+                                    setVerticalLowerSpeed(mag.size() == 1 ? direction * 0.8 : direction * 0.4);
                                 }
                                 break;
                             case UPPER_VERTICAL:

@@ -1,6 +1,7 @@
 package frc.robot.oi;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.constants.JoystickMap;
 import frc.robot.constants.JoystickMap.AxisMap;
@@ -106,6 +107,11 @@ public class DriverController extends Controller {
 
     public boolean isLimelightLed(){
         return getButton(ButtonMap.BUTTON_LEFT_BUMPER);
+    }
+
+    public void setDriveRumble(boolean toRumble) {
+        super.getJoystick().setRumble(RumbleType.kLeftRumble, 1);
+        super.getJoystick().setRumble(RumbleType.kRightRumble, 1);
     }
 
 }
