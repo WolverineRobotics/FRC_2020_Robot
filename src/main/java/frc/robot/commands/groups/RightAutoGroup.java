@@ -10,6 +10,7 @@ import frc.robot.commands.drive.RotateToHeadingProfiledCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
 import frc.robot.commands.intake.SetIntakeArmCommand;
 import frc.robot.commands.shootercommands.SetFlywheelSpeedTimedCommand;
+import frc.robot.commands.utility.TimedCommandWrapper;
 import frc.robot.subsystems.CameraSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -30,28 +31,29 @@ public class RightAutoGroup extends SequentialCommandGroup{
         addCommands(
             new RotateToHeadingProfiledCommand(s_drive, 30),
 
-            new AlignAndShootGroup(s_drive, s_intake, s_shooter, s_camera, 4200), 
             new SetIntakeArmCommand(s_intake, false),
+            new TimedCommandWrapper(new AlignAndShootGroup(s_drive, s_intake, s_shooter, s_camera, 4200), 5),
+            
 
             // new RotateToHeadingProfiledCommand(s_drive, 180),
-            // new DriveForwardAndIntakeGroup(s_drive, s_intake, 0.4, Units.inchesToMeters(192.75)),
-            new DriveLocationAndIntakeGroup(s_drive, s_intake, 0.4, 180, Units.inchesToMeters(192.75)),
+            new DriveLocationAndIntakeGroup(s_drive, s_intake, 0.35, 180, Units.inchesToMeters(192.75)),
 
-            new RotateToHeadingProfiledCommand(s_drive, 10),
+            // new RotateToHeadingProfiledCommand(s_drive, 10),
 
-            // new DriveFowardCommand(s_drive, 0.7, Units.inchesToMeters(178)),
+            // new DriveFowardCommand(s_drive, 0.8, Units.inchesToMeters(178)),
 
-            // new ParallelRaceGroup(new DriveFowardCommand(s_drive, 0.7, Units.inchesToMeters(178)),
-            // new SetFlywheelSpeedTimedCommand(s_shooter, 0.85, 9999)),
-            new ParallelRaceGroup(new DriveDistanceLocationCommand(s_drive, 0.4, 10, Units.inchesToMeters(24)),
-            new SetFlywheelSpeedTimedCommand(shooter, 0.85, 999){
-                @Override
-                public boolean isFinished() {
-                    return false;
-                }
-            }),
+            new ParallelRaceGroup(new DriveDistanceLocationCommand(s_drive, 0.85, 10, Units.inchesToMeters(178)),
+            new SetFlywheelSpeedTimedCommand(s_shooter, 0.85, 9999)),
+            // new ParallelRaceGroup(new DriveDistanceLocationCommand(s_drive, 0.4, 10, Units.inchesToMeters(24)),
+            // new SetFlywheelSpeedTimedCommand(shooter, 0.85, 999){
+            //     @Override
+            //     public boolean isFinished() {
+            //         return false;
+            //     }
+            // }
+            // ),
 
-            new AlignAndShootGroup(s_drive, s_intake, s_shooter, s_camera, 4450)
+            new AlignAndShootGroup(s_drive, s_intake, s_shooter, s_camera, 4200)
         );
 
     }

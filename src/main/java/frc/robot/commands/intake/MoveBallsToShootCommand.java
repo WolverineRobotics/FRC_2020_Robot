@@ -22,8 +22,8 @@ public class MoveBallsToShootCommand extends CommandBase {
     public void execute() {
         if (!s_intake.isSensorFiveActivated()) {
             // No ball in top position
-            s_intake.setSpeeds(0.1, 0.25, 0.25,
-                    0.25);
+            s_intake.setSpeeds(0.1, 0.25, 0.3,
+                    0.3);
             flywheelReady = false; 
             // System.out.println("Sensor 5 not activated, moving balls up");
         } else {
