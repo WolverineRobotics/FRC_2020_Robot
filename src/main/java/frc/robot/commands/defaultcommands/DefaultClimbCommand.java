@@ -21,23 +21,23 @@ public class DefaultClimbCommand extends CommandBase {
     @Override
     public void execute() {
 
-        // double rightTrig = dc.getRightTrigger();
-        // double leftTrig = dc.getLeftTrigger();
-        // s_climb.setClimbSpeed((leftTrig - rightTrig)*0.75);
+        double rightTrig = dc.getRightTrigger();
+        double leftTrig = dc.getLeftTrigger();
+        s_climb.setClimbSpeed((leftTrig - rightTrig)*0.75);
 
-        // if(dc.isPOVRight()){
-        //     s_climb.setClimbLevelSpeed(-0.8);
-        // } else if(dc.isPOVLeft()){
-        //     s_climb.setClimbLevelSpeed(0.8);
-        // } else {
-        //     s_climb.setClimbLevelSpeed(0);
-        // }
+        if(dc.isPOVRight()){
+            s_climb.setClimbLevelSpeed(-0.8);
+        } else if(dc.isPOVLeft()){
+            s_climb.setClimbLevelSpeed(0.8);
+        } else {
+            s_climb.setClimbLevelSpeed(0);
+        }
 
-        // if (dc.isPressingB()){
-        //     s_climb.setLock(false);
-        // } else if(dc.isPressingY()) {
-        //     s_climb.setLock(true);
-        // }
+        if (dc.isPressingB()){
+            s_climb.setLock(false);
+        } else if(dc.isPressingY()) {
+            s_climb.setLock(true);
+        }
     }
 
     @Override

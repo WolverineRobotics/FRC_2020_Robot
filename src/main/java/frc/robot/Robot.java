@@ -33,6 +33,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     robotContainer = new RobotContainer();
     robotContainer.getClimbSubsystem().setLock(false);
+    LiveWindow.disableAllTelemetry();
   }
 
   /**
@@ -55,7 +56,6 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run(); // DO NOT REMOVE THIS CODE >:(
     SmartDashboard.updateValues();
-    LiveWindow.disableAllTelemetry();
   }
 
   /**
