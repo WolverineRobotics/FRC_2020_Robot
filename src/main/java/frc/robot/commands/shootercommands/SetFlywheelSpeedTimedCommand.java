@@ -33,7 +33,7 @@ public class SetFlywheelSpeedTimedCommand extends CommandBase{
 
     @Override
     public boolean isFinished(){
-        return totalTime >= timer.get();
+        return totalTime <= timer.get();
     }
 
 }

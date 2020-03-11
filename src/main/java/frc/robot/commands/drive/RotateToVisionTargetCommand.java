@@ -30,7 +30,7 @@ public class RotateToVisionTargetCommand extends RotateToHeadingProfiledCommand 
      * The max acceptable error, in degree. If the error is below this, it will be
      * concidered on target (although it may still try to correct that error).
      */
-    private final double TARGET_ERROR = 0.8;
+    private final double TARGET_ERROR = 0.9;
 
     // Any targets with y-values below this value will be treated as false
     // positives.
