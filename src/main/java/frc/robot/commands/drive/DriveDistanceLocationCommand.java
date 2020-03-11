@@ -57,9 +57,9 @@ public class DriveDistanceLocationCommand extends CommandBase {
         // speed = power;
         // }
 
-        System.out.println("Distance: " + currentDistance);
-        System.out.println("Power: " + power);
-        System.out.println("Steering: " + steering);
+        // System.out.println("Distance: " + currentDistance);
+        // System.out.println("Power: " + power);
+        // System.out.println("Steering: " + steering);
 
         s_drive.arcadeDrive(-power, steering, false);
 
