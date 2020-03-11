@@ -702,7 +702,7 @@ public class IntakeSubsystem extends SubsystemBase {
                                 setEntrySpeed(direction * 0.3);
                                 break;
                             case CURVE:
-                                setCurveSpeed(mag.size() == 1 ? direction * 0.8 : direction * 0.8);
+                                setCurveSpeed(direction * 1);
                                 break;
                             case LOWER_VERTICAL:
                                 boolean[] sen = getSensors();
