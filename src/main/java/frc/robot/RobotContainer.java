@@ -170,6 +170,10 @@ public class RobotContainer {
     return s_drive;
   }
 
+  public CameraSubsystem getCameraSubsystem(){
+    return s_camera;
+  }
+
   public static DriverController getDriverController() {
     return joshuaAndrewCadavos;
   }
@@ -181,4 +185,5 @@ public class RobotContainer {
   public static TestController getTestController() {
     return ryanDick;
   }
+  
 }

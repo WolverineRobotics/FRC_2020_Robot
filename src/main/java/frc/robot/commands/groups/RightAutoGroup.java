@@ -41,9 +41,15 @@ public class RightAutoGroup extends SequentialCommandGroup{
 
             // new DriveFowardCommand(s_drive, 0.7, Units.inchesToMeters(178)),
 
-            new ParallelRaceGroup(new DriveFowardCommand(s_drive, 0.7, Units.inchesToMeters(178)),
-            new SetFlywheelSpeedTimedCommand(s_shooter, 0.85, 9999)),
-            
+            // new ParallelRaceGroup(new DriveFowardCommand(s_drive, 0.7, Units.inchesToMeters(178)),
+            // new SetFlywheelSpeedTimedCommand(s_shooter, 0.85, 9999)),
+            new ParallelRaceGroup(new DriveDistanceLocationCommand(s_drive, 0.4, 10, Units.inchesToMeters(24)),
+            new SetFlywheelSpeedTimedCommand(shooter, 0.85, 999){
+                @Override
+                public boolean isFinished() {
+                    return false;
+                }
+            }),
 
             new AlignAndShootGroup(s_drive, s_intake, s_shooter, s_camera, 4450)
         );
