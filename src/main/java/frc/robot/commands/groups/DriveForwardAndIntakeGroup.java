@@ -7,12 +7,12 @@ import frc.robot.commands.intake.IntakeBallsUntilMagazine;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class DriveAndIntakeGroup extends ParallelRaceGroup{
+public class DriveForwardAndIntakeGroup extends ParallelRaceGroup{
 
     private final DriveSubsystem s_drive;
     private final IntakeSubsystem s_intake;
 
-    public DriveAndIntakeGroup(DriveSubsystem drive, IntakeSubsystem intake, double speed, double distanceMeters){
+    public DriveForwardAndIntakeGroup(DriveSubsystem drive, IntakeSubsystem intake, double speed, double distanceMeters){
         s_drive = drive;
         s_intake = intake;
         addCommands(

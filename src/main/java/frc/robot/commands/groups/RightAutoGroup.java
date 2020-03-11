@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.drive.DriveDistanceLocationCommand;
 import frc.robot.commands.drive.DriveFowardCommand;
 import frc.robot.commands.drive.RotateToHeadingProfiledCommand;
 import frc.robot.commands.drive.RotateToVisionTargetCommand;
@@ -29,20 +30,28 @@ public class RightAutoGroup extends SequentialCommandGroup{
         addCommands(
             new RotateToHeadingProfiledCommand(s_drive, 30),
 
-            new AlignAndShootGroup(s_drive, s_intake, s_shooter, s_camera), 
+            new AlignAndShootGroup(s_drive, s_intake, s_shooter, s_camera, 4200), 
             new SetIntakeArmCommand(s_intake, false),
 
-            new RotateToHeadingProfiledCommand(s_drive, 180-1),
-            new DriveAndIntakeGroup(s_drive, s_intake, 0.4, Units.inchesToMeters(192.75)),
+            // new RotateToHeadingProfiledCommand(s_drive, 180),
+            // new DriveForwardAndIntakeGroup(s_drive, s_intake, 0.4, Units.inchesToMeters(192.75)),
+            new DriveLocationAndIntakeGroup(s_drive, s_intake, 0.4, 180, Units.inchesToMeters(192.75)),
+
             new RotateToHeadingProfiledCommand(s_drive, 10),
 
             // new DriveFowardCommand(s_drive, 0.7, Units.inchesToMeters(178)),
 
-            new ParallelRaceGroup(new DriveFowardCommand(s_drive, 0.7, Units.inchesToMeters(178)),
-            new SetFlywheelSpeedTimedCommand(s_shooter, 0.85, 9999)),
-            
+            // new ParallelRaceGroup(new DriveFowardCommand(s_drive, 0.7, Units.inchesToMeters(178)),
+            // new SetFlywheelSpeedTimedCommand(s_shooter, 0.85, 9999)),
+            new ParallelRaceGroup(new DriveDistanceLocationCommand(s_drive, 0.4, 10, Units.inchesToMeters(24)),
+            new SetFlywheelSpeedTimedCommand(shooter, 0.85, 999){
+                @Override
+                public boolean isFinished() {
+                    return false;
+                }
+            }),
 
-            new AlignAndRapidFireGroup(s_drive, s_intake, s_shooter, s_camera, 4300)
+            new AlignAndShootGroup(s_drive, s_intake, s_shooter, s_camera, 4450)
         );
 
     }

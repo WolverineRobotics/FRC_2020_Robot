@@ -17,9 +17,9 @@ public class RotateToVisionTargetCommand extends RotateToHeadingProfiledCommand 
     // private final MedianPercentileFilter xMedianFilter;
     // private final MedianPercentileFilter yMedianFilter;
 
-    private double kP = 0.016*1.4;
-    private double kI = PIDConst.DRIVE_TURN_KI*6*6;
-    private double kD = PIDConst.DRIVE_TURN_KD*3*2;
+    private double kP = 0.016*1;
+    private double kI = PIDConst.DRIVE_TURN_KI*6*10;
+    private double kD = PIDConst.DRIVE_TURN_KD*3*4;
 
     // private final int MEDIAN_FILTER_ENTRIES = 10;
     protected final int CYCLES_UNTIL_CHECK_FINISHED = 10;
